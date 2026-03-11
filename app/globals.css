@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #0A0A0F;
+  --bg2: #111118;
+  --bg3: #1A1A24;
+  --bg4: #22222E;
+  --g50: #F9FAFB;
+  --g100: #F0F0F5;
+  --g200: #CFCFD2;
+  --g300: #9A9AA0;
+  --g400: #6B6B73;
+  --g500: #44444C;
+  --scarlet: #F9250E;
+  --scarlet-light: #FF5A45;
+  --scarlet-dark: #C41E0B;
+  --scarlet-ghost: #FFF1F0;
+  --dark: #0C0C0F;
+}
+
+body {
+  background: var(--bg);
+  color: var(--g200);
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+html { scroll-behavior: smooth; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
+
+::selection { background: rgba(249,37,14,0.3); color: var(--g100); }
+
+*:focus-visible {
+  outline: 2px solid var(--scarlet);
+  outline-offset: 2px;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes float0 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes float1 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .glass {
+    background: rgba(17,17,24,0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .border-subtle { border-color: rgba(255,255,255,0.06); }
+  .border-subtle-2 { border-color: rgba(255,255,255,0.1); }
+  .glow-scarlet { box-shadow: 0 0 60px rgba(249,37,14,0.15); }
+  .animate-float0 { animation: float0 4s ease-in-out infinite; }
+  .animate-float1 { animation: float1 4s ease-in-out infinite; }
+  .fade-up-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s cubic-bezier(.22,1,.36,1), transform 0.7s cubic-bezier(.22,1,.36,1);
+  }
+  .fade-up-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
