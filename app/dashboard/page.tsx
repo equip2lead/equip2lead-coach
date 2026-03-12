@@ -81,7 +81,7 @@ export default function DashboardPage() {
 
       const { data: j } = await supabase.from('journeys')
         .select('id, track_id, current_week, status, tracks(slug, name_en, name_fr)')
-        .eq('user_id', user!.id).order('updated_at', { ascending: false }).limit(1).single();
+        .eq('user_id', user!.id).order('started_at', { ascending: false, nullsFirst: false }).limit(1).single();
       if (!j) { setLoading(false); return; }
       setJourney(j);
 
