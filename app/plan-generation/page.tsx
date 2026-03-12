@@ -1,4 +1,67 @@
-'use client';
+async function generatePlan() {
+  try {
+    const { data: track } = await supabase
+      .from('tracks').select('id, name_en, name_fr').eq('slug', trackSlug).single();
+    if (!track) { setPlanGenerated(true); return; } // ← don't hang
+
+    const { data: journey } = await supabase
+      .from('journeys').select('id')
+      .eq('user_id', user!.id).eq('track_id', track.id).single();
+    if (!journey) { setPlanGenerated(true); return; }
+
+    const { data: existing } = await supabase
+      .from('coaching_plans').select('id').eq('journey_id', journey.id).single();
+    if (existing) { setPlanGenerated(true); return; }
+
+    const { data: scores } = await supabase
+      .from('pillar_scores').select('pillar_id, score, sub_domain_scores')
+      .eq('journey_id', journey.id);
+    if (!scores || scores.length === 0) { setPlanGenerated(true); return; } // ← was hanging here
+
+    // ... rest of the function stays the same
+  } catch (err) {
+    console.error('Plan generation error:', err);
+    setPlanGenerated(true); // always unblock the UI
+  }
+}
+
+    // Check if plan already exists
+    const { data: existing } = await supabase
+      .from('coaching_plans').select('id').eq('journey_id', journey.id).single();
+    if (existing) { setPlanGenerated(true); return; }
+
+    // Get pillar scores
+    const { data: scores } = await supabase
+      .from('pillar_scores').select('pillar_id, score, sub_domain_scores')
+      .eq('journey_id', journey.id);
+    if (!scores || scores.length === 0) { setPlanGenerated(true); return; } // ← THIS was the hanging line
+
+    // Get pillar names
+    const pillarIds = scores.map(s => s.pillar_id);
+    const { data: pillars } = await supabase
+      .from('pillars').select('id, name_en, name_fr, sort_order')
+      .in('id', pillarIds).order('sort_order');
+
+    // Identify top 3 weakest sub-domains
+    const allSubs: { name: string; score: number; pillar_en: string; pillar_fr: string }[] = [];
+    scores.forEach(sc => {
+      const pillar = pillars?.find(p => p.id === sc.pillar_id);
+      if (sc.sub_domain_scores && pillar) {
+        Object.entries(sc.sub_domain_scores).forEach(([name, score]) => {
+          allSubs.push({ name, score: score as number, pillar_en: pillar.name_en, pillar_fr: pillar.name_fr });
+        });
+      }
+    });
+    allSubs.sort((a, b) => a.score - b.score);
+    const focusAreas = allSubs.slice(0, 3).map(s => ({
+      name: s.name, score: s.score, pillar_en: s.pillar_en, pillar_fr: s.pillar_fr,
+    }));
+
+    const sortedPillars = scores
+      .map(sc => ({ ...sc, pillar: pillars?.find(p => p.id === sc.pillar_id) }))
+      .sort((a, b) => Number(a.score) - Number(b.score));
+    const weakest = sortedPillars[0]?.pillar;
+    const strongest = sortedPillars[sortedPillars.length'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
