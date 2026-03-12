@@ -1,128 +1,4 @@
-async function generatePlan() {
-  try {
-    const { data: track } = await supabase
-      .from('tracks').select('id, name_en, name_fr').eq('slug', trackSlug).single();
-    if (!track) { setPlanGenerated(true); return; }
-
-    const { data: journey } = await supabase
-      .from('journeys').select('id')
-      .eq('user_id', user!.id).eq('track_id', track.id).single();
-    if (!journey) { setPlanGenerated(true); return; }
-
-    // Check if plan already exists
-    const { data: existing } = await supabase
-      .from('coaching_plans').select('id').eq('journey_id', journey.id).single();
-    if (existing) { setPlanGenerated(true); return; }
-
-    // Get pillar scores
-    const { data: scores } = await supabase
-      .from('pillar_scores').select('pillar_id, score, sub_domain_scores')
-      .eq('journey_id', journey.id);
-    if (!scores || scores.length === 0) { setPlanGenerated(true); return; } // ← THIS was the hanging line
-
-    // Get pillar names
-    const pillarIds = scores.map(s => s.pillar_id);
-    const { data: pillars } = await supabase
-      .from('pillars').select('id, name_en, name_fr, sort_order')
-      .in('id', pillarIds).order('sort_order');
-
-    // Identify top 3 weakest sub-domains
-    const allSubs: { name: string; score: number; pillar_en: string; pillar_fr: string }[] = [];
-    scores.forEach(sc => {
-      const pillar = pillars?.find(p => p.id === sc.pillar_id);
-      if (sc.sub_domain_scores && pillar) {
-        Object.entries(sc.sub_domain_scores).forEach(([name, score]) => {
-          allSubs.push({ name, score: score as number, pillar_en: pillar.name_en, pillar_fr: pillar.name_fr });
-        });
-      }
-    });
-    allSubs.sort((a, b) => a.score - b.score);
-    const focusAreas = allSubs.slice(0, 3).map(s => ({
-      name: s.name, score: s.score, pillar_en: s.pillar_en, pillar_fr: s.pillar_fr,
-    }));
-
-    const sortedPillars = scores
-      .map(sc => ({ ...sc, pillar: pillars?.find(p => p.id === sc.pillar_id) }))
-      .sort((a, b) => Number(a.score) - Number(b.score));
-    const weakest = sortedPillars[0]?.pillar;
-    const strongest = sortedPillars[sortedPillars.length - 1]?.pillar;
-    const overallScore = scores.reduce((a, s) => a + Number(s.score), 0) / scores.length;
-
-    const coachLens = `Based on your assessment (overall score: ${overallScore.toFixed(1)}/5), your strongest area is ${strongest?.name_en || 'N/A'} and your primary growth area is ${weakest?.name_en || 'N/A'}. Your top 3 focus areas for the next 12 weeks are: ${focusAreas.map(f => `${f.name.replace(/-/g, ' ')} (${f.score}/5)`).join(', ')}. Dr. Ekobena recommends starting with the fundamentals — building self-awareness and emotional regulation before tackling strategic and relational dimensions.`;
-
-    const themes = weeklyThemes.en;
-    const planData = themes.map(w => ({
-      week: w.week,
-      title_en: w.title,
-      title_fr: weeklyThemes.fr[w.week - 1].title,
-      desc_en: w.desc,
-      desc_fr: weeklyThemes.fr[w.week - 1].desc,
-      focus: focusAreas[Math.min(Math.floor((w.week - 1) / 4), 2)]?.name || focusAreas[0]?.name,
-      exercises: [
-        { type: 'reflection', title_en: 'Daily Reflection', title_fr: 'Réflexion quotidienne' },
-        { type: 'practice', title_en: 'Practical Exercise', title_fr: 'Exercice pratique' },
-        { type: 'conversation', title_en: 'Real Conversation', title_fr: 'Conversation réelle' },
-      ],
-    }));
-
-    const vision = `In 12 months, you will have transformed your approach to ${weakest?.name_en?.toLowerCase() || 'leadership'}, built solid foundations in ${focusAreas[0]?.name.replace(/-/g, ' ') || 'self-awareness'}, and developed the confidence and competence to lead with purpose and intentionality in every area of your life.`;
-
-    await supabase.from('coaching_plans').upsert({
-      journey_id: journey.id,
-      focus_areas: focusAreas,
-      coach_lens_summary: coachLens,
-      plan_data: { weeks: planData, vision_en: vision, vision_fr: vision, weakest_pillar_en: weakest?.name_en, weakest_pillar_fr: weakest?.name_fr, strongest_pillar_en: strongest?.name_en, strongest_pillar_fr: strongest?.name_fr, overall_score: overallScore },
-    }, { onConflict: 'journey_id' });
-
-    await supabase.from('journeys').update({
-      status: 'plan_generated',
-      updated_at: new Date().toISOString(),
-    }).eq('id', journey.id);
-
-  } catch (err) {
-    console.error('Plan generation error:', err); // always logs the real problem
-  } finally {
-    setPlanGenerated(true); // ← ALWAYS unblocks UI, success or failure
-  }
-}
-
-    // Check if plan already exists
-    const { data: existing } = await supabase
-      .from('coaching_plans').select('id').eq('journey_id', journey.id).single();
-    if (existing) { setPlanGenerated(true); return; }
-
-    // Get pillar scores
-    const { data: scores } = await supabase
-      .from('pillar_scores').select('pillar_id, score, sub_domain_scores')
-      .eq('journey_id', journey.id);
-    if (!scores || scores.length === 0) { setPlanGenerated(true); return; } // ← THIS was the hanging line
-
-    // Get pillar names
-    const pillarIds = scores.map(s => s.pillar_id);
-    const { data: pillars } = await supabase
-      .from('pillars').select('id, name_en, name_fr, sort_order')
-      .in('id', pillarIds).order('sort_order');
-
-    // Identify top 3 weakest sub-domains
-    const allSubs: { name: string; score: number; pillar_en: string; pillar_fr: string }[] = [];
-    scores.forEach(sc => {
-      const pillar = pillars?.find(p => p.id === sc.pillar_id);
-      if (sc.sub_domain_scores && pillar) {
-        Object.entries(sc.sub_domain_scores).forEach(([name, score]) => {
-          allSubs.push({ name, score: score as number, pillar_en: pillar.name_en, pillar_fr: pillar.name_fr });
-        });
-      }
-    });
-    allSubs.sort((a, b) => a.score - b.score);
-    const focusAreas = allSubs.slice(0, 3).map(s => ({
-      name: s.name, score: s.score, pillar_en: s.pillar_en, pillar_fr: s.pillar_fr,
-    }));
-
-    const sortedPillars = scores
-      .map(sc => ({ ...sc, pillar: pillars?.find(p => p.id === sc.pillar_id) }))
-      .sort((a, b) => Number(a.score) - Number(b.score));
-    const weakest = sortedPillars[0]?.pillar;
-    const strongest = sortedPillars[sortedPillars.length'use client';
+'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -147,18 +23,18 @@ const weeklyThemes = {
     { week: 12, title: 'The New You', desc: 'Celebrating transformation, setting 12-month vision, and designing your ongoing growth rhythm.' },
   ],
   fr: [
-    { week: 1, title: 'Fondation : Votre point de d\u00e9part', desc: 'Comprendre vos scores de r\u00e9f\u00e9rence et identifier les sch\u00e9mas qui ont fa\u00e7onn\u00e9 votre leadership.' },
-    { week: 2, title: 'Le jeu int\u00e9rieur', desc: 'Travailler sur la conscience de soi, les d\u00e9clencheurs \u00e9motionnels et les r\u00e9cits internes.' },
-    { week: 3, title: 'Reconfigurer les r\u00e9actions', desc: 'Construire de nouveaux sch\u00e9mas de r\u00e9ponse. Remplacer les habitudes r\u00e9actives.' },
-    { week: 4, title: 'Vision et direction', desc: 'Clarifier o\u00f9 vous conduisez les gens. Aligner les actions quotidiennes avec votre vision.' },
-    { week: 5, title: "L'avantage communication", desc: "Ma\u00eetriser la clart\u00e9, l'\u00e9coute active et l'adaptation de votre message." },
-    { week: 6, title: 'B\u00e2tir la confiance', desc: "Cr\u00e9er la s\u00e9curit\u00e9 psychologique. Diriger avec vuln\u00e9rabilit\u00e9 et coh\u00e9rence." },
-    { week: 7, title: 'Reset mi-parcours', desc: 'Revoir les progr\u00e8s, recalibrer les objectifs et approfondir les engagements.' },
-    { week: 8, title: 'Performance et responsabilit\u00e9', desc: '\u00c9lever les standards. Avoir des conversations difficiles avec gr\u00e2ce.' },
-    { week: 9, title: 'Le virage d\u00e9l\u00e9gation', desc: "Passer du faire \u00e0 l'habilitation. Construire des syst\u00e8mes qui multiplient votre impact." },
-    { week: 10, title: 'D\u00e9velopper les autres', desc: 'De manager \u00e0 coach. Investir dans la prochaine g\u00e9n\u00e9ration de leaders.' },
-    { week: 11, title: "Penser l'h\u00e9ritage", desc: 'Construire quelque chose qui vous survit. Aligner votre leadership avec un impact \u00e9ternel.' },
-    { week: 12, title: 'Le nouveau vous', desc: 'C\u00e9l\u00e9brer la transformation et concevoir votre rythme de croissance continue.' },
+    { week: 1, title: 'Fondation : Votre point de départ', desc: 'Comprendre vos scores de référence et identifier les schémas qui ont façonné votre leadership.' },
+    { week: 2, title: 'Le jeu intérieur', desc: 'Travailler sur la conscience de soi, les déclencheurs émotionnels et les récits internes.' },
+    { week: 3, title: 'Reconfigurer les réactions', desc: 'Construire de nouveaux schémas de réponse. Remplacer les habitudes réactives.' },
+    { week: 4, title: 'Vision et direction', desc: 'Clarifier où vous conduisez les gens. Aligner les actions quotidiennes avec votre vision.' },
+    { week: 5, title: "L'avantage communication", desc: "Maîtriser la clarté, l'écoute active et l'adaptation de votre message." },
+    { week: 6, title: 'Bâtir la confiance', desc: "Créer la sécurité psychologique. Diriger avec vulnérabilité et cohérence." },
+    { week: 7, title: 'Reset mi-parcours', desc: 'Revoir les progrès, recalibrer les objectifs et approfondir les engagements.' },
+    { week: 8, title: 'Performance et responsabilité', desc: 'Élever les standards. Avoir des conversations difficiles avec grâce.' },
+    { week: 9, title: 'Le virage délégation', desc: "Passer du faire à l'habilitation. Construire des systèmes qui multiplient votre impact." },
+    { week: 10, title: 'Développer les autres', desc: 'De manager à coach. Investir dans la prochaine génération de leaders.' },
+    { week: 11, title: "Penser l'héritage", desc: 'Construire quelque chose qui vous survit. Aligner votre leadership avec un impact éternel.' },
+    { week: 12, title: 'Le nouveau vous', desc: 'Célébrer la transformation et concevoir votre rythme de croissance continue.' },
   ],
 };
 
@@ -172,12 +48,12 @@ const steps = {
     'Your coaching journey is ready',
   ],
   fr: [
-    'Analyse de vos r\u00e9ponses...',
+    'Analyse de vos réponses...',
     'Identification des forces et angles morts...',
-    'G\u00e9n\u00e9ration de votre R\u00e9sum\u00e9 Coach Lens...',
-    'Construction de votre plan personnalis\u00e9 12 semaines...',
-    'R\u00e9daction de votre vision 12 mois...',
-    'Votre parcours de coaching est pr\u00eat',
+    'Génération de votre Résumé Coach Lens...',
+    'Construction de votre plan personnalisé 12 semaines...',
+    'Rédaction de votre vision 12 mois...',
+    'Votre parcours de coaching est prêt',
   ],
 };
 
@@ -205,102 +81,127 @@ function PlanGenerationContent() {
     return () => clearTimeout(timer);
   }, [currentStep]);
 
+  // ── Auto-redirect once animation + plan are both ready ──
+  useEffect(() => {
+    if (done && planGenerated) {
+      const t = setTimeout(() => router.push('/dashboard'), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [done, planGenerated]);
+
   // ── Generate plan in background ──
   useEffect(() => {
     if (!user || generatedRef.current) return;
     generatedRef.current = true;
 
     async function generatePlan() {
-      // Get track + journey
-      const { data: track } = await supabase
-        .from('tracks').select('id, name_en, name_fr').eq('slug', trackSlug).single();
-      if (!track) return;
+      try {
+        // Get track
+        const { data: track } = await supabase
+          .from('tracks').select('id, name_en, name_fr').eq('slug', trackSlug).single();
+        if (!track) return;
 
-      const { data: journey } = await supabase
-        .from('journeys').select('id')
-        .eq('user_id', user!.id).eq('track_id', track.id).single();
-      if (!journey) return;
+        // Get journey
+        const { data: journey } = await supabase
+          .from('journeys').select('id')
+          .eq('user_id', user!.id).eq('track_id', track.id).single();
+        if (!journey) return;
 
-      // Check if plan already exists
-      const { data: existing } = await supabase
-        .from('coaching_plans').select('id').eq('journey_id', journey.id).single();
-      if (existing) { setPlanGenerated(true); return; }
+        // Check if plan already exists — if so, nothing to do
+        const { data: existing } = await supabase
+          .from('coaching_plans').select('id').eq('journey_id', journey.id).single();
+        if (existing) return;
 
-      // Get pillar scores
-      const { data: scores } = await supabase
-        .from('pillar_scores').select('pillar_id, score, sub_domain_scores')
-        .eq('journey_id', journey.id);
-      if (!scores || scores.length === 0) return;
+        // Get pillar scores
+        const { data: scores } = await supabase
+          .from('pillar_scores').select('pillar_id, score, sub_domain_scores')
+          .eq('journey_id', journey.id);
+        if (!scores || scores.length === 0) return;
 
-      // Get pillar names
-      const pillarIds = scores.map(s => s.pillar_id);
-      const { data: pillars } = await supabase
-        .from('pillars').select('id, name_en, name_fr, sort_order')
-        .in('id', pillarIds).order('sort_order');
+        // Get pillar names
+        const pillarIds = scores.map(s => s.pillar_id);
+        const { data: pillars } = await supabase
+          .from('pillars').select('id, name_en, name_fr, sort_order')
+          .in('id', pillarIds).order('sort_order');
 
-      // Identify top 3 weakest sub-domains
-      const allSubs: { name: string; score: number; pillar_en: string; pillar_fr: string }[] = [];
-      scores.forEach(sc => {
-        const pillar = pillars?.find(p => p.id === sc.pillar_id);
-        if (sc.sub_domain_scores && pillar) {
-          Object.entries(sc.sub_domain_scores).forEach(([name, score]) => {
-            allSubs.push({ name, score: score as number, pillar_en: pillar.name_en, pillar_fr: pillar.name_fr });
-          });
-        }
-      });
-      allSubs.sort((a, b) => a.score - b.score);
-      const focusAreas = allSubs.slice(0, 3).map(s => ({
-        name: s.name,
-        score: s.score,
-        pillar_en: s.pillar_en,
-        pillar_fr: s.pillar_fr,
-      }));
+        // Identify top 3 weakest sub-domains
+        const allSubs: { name: string; score: number; pillar_en: string; pillar_fr: string }[] = [];
+        scores.forEach(sc => {
+          const pillar = pillars?.find(p => p.id === sc.pillar_id);
+          if (sc.sub_domain_scores && pillar) {
+            Object.entries(sc.sub_domain_scores).forEach(([name, score]) => {
+              allSubs.push({ name, score: score as number, pillar_en: pillar.name_en, pillar_fr: pillar.name_fr });
+            });
+          }
+        });
+        allSubs.sort((a, b) => a.score - b.score);
+        const focusAreas = allSubs.slice(0, 3).map(s => ({
+          name: s.name,
+          score: s.score,
+          pillar_en: s.pillar_en,
+          pillar_fr: s.pillar_fr,
+        }));
 
-      // Find weakest and strongest pillars
-      const sortedPillars = scores
-        .map(sc => ({ ...sc, pillar: pillars?.find(p => p.id === sc.pillar_id) }))
-        .sort((a, b) => Number(a.score) - Number(b.score));
-      const weakest = sortedPillars[0]?.pillar;
-      const strongest = sortedPillars[sortedPillars.length - 1]?.pillar;
-      const overallScore = scores.reduce((a, s) => a + Number(s.score), 0) / scores.length;
+        // Find weakest and strongest pillars
+        const sortedPillars = scores
+          .map(sc => ({ ...sc, pillar: pillars?.find(p => p.id === sc.pillar_id) }))
+          .sort((a, b) => Number(a.score) - Number(b.score));
+        const weakest = sortedPillars[0]?.pillar;
+        const strongest = sortedPillars[sortedPillars.length - 1]?.pillar;
+        const overallScore = scores.reduce((a, s) => a + Number(s.score), 0) / scores.length;
 
-      // Generate Coach Lens Summary
-      const coachLens = `Based on your assessment (overall score: ${overallScore.toFixed(1)}/5), your strongest area is ${strongest?.name_en || 'N/A'} and your primary growth area is ${weakest?.name_en || 'N/A'}. Your top 3 focus areas for the next 12 weeks are: ${focusAreas.map(f => `${f.name.replace(/-/g, ' ')} (${f.score}/5)`).join(', ')}. Dr. Ekobena recommends starting with the fundamentals \u2014 building self-awareness and emotional regulation before tackling strategic and relational dimensions.`;
+        // Generate Coach Lens Summary
+        const coachLens = `Based on your assessment (overall score: ${overallScore.toFixed(1)}/5), your strongest area is ${strongest?.name_en || 'N/A'} and your primary growth area is ${weakest?.name_en || 'N/A'}. Your top 3 focus areas for the next 12 weeks are: ${focusAreas.map(f => `${f.name.replace(/-/g, ' ')} (${f.score}/5)`).join(', ')}. Dr. Ekobena recommends starting with the fundamentals — building self-awareness and emotional regulation before tackling strategic and relational dimensions.`;
 
-      // Build 12-week plan
-      const themes = weeklyThemes.en;
-      const planData = themes.map(w => ({
-        week: w.week,
-        title_en: w.title,
-        title_fr: weeklyThemes.fr[w.week - 1].title,
-        desc_en: w.desc,
-        desc_fr: weeklyThemes.fr[w.week - 1].desc,
-        focus: focusAreas[Math.min(Math.floor((w.week - 1) / 4), 2)]?.name || focusAreas[0]?.name,
-        exercises: [
-          { type: 'reflection', title_en: 'Daily Reflection', title_fr: 'R\u00e9flexion quotidienne' },
-          { type: 'practice', title_en: 'Practical Exercise', title_fr: 'Exercice pratique' },
-          { type: 'conversation', title_en: 'Real Conversation', title_fr: 'Conversation r\u00e9elle' },
-        ],
-      }));
+        // Build 12-week plan
+        const themes = weeklyThemes.en;
+        const planData = themes.map(w => ({
+          week: w.week,
+          title_en: w.title,
+          title_fr: weeklyThemes.fr[w.week - 1].title,
+          desc_en: w.desc,
+          desc_fr: weeklyThemes.fr[w.week - 1].desc,
+          focus: focusAreas[Math.min(Math.floor((w.week - 1) / 4), 2)]?.name || focusAreas[0]?.name,
+          exercises: [
+            { type: 'reflection', title_en: 'Daily Reflection', title_fr: 'Réflexion quotidienne' },
+            { type: 'practice', title_en: 'Practical Exercise', title_fr: 'Exercice pratique' },
+            { type: 'conversation', title_en: 'Real Conversation', title_fr: 'Conversation réelle' },
+          ],
+        }));
 
-      // Generate 12-month vision
-      const vision = `In 12 months, you will have transformed your approach to ${weakest?.name_en?.toLowerCase() || 'leadership'}, built solid foundations in ${focusAreas[0]?.name.replace(/-/g, ' ') || 'self-awareness'}, and developed the confidence and competence to lead with purpose and intentionality in every area of your life.`;
+        // Generate 12-month vision
+        const vision = `In 12 months, you will have transformed your approach to ${weakest?.name_en?.toLowerCase() || 'leadership'}, built solid foundations in ${focusAreas[0]?.name.replace(/-/g, ' ') || 'self-awareness'}, and developed the confidence and competence to lead with purpose and intentionality in every area of your life.`;
 
-      // Save to database
-      await supabase.from('coaching_plans').upsert({
-        journey_id: journey.id,
-        focus_areas: focusAreas,
-        coach_lens_summary: coachLens,
-        plan_data: { weeks: planData, vision_en: vision, vision_fr: vision, weakest_pillar_en: weakest?.name_en, weakest_pillar_fr: weakest?.name_fr, strongest_pillar_en: strongest?.name_en, strongest_pillar_fr: strongest?.name_fr, overall_score: overallScore },
-      }, { onConflict: 'journey_id' });
+        // Save to database
+        await supabase.from('coaching_plans').upsert({
+          journey_id: journey.id,
+          focus_areas: focusAreas,
+          coach_lens_summary: coachLens,
+          plan_data: {
+            weeks: planData,
+            vision_en: vision,
+            vision_fr: vision,
+            weakest_pillar_en: weakest?.name_en,
+            weakest_pillar_fr: weakest?.name_fr,
+            strongest_pillar_en: strongest?.name_en,
+            strongest_pillar_fr: strongest?.name_fr,
+            overall_score: overallScore,
+          },
+        }, { onConflict: 'journey_id' });
 
-      // Update journey status
-      await supabase.from('journeys').update({
-        status: 'plan_generated',
-        updated_at: new Date().toISOString(),
-      }).eq('id', journey.id);
+        // Update journey status
+        await supabase.from('journeys').update({
+          status: 'plan_generated',
+          updated_at: new Date().toISOString(),
+        }).eq('id', journey.id);
 
-      setPlanGenerated(true);
+      } catch (err) {
+        // Log the real error so you can debug in console/Vercel logs
+        console.error('[PlanGeneration] Error:', err);
+      } finally {
+        // ALWAYS unblock the UI — success, missing data, or error
+        setPlanGenerated(true);
+      }
     }
 
     generatePlan();
@@ -321,7 +222,7 @@ function PlanGenerationContent() {
           <span className="text-[19px] font-bold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>Equip<span className="text-[#F9250E]">2</span>Lead</span>
         </div>
 
-        {/* Animated cross / checkmark */}
+        {/* Animated icon */}
         <div className="relative w-20 h-20 mx-auto mb-10">
           {!done ? (
             <div className="w-20 h-20 rounded-full border-[3px] border-white/10 flex items-center justify-center animate-pulse">
@@ -360,17 +261,23 @@ function PlanGenerationContent() {
           })}
         </div>
 
-        {/* CTA */}
+        {/* CTA — shown when animation done + plan ready */}
         {done && planGenerated && (
-          <button
-            onClick={() => router.push('/dashboard')}
-            className="px-10 py-4 rounded-xl border-none cursor-pointer text-[15px] font-bold text-white bg-[#F9250E] transition-all hover:-translate-y-px animate-[fadeUp_0.5s_ease_0.3s_both]"
-            style={{ boxShadow: '0 4px 24px rgba(249,37,14,0.35)', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-          >
-            {lang === 'en' ? 'Enter Your Dashboard' : 'Acc\u00e9der au Tableau de bord'} &rarr;
-          </button>
+          <div className="flex flex-col items-center gap-3 animate-[fadeUp_0.5s_ease_0.3s_both]">
+            <button
+              onClick={() => router.push('/dashboard')}
+              className="px-10 py-4 rounded-xl border-none cursor-pointer text-[15px] font-bold text-white bg-[#F9250E] transition-all hover:-translate-y-px"
+              style={{ boxShadow: '0 4px 24px rgba(249,37,14,0.35)', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            >
+              {lang === 'en' ? 'Enter Your Dashboard' : 'Accéder au Tableau de bord'} &rarr;
+            </button>
+            <p className="text-white/30 text-[12px]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              {lang === 'en' ? 'Redirecting automatically...' : 'Redirection automatique...'}
+            </p>
+          </div>
         )}
 
+        {/* Spinner — shown when animation done but plan still saving */}
         {done && !planGenerated && (
           <div className="flex items-center justify-center gap-2 text-white/50 text-[13px]">
             <div className="w-4 h-4 border-2 border-white/30 border-t-[#F9250E] rounded-full animate-spin" />
@@ -380,8 +287,11 @@ function PlanGenerationContent() {
       </div>
 
       {/* Language toggle */}
-      <button onClick={() => setLang(l => l === 'en' ? 'fr' : 'en')}
-        className="absolute top-6 right-7 px-3 py-1.5 rounded-lg border border-white/10 bg-transparent text-[11px] font-semibold text-white/50 cursor-pointer hover:border-white/20 hover:text-white/70 transition-all" style={{ fontFamily: 'inherit' }}>
+      <button
+        onClick={() => setLang(l => l === 'en' ? 'fr' : 'en')}
+        className="absolute top-6 right-7 px-3 py-1.5 rounded-lg border border-white/10 bg-transparent text-[11px] font-semibold text-white/50 cursor-pointer hover:border-white/20 hover:text-white/70 transition-all"
+        style={{ fontFamily: 'inherit' }}
+      >
         🌐 {lang === 'en' ? 'FR' : 'EN'}
       </button>
 
