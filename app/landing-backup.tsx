@@ -64,6 +64,17 @@ const MenuIcon = (p: React.SVGProps<SVGSVGElement>) => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" {...p}><path d="M3 12h18M3 6h18M3 18h18"/></svg>
 );
 
+/* ─── Types ─── */
+interface StepItem {
+  title: string;
+  desc: string;
+}
+
+interface DiffItem {
+  title: string;
+  desc: string;
+}
+
 /* ─── Fade-on-scroll hook ─── */
 function useFadeUp() {
   const ref = useRef<HTMLDivElement>(null);
@@ -231,7 +242,6 @@ export default function HomePage() {
                     </div>
                     <p className="text-[15px] font-semibold mb-4" style={{ color }}>{(trackT as any).tagline}</p>
                     <p className="text-[16px] text-gray-500 leading-[1.75] mb-5 max-w-[480px]">{trackT.desc}</p>
-                    {/* Topic tags */}
                     {(trackT as any).tags && (
                       <div className="flex flex-wrap gap-2 mb-6">
                         {((trackT as any).tags as string[]).map((tag: string, ti: number) => (
@@ -247,12 +257,10 @@ export default function HomePage() {
                   {/* Image */}
                   <div className="relative rounded-[20px] overflow-hidden bg-gray-100" style={{ aspectRatio: '4/3.5', direction: 'ltr' }}>
                     <img src={trackImages[i]} alt={trackT.title} className="w-full h-full object-cover" />
-                    {/* Top floating card */}
                     <div className="animate-float0 absolute top-[15%] left-[5%] rounded-[16px] px-[18px] py-3.5 flex items-center gap-3 max-w-[230px] z-[2]" style={{ background: color, boxShadow: `0 8px 30px ${color}66` }}>
                       <div className="w-[38px] h-[38px] rounded-[10px] bg-white/20 flex items-center justify-center shrink-0"><fc.top.Icon className="w-[18px] h-[18px]" style={{ color: 'white' }} /></div>
                       <div><p className="text-[13px] font-bold text-white m-0">{fc.top.label}</p><p className="text-[11px] text-white/70 mt-0.5 m-0">{fc.top.sub}</p></div>
                     </div>
-                    {/* Bottom floating card */}
                     <div className="animate-float1 absolute bottom-[12%] right-[5%] rounded-[16px] px-[18px] py-3.5 flex items-center gap-3 max-w-[230px] z-[2] bg-white" style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.15)' }}>
                       <div className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center shrink-0" style={{ background: `${color}1A` }}><fc.bottom.Icon className="w-[18px] h-[18px]" style={{ color }} /></div>
                       <div><p className="text-[13px] font-bold text-gray-800 m-0">{fc.bottom.label}</p><p className="text-[11px] text-gray-400 mt-0.5 m-0">{fc.bottom.sub}</p></div>
@@ -291,7 +299,7 @@ export default function HomePage() {
             <p className="text-[17px] text-gray-500 max-w-[540px] mx-auto leading-[1.7]">{t.how.sub}</p>
           </FadeUp>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {t.why.diffs.map((diff: any, i: number) => {
+            {(t.how.steps as StepItem[]).map((step: StepItem, i: number) => {
               const Icon = howIcons[i];
               return (
                 <FadeUp key={i}>
@@ -327,7 +335,7 @@ export default function HomePage() {
             <h2 className="text-white mb-4 leading-[1.12]" style={{ fontFamily: "'Libre Baskerville', serif", fontSize: 'clamp(28px, 4vw, 46px)', fontWeight: 700 }}>{t.why.title}<br/><em className="not-italic text-[#F9250E]">{t.why.titleEm}</em></h2>
           </FadeUp>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 relative">
-            {t.why.diffs.map((diff, i) => {
+            {(t.why.diffs as DiffItem[]).map((diff: DiffItem, i: number) => {
               const Icon = whyIcons[i];
               return (
                 <FadeUp key={i}>
