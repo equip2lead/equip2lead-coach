@@ -2,26 +2,87 @@ async function generatePlan() {
   try {
     const { data: track } = await supabase
       .from('tracks').select('id, name_en, name_fr').eq('slug', trackSlug).single();
-    if (!track) { setPlanGenerated(true); return; } // ← don't hang
+    if (!track) { setPlanGenerated(true); return; }
 
     const { data: journey } = await supabase
       .from('journeys').select('id')
       .eq('user_id', user!.id).eq('track_id', track.id).single();
     if (!journey) { setPlanGenerated(true); return; }
 
+    // Check if plan already exists
     const { data: existing } = await supabase
       .from('coaching_plans').select('id').eq('journey_id', journey.id).single();
     if (existing) { setPlanGenerated(true); return; }
 
+    // Get pillar scores
     const { data: scores } = await supabase
       .from('pillar_scores').select('pillar_id, score, sub_domain_scores')
       .eq('journey_id', journey.id);
-    if (!scores || scores.length === 0) { setPlanGenerated(true); return; } // ← was hanging here
+    if (!scores || scores.length === 0) { setPlanGenerated(true); return; } // ← THIS was the hanging line
 
-    // ... rest of the function stays the same
+    // Get pillar names
+    const pillarIds = scores.map(s => s.pillar_id);
+    const { data: pillars } = await supabase
+      .from('pillars').select('id, name_en, name_fr, sort_order')
+      .in('id', pillarIds).order('sort_order');
+
+    // Identify top 3 weakest sub-domains
+    const allSubs: { name: string; score: number; pillar_en: string; pillar_fr: string }[] = [];
+    scores.forEach(sc => {
+      const pillar = pillars?.find(p => p.id === sc.pillar_id);
+      if (sc.sub_domain_scores && pillar) {
+        Object.entries(sc.sub_domain_scores).forEach(([name, score]) => {
+          allSubs.push({ name, score: score as number, pillar_en: pillar.name_en, pillar_fr: pillar.name_fr });
+        });
+      }
+    });
+    allSubs.sort((a, b) => a.score - b.score);
+    const focusAreas = allSubs.slice(0, 3).map(s => ({
+      name: s.name, score: s.score, pillar_en: s.pillar_en, pillar_fr: s.pillar_fr,
+    }));
+
+    const sortedPillars = scores
+      .map(sc => ({ ...sc, pillar: pillars?.find(p => p.id === sc.pillar_id) }))
+      .sort((a, b) => Number(a.score) - Number(b.score));
+    const weakest = sortedPillars[0]?.pillar;
+    const strongest = sortedPillars[sortedPillars.length - 1]?.pillar;
+    const overallScore = scores.reduce((a, s) => a + Number(s.score), 0) / scores.length;
+
+    const coachLens = `Based on your assessment (overall score: ${overallScore.toFixed(1)}/5), your strongest area is ${strongest?.name_en || 'N/A'} and your primary growth area is ${weakest?.name_en || 'N/A'}. Your top 3 focus areas for the next 12 weeks are: ${focusAreas.map(f => `${f.name.replace(/-/g, ' ')} (${f.score}/5)`).join(', ')}. Dr. Ekobena recommends starting with the fundamentals — building self-awareness and emotional regulation before tackling strategic and relational dimensions.`;
+
+    const themes = weeklyThemes.en;
+    const planData = themes.map(w => ({
+      week: w.week,
+      title_en: w.title,
+      title_fr: weeklyThemes.fr[w.week - 1].title,
+      desc_en: w.desc,
+      desc_fr: weeklyThemes.fr[w.week - 1].desc,
+      focus: focusAreas[Math.min(Math.floor((w.week - 1) / 4), 2)]?.name || focusAreas[0]?.name,
+      exercises: [
+        { type: 'reflection', title_en: 'Daily Reflection', title_fr: 'Réflexion quotidienne' },
+        { type: 'practice', title_en: 'Practical Exercise', title_fr: 'Exercice pratique' },
+        { type: 'conversation', title_en: 'Real Conversation', title_fr: 'Conversation réelle' },
+      ],
+    }));
+
+    const vision = `In 12 months, you will have transformed your approach to ${weakest?.name_en?.toLowerCase() || 'leadership'}, built solid foundations in ${focusAreas[0]?.name.replace(/-/g, ' ') || 'self-awareness'}, and developed the confidence and competence to lead with purpose and intentionality in every area of your life.`;
+
+    await supabase.from('coaching_plans').upsert({
+      journey_id: journey.id,
+      focus_areas: focusAreas,
+      coach_lens_summary: coachLens,
+      plan_data: { weeks: planData, vision_en: vision, vision_fr: vision, weakest_pillar_en: weakest?.name_en, weakest_pillar_fr: weakest?.name_fr, strongest_pillar_en: strongest?.name_en, strongest_pillar_fr: strongest?.name_fr, overall_score: overallScore },
+    }, { onConflict: 'journey_id' });
+
+    await supabase.from('journeys').update({
+      status: 'plan_generated',
+      updated_at: new Date().toISOString(),
+    }).eq('id', journey.id);
+
   } catch (err) {
-    console.error('Plan generation error:', err);
-    setPlanGenerated(true); // always unblock the UI
+    console.error('Plan generation error:', err); // always logs the real problem
+  } finally {
+    setPlanGenerated(true); // ← ALWAYS unblocks UI, success or failure
   }
 }
 
