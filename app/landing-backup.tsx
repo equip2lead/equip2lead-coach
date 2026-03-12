@@ -291,7 +291,7 @@ export default function HomePage() {
             <p className="text-[17px] text-gray-500 max-w-[540px] mx-auto leading-[1.7]">{t.how.sub}</p>
           </FadeUp>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {t.how.steps.map((step, i) => {
+            {t.how.steps.map((step: any, i: number) => {
               const Icon = howIcons[i];
               return (
                 <FadeUp key={i}>
