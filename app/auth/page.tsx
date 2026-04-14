@@ -116,7 +116,8 @@ function AuthContent() {
       });
 
       if (signUpError) {
-        setError(lang === 'en' ? signUpError.message : 'Erreur lors de l\'inscription. Veuillez réessayer.');
+        console.error('[Signup] error:', signUpError);
+        setError(signUpError.message);
         setLoading(false);
         return;
       }
