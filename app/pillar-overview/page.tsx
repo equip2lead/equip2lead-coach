@@ -247,10 +247,14 @@ function PillarOverviewContent() {
       setScoredPillars(done);
       setPillarScoreMap(scoreMap);
 
-      // All 5 pillars scored — send user to plan generation
+      // All pillars scored — send to plan generation only if no plan exists yet
       if (done.size === track.pillars.length) {
-        router.replace(`/plan-generation?track=${trackSlug}`);
-        return;
+        const { data: existingPlan } = await supabase
+          .from('coaching_plans').select('id').eq('journey_id', journey.id).maybeSingle();
+        if (!existingPlan) {
+          router.replace(`/plan-generation?track=${trackSlug}`);
+          return;
+        }
       }
 
       // Auto-open first incomplete pillar
