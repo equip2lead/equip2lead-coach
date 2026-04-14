@@ -247,6 +247,12 @@ function PillarOverviewContent() {
       setScoredPillars(done);
       setPillarScoreMap(scoreMap);
 
+      // All 5 pillars scored — send user to plan generation
+      if (done.size === track.pillars.length) {
+        router.replace(`/plan-generation?track=${trackSlug}`);
+        return;
+      }
+
       // Auto-open first incomplete pillar
       const firstIncomplete = track.pillars.findIndex((_, i) => !done.has(i));
       if (firstIncomplete >= 0) setOpenPillar(firstIncomplete);
