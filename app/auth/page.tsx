@@ -102,22 +102,39 @@ function AuthContent() {
       const firstName = formData.get('firstName') as string;
       const lastName = formData.get('lastName') as string;
 
-      const { error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            first_name: firstName,
-            last_name: lastName,
-            full_name: `${firstName} ${lastName}`,
+      let signUpError: any = null;
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              first_name: firstName,
+              last_name: lastName,
+              full_name: `${firstName} ${lastName}`,
+            },
+            emailRedirectTo: `${window.location.origin}/auth/callback?redirect=${redirect}`,
           },
-          emailRedirectTo: `${window.location.origin}/auth/callback?redirect=${redirect}`,
-        },
-      });
+        });
+
+        if (!error) { signUpError = null; break; }
+
+        signUpError = error;
+        console.error(`[Signup] attempt ${attempt} error:`, error);
+
+        const isRetryable = !error.message || error.name === 'AuthRetryableFetchError' || /network|fetch|timeout/i.test(error.message);
+        if (attempt < 2 && isRetryable) {
+          await new Promise(r => setTimeout(r, 1000));
+          continue;
+        }
+        break;
+      }
 
       if (signUpError) {
-        console.error('[Signup] error:', signUpError);
-        setError(signUpError?.message || (signUpError as any)?.error_description || JSON.stringify(signUpError) || 'Signup failed');
+        const msg = signUpError?.message
+          || (signUpError as any)?.error_description
+          || 'Connection timeout - please try again';
+        setError(msg);
         setLoading(false);
         return;
       }
