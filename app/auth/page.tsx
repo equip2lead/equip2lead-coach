@@ -139,10 +139,8 @@ function AuthContent() {
         return;
       }
 
-      setSuccess(lang === 'en'
-        ? 'Check your email for a confirmation link!'
-        : 'Vérifiez votre email pour le lien de confirmation !');
       setLoading(false);
+      router.push(`/auth/check-email?email=${encodeURIComponent(email)}`);
     } else {
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
