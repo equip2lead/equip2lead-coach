@@ -241,7 +241,7 @@ function AuthContent() {
           </div>
 
           {/* Error */}
-          {error && <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">{error}</div>}
+          {error && error !== '{}' && <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">{error}</div>}
           {success && <div className="mb-4 p-3 rounded-lg bg-green-50 border border-green-200 text-sm text-green-700">{success}</div>}
 
           {/* Form */}
