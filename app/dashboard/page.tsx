@@ -79,10 +79,9 @@ export default function DashboardPage() {
       const { data: profile } = await supabase.from('profiles').select('role').eq('id', user!.id).single();
       if (profile?.role === 'admin') setIsAdmin(true);
 
-      const { data: j, error: jErr } = await supabase.from('journeys')
+      const { data: j } = await supabase.from('journeys')
         .select('id, track_id, current_week, status, tracks(slug, name_en, name_fr)')
         .eq('user_id', user!.id).order('started_at', { ascending: false }).limit(1).single();
-      console.log('[Dashboard] journey:', j, 'error:', jErr);
       if (!j) { setLoading(false); return; }
       setJourney(j);
 
@@ -92,11 +91,6 @@ export default function DashboardPage() {
         supabase.from('coaching_plans').select('focus_areas, coach_lens_summary, plan_data').eq('journey_id', j.id).maybeSingle(),
         supabase.from('weekly_checkins').select('id').eq('journey_id', j.id),
       ]);
-
-      console.log('[Dashboard] pillars:', pillarsRes.data, 'error:', pillarsRes.error);
-      console.log('[Dashboard] scores:', scoresRes.data, 'error:', scoresRes.error);
-      console.log('[Dashboard] plan:', planRes.data, 'error:', planRes.error);
-      console.log('[Dashboard] checkins:', checkinsRes.data, 'error:', checkinsRes.error);
 
       setPillars(pillarsRes.data || []);
       setScores((scoresRes.data || []).map((s: any) => ({ ...s, score: Number(s.score) })));
