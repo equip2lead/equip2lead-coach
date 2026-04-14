@@ -117,7 +117,7 @@ function AuthContent() {
 
       if (signUpError) {
         console.error('[Signup] error:', signUpError);
-        setError(signUpError.message);
+        setError(signUpError?.message || (signUpError as any)?.error_description || JSON.stringify(signUpError) || 'Signup failed');
         setLoading(false);
         return;
       }
