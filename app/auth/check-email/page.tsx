@@ -9,7 +9,8 @@ const i18n = {
   en: {
     heading: 'Check your inbox',
     sub: 'We sent a confirmation link to your email. Click it to activate your account.',
-    spam: "Don't see it? Check your spam folder.",
+    spamTitle: 'Note',
+    spam: "Our emails may land in your spam folder for the first few weeks. Please check spam and mark as 'Not spam' to help future emails reach your inbox.",
     resend: 'Resend email',
     resending: 'Sending...',
     resent: 'Email sent. Check your inbox.',
@@ -21,7 +22,8 @@ const i18n = {
   fr: {
     heading: 'Vérifiez votre boîte de réception',
     sub: 'Nous avons envoyé un lien de confirmation à votre adresse email. Cliquez dessus pour activer votre compte.',
-    spam: "Vous ne le voyez pas ? Vérifiez votre dossier spam.",
+    spamTitle: 'Note',
+    spam: "Nos emails peuvent arriver dans votre dossier spam pendant les premières semaines. Vérifiez votre spam et marquez-les comme « Pas du spam » pour que les prochains emails atteignent votre boîte.",
     resend: "Renvoyer l'email",
     resending: 'Envoi...',
     resent: 'Email envoyé. Vérifiez votre boîte.',
@@ -117,10 +119,21 @@ function CheckEmailContent() {
           </p>
         )}
 
-        {/* Spam note */}
-        <p className="text-[12.5px] text-white/40 mb-8" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          {t.spam}
-        </p>
+        {/* Spam warning */}
+        <div
+          className="mb-8 px-4 py-3.5 rounded-xl flex items-start gap-3 text-left"
+          style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.3)' }}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2" className="w-5 h-5 shrink-0 mt-0.5">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            <div className="text-[12px] font-bold uppercase tracking-wider text-amber-400 mb-1">{t.spamTitle}</div>
+            <p className="text-[13px] text-amber-100/90 leading-[1.55]">{t.spam}</p>
+          </div>
+        </div>
 
         {/* Resend status */}
         {msg && (
