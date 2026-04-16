@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
+import ProgressDashboard from '@/components/ProgressDashboard';
 
 /* ── Icons ── */
 const ChatIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>;
@@ -64,7 +65,18 @@ export default function DashboardPage() {
   const [scores, setScores] = useState<PillarScore[]>([]);
   const [plan, setPlan] = useState<{ focus_areas: any[]; coach_lens_summary: string; plan_data: PlanData } | null>(null);
   const [checkinCount, setCheckinCount] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showSwitchWarn, setShowSwitchWarn] = useState(false);
+
+  const handleSwitchTrack = () => {
+    setSidebarOpen(false);
+    if (!journey || journey.status === 'completed') {
+      router.push('/track-selection');
+    } else {
+      setShowSwitchWarn(true);
+    }
+  };
 
   const userName = user?.user_metadata?.first_name || user?.email?.split('@')[0] || 'User';
   const initials = user?.user_metadata?.first_name && user?.user_metadata?.last_name
@@ -85,17 +97,19 @@ export default function DashboardPage() {
       if (!j) { setLoading(false); return; }
       setJourney(j);
 
-      const [pillarsRes, scoresRes, planRes, checkinsRes] = await Promise.all([
+      const [pillarsRes, scoresRes, planRes, checkinsRes, streakRes] = await Promise.all([
         supabase.from('pillars').select('id, name_en, name_fr, sort_order').eq('track_id', j.track_id).order('sort_order'),
         supabase.from('pillar_scores').select('pillar_id, score, sub_domain_scores').eq('journey_id', j.id),
         supabase.from('coaching_plans').select('focus_areas, coach_lens_summary, plan_data').eq('journey_id', j.id).maybeSingle(),
         supabase.from('weekly_checkins').select('id').eq('journey_id', j.id),
+        supabase.from('streaks').select('current_streak, longest_streak').eq('journey_id', j.id).maybeSingle(),
       ]);
 
       setPillars(pillarsRes.data || []);
       setScores((scoresRes.data || []).map((s: any) => ({ ...s, score: Number(s.score) })));
       if (planRes.data) setPlan(planRes.data as any);
       setCheckinCount(checkinsRes.data?.length || 0);
+      setCurrentStreak(streakRes.data?.current_streak ?? 0);
       setLoading(false);
     }
     load();
@@ -164,7 +178,7 @@ export default function DashboardPage() {
           ))}
         </nav>
         <div className="px-4 pb-6 mt-auto flex flex-col gap-1">
-          <Link href="/track-selection" onClick={() => setSidebarOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-colors no-underline"><SwitchIcon />{lang === 'en' ? 'Switch Track' : 'Changer'}</Link>
+          <button onClick={handleSwitchTrack} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer w-full text-left" style={{ fontFamily: 'inherit' }}><SwitchIcon />{lang === 'en' ? 'Switch Track' : 'Changer'}</button>
           <button onClick={() => setLang(l => l === 'en' ? 'fr' : 'en')} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer w-full text-left" style={{ fontFamily: 'inherit' }}>🌐 {lang === 'en' ? 'FR' : 'EN'}</button>
           <button onClick={signOut} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium text-gray-500 hover:text-red-400 hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer w-full text-left" style={{ fontFamily: 'inherit' }}><LogOutIcon />{lang === 'en' ? 'Log out' : 'D\u00e9connexion'}</button>
         </div>
@@ -208,7 +222,7 @@ export default function DashboardPage() {
           </div>
           {/* Stats row */}
           <div className="relative z-[2] max-w-[1100px] mx-auto px-8 max-md:px-5 -mb-12">
-            <div className="grid grid-cols-4 max-lg:grid-cols-2 max-md:grid-cols-1 gap-4">
+            <div className="grid grid-cols-5 max-lg:grid-cols-3 max-md:grid-cols-1 gap-4">
               <div className="bg-white rounded-2xl shadow-lg p-5 text-center">
                 <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">{lang === 'en' ? 'OVERALL SCORE' : 'SCORE GLOBAL'}</div>
                 <div className="relative w-16 h-16 mx-auto">
@@ -236,6 +250,17 @@ export default function DashboardPage() {
                 <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">CHECK-INS</div>
                 <div className="text-[36px] font-extrabold text-gray-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{checkinCount}</div>
                 <div className="text-[12px] text-gray-500 mt-1">{lang === 'en' ? 'Completed' : 'Compl\u00e9t\u00e9s'}</div>
+              </div>
+              <div className="bg-white rounded-2xl shadow-lg p-5 text-center">
+                <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">{lang === 'en' ? 'STREAK' : 'S\u00c9RIE'}</div>
+                <div className="text-[36px] font-extrabold text-gray-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  {currentStreak > 0 ? <><span className="text-[28px]">&#x1F525;</span> {currentStreak}</> : <span className="text-[20px] font-bold text-gray-300">&#x1F525;</span>}
+                </div>
+                <div className="text-[12px] text-gray-500 mt-1">
+                  {currentStreak > 0
+                    ? (lang === 'en' ? 'Day Streak' : 'Jours de Suite')
+                    : (lang === 'en' ? 'Start Today' : "Commencez Aujourd'hui")}
+                </div>
               </div>
             </div>
           </div>
@@ -308,6 +333,9 @@ export default function DashboardPage() {
                   })}
                 </div>
               </div>
+
+              {/* Progress Dashboard — streaks, pillar progress, badges */}
+              <ProgressDashboard journeyId={journey.id} lang={lang} />
 
               {/* No plan yet */}
               {!hasPlan && allScored && (
@@ -424,6 +452,39 @@ export default function DashboardPage() {
         </div>
         </>)}
       </main>
+
+      {/* Switch Track Warning Modal */}
+      {showSwitchWarn && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="bg-white rounded-2xl p-8 max-w-[460px] w-full shadow-2xl">
+            <div className="text-[28px] mb-3">⚠️</div>
+            <h3 className="text-[20px] font-extrabold text-gray-900 mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              {lang === 'en' ? 'Finish your current track first' : "Terminez d'abord votre parcours actuel"}
+            </h3>
+            <p className="text-[14px] text-gray-600 leading-[1.6] mb-6">
+              {lang === 'en'
+                ? <>Complete your <strong>{trackName}</strong> coaching journey before starting a new one. You're on <strong>Week {currentWeek} of 12</strong>.</>
+                : <>Terminez votre parcours <strong>{trackName}</strong> avant d'en commencer un nouveau. Vous êtes à la <strong>semaine {currentWeek} sur 12</strong>.</>}
+            </p>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={() => setShowSwitchWarn(false)}
+                className="w-full py-3 rounded-xl bg-[#F9250E] border-none cursor-pointer text-[14px] font-bold text-white hover:-translate-y-px transition-all"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: '0 4px 16px rgba(249,37,14,0.25)' }}
+              >
+                {lang === 'en' ? 'Continue Current Track' : 'Continuer le parcours actuel'}
+              </button>
+              <button
+                onClick={() => { setShowSwitchWarn(false); router.push('/track-selection'); }}
+                className="w-full py-2.5 bg-transparent border-none cursor-pointer text-[12.5px] font-semibold text-gray-400 hover:text-gray-600 transition-colors underline"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              >
+                {lang === 'en' ? 'Switch anyway' : 'Changer quand même'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
