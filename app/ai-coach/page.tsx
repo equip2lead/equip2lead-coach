@@ -44,6 +44,7 @@ export default function AiCoachPage() {
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [coachContext, setCoachContext] = useState<any>(null);
   const [trackSlug, setTrackSlug] = useState('leadership');
+  const [journeyId, setJourneyId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -59,6 +60,7 @@ export default function AiCoachPage() {
 
       const slug = (journey.tracks as any)?.slug || 'leadership';
       setTrackSlug(slug);
+      setJourneyId(journey.id);
 
       const [scoresRes, planRes, profileRes] = await Promise.all([
         supabase.from('pillar_scores').select('pillar_id, score, sub_domain_scores, pillars(name_en)').eq('journey_id', journey.id),
@@ -133,6 +135,15 @@ export default function AiCoachPage() {
       if (!res.ok) throw new Error('API error');
       const data = await res.json();
       setMessages(prev => [...prev, { id: Date.now() + 1, role: 'assistant', text: data.reply }]);
+
+      // Update streak in background
+      if (journeyId) {
+        fetch('/api/progress', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ journeyId }),
+        }).catch(() => {});
+      }
     } catch (err) {
       setMessages(prev => [...prev, {
         id: Date.now() + 1, role: 'assistant',
