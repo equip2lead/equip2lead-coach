@@ -90,21 +90,34 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
     }
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    let contextBlock = '';
+    let quality: 'strong' | 'weak' | 'none' = 'none';
 
-    const lastUserMessage = [...messages]
-      .reverse()
-      .find((m: any) => m.role === 'user')?.content || '';
+    const canDoRag = process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.VOYAGE_API_KEY;
 
-    const { contextBlock, quality } = await getCoachingContext(
-      lastUserMessage,
-      context?.trackId || null,
-      context?.lang || 'en',
-      supabase
-    );
+    if (canDoRag) {
+      try {
+        const supabase = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.SUPABASE_SERVICE_ROLE_KEY!
+        );
+
+        const lastUserMessage = [...messages]
+          .reverse()
+          .find((m: any) => m.role === 'user')?.content || '';
+
+        const ragResult = await getCoachingContext(
+          lastUserMessage,
+          context?.trackId || null,
+          context?.lang || 'en',
+          supabase
+        );
+        contextBlock = ragResult.contextBlock;
+        quality = ragResult.quality;
+      } catch (ragError) {
+        console.warn('RAG lookup failed, continuing without knowledge base:', ragError);
+      }
+    }
 
     const systemPrompt = buildSystemPrompt(context, contextBlock, quality);
 
