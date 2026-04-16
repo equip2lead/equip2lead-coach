@@ -67,6 +67,8 @@ export default function AiCoachPage() {
       ]);
 
       const ctx: any = {
+        trackId: journey.track_id,
+        trackNameFr: (journey.tracks as any)?.name_fr,
         trackName: (journey.tracks as any)?.name_en || slug,
         userName: profileRes.data?.full_name || user!.email?.split('@')[0] || 'there',
         lang,

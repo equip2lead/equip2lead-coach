@@ -1,4 +1,85 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+async function embedText(text: string): Promise<number[] | null> {
+  try {
+    const res = await fetch('https://api.voyageai.com/v1/embeddings', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.VOYAGE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'voyage-multilingual-2',
+        input: [text.slice(0, 2000)],
+        input_type: 'query',
+      }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.data?.[0]?.embedding ?? null;
+  } catch {
+    return null;
+  }
+}
+
+async function getCoachingContext(
+  userMessage: string,
+  trackId: string | null,
+  language: string,
+  supabase: any
+): Promise<{ contextBlock: string; quality: 'strong' | 'weak' | 'none' }> {
+  if (!trackId || !process.env.VOYAGE_API_KEY) {
+    return { contextBlock: '', quality: 'none' };
+  }
+  const embedding = await embedText(userMessage);
+  if (!embedding) return { contextBlock: '', quality: 'none' };
+
+  const { data: docs, error } = await supabase.rpc('match_documents', {
+    query_embedding: embedding,
+    match_threshold: 0.62,
+    match_count: 5,
+    filter_track_id: trackId,
+    filter_language: language,
+  });
+
+  if (error || !docs?.length) {
+    try {
+      await supabase.rpc('upsert_knowledge_gap', {
+        p_track_id: trackId,
+        p_query: userMessage.slice(0, 500),
+        p_similarity: 0,
+        p_suggested_topic: userMessage.slice(0, 100),
+      });
+    } catch {}
+    return { contextBlock: '', quality: 'none' };
+  }
+
+  const topScore: number = docs[0].similarity;
+  const quality: 'strong' | 'weak' | 'none' =
+    topScore > 0.75 ? 'strong' : topScore > 0.62 ? 'weak' : 'none';
+
+  if (quality === 'weak') {
+    try {
+      await supabase.rpc('upsert_knowledge_gap', {
+        p_track_id: trackId,
+        p_query: userMessage.slice(0, 500),
+        p_similarity: topScore,
+        p_suggested_topic: userMessage.slice(0, 100),
+      });
+    } catch {}
+  }
+
+  const contextBlock = `
+RELEVANT KNOWLEDGE BASE CONTENT:
+${docs.map((doc: any, i: number) => `
+[${i + 1}] "${doc.title}" — ${doc.sub_domain}
+${doc.content.slice(0, 500)}
+`).join('\n---\n')}
+`;
+
+  return { contextBlock, quality };
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,10 +90,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
     }
 
-    // Build the system prompt with coaching context
-    const systemPrompt = buildSystemPrompt(context);
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
 
-    // Call Claude API
+    const lastUserMessage = [...messages]
+      .reverse()
+      .find((m: any) => m.role === 'user')?.content || '';
+
+    const { contextBlock, quality } = await getCoachingContext(
+      lastUserMessage,
+      context?.trackId || null,
+      context?.lang || 'en',
+      supabase
+    );
+
+    const systemPrompt = buildSystemPrompt(context, contextBlock, quality);
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -47,31 +142,30 @@ export async function POST(req: NextRequest) {
     const data = await response.json();
     const reply = data.content?.[0]?.text || 'I apologize, I was unable to generate a response.';
 
-    return NextResponse.json({ reply });
+    return NextResponse.json({ reply, _rag: { quality, docsFound: !!contextBlock } });
   } catch (error) {
     console.error('Chat API error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
-function buildSystemPrompt(context: any): string {
-  const { trackName, pillarScores, focusAreas, coachLensSummary, preAssessment, userName, lang } = context || {};
+function buildSystemPrompt(context: any, contextBlock: string, quality: 'strong' | 'weak' | 'none'): string {
+  const { trackName, trackNameFr, trackId, pillarScores, focusAreas, coachLensSummary, preAssessment, userName, lang } = context || {};
 
-  // Format pillar scores
+  const displayTrack = lang === 'fr' ? (trackNameFr || trackName) : (trackName || 'Leadership Coaching');
+
   let scoresSection = '';
   if (pillarScores && pillarScores.length > 0) {
     scoresSection = `\n\nUSER'S ASSESSMENT RESULTS:\n` +
       pillarScores.map((p: any) => `- ${p.name}: ${p.score}/5.00${p.subScores ? ' (' + Object.entries(p.subScores).map(([k, v]) => `${k}: ${v}`).join(', ') + ')' : ''}`).join('\n');
   }
 
-  // Format focus areas
   let focusSection = '';
   if (focusAreas && focusAreas.length > 0) {
     focusSection = `\n\nTOP FOCUS AREAS (weakest dimensions):\n` +
       focusAreas.map((f: any, i: number) => `${i + 1}. ${f.name || f} (Score: ${f.score || 'N/A'})`).join('\n');
   }
 
-  // Format pre-assessment context
   let preSection = '';
   if (preAssessment && typeof preAssessment === 'object') {
     const entries = Object.entries(preAssessment)
@@ -82,9 +176,13 @@ function buildSystemPrompt(context: any): string {
     }
   }
 
-  const langInstruction = lang === 'fr'
-    ? '\n\nIMPORTANT: The user speaks French. Respond in French.'
-    : '';
+  const ragInstruction = {
+    strong: `Strong matches found in the knowledge base above. Ground your response directly in these documents. Reference the specific frameworks and authors by name (e.g. "According to the 5 Languages of Love...", "The E-Myth principle shows...", "Gottman's research on the 4 Horsemen...").`,
+    weak: `Partial matches found. Use the documents as background context and supplement with your broader coaching wisdom. Stay within the ${displayTrack} framework.`,
+    none: `No specific knowledge base match for this query. Respond using Dr. Denis Ekobena's coaching methodology — the 5-pillar framework, biblical integration where relevant, and African leadership context.`,
+  }[quality];
+
+  const langInstruction = lang === 'fr' ? '\n\nIMPORTANT: The user speaks French. Respond entirely in French.' : '';
 
   return `You are the Equip2Lead AI Coach, a warm, insightful, and action-oriented coaching assistant created by Dr. Denis Ekobena. You provide personalized coaching based on the Equip2Lead framework.
 
@@ -103,13 +201,16 @@ YOUR ROLE:
 - Ask powerful coaching questions that provoke self-reflection
 - Provide specific, actionable advice — not vague platitudes
 - When appropriate, suggest exercises, templates, or frameworks
-- Track their progress week by week if they share updates
 
 USER'S PROFILE:
 - Name: ${userName || 'User'}
-- Track: ${trackName || 'Not specified'}${scoresSection}${focusSection}${preSection}
+- Track: ${displayTrack}${scoresSection}${focusSection}${preSection}
 
 ${coachLensSummary ? `\nCOACH LENS SUMMARY:\n${coachLensSummary}` : ''}
+
+${contextBlock ? contextBlock : ''}
+
+KNOWLEDGE BASE INSTRUCTION: ${ragInstruction}
 
 CONVERSATION GUIDELINES:
 - Start by acknowledging what you know about them from their assessment
