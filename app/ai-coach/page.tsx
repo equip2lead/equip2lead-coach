@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
@@ -45,8 +45,34 @@ export default function AiCoachPage() {
   const [coachContext, setCoachContext] = useState<any>(null);
   const [trackSlug, setTrackSlug] = useState('leadership');
   const [journeyId, setJourneyId] = useState<string | null>(null);
+  const [conversationId] = useState(() => crypto.randomUUID());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const messagesRef = useRef<Message[]>([]);
+
+  // Keep ref in sync for beforeunload
+  useEffect(() => { messagesRef.current = messages; }, [messages]);
+
+  // Save session memories on unload
+  const saveMemories = useCallback(() => {
+    const msgs = messagesRef.current;
+    if (!journeyId || msgs.length < 2) return;
+    const payload = JSON.stringify({
+      journeyId,
+      conversationId,
+      messages: msgs.map(m => ({ role: m.role, content: m.text })),
+    });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/api/memory', new Blob([payload], { type: 'application/json' }));
+    } else {
+      fetch('/api/memory', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(() => {});
+    }
+  }, [journeyId, conversationId]);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', saveMemories);
+    return () => window.removeEventListener('beforeunload', saveMemories);
+  }, [saveMemories]);
 
   // Load user's coaching data
   useEffect(() => {
@@ -69,6 +95,7 @@ export default function AiCoachPage() {
       ]);
 
       const ctx: any = {
+        journeyId: journey.id,
         trackId: journey.track_id,
         trackNameFr: (journey.tracks as any)?.name_fr,
         trackName: (journey.tracks as any)?.name_en || slug,
@@ -180,7 +207,7 @@ export default function AiCoachPage() {
       {/* Header */}
       <div className="shrink-0 bg-white border-b border-gray-200 px-6 max-md:px-4 h-16 flex items-center justify-between z-10">
         <div className="flex items-center gap-4">
-          <button onClick={() => router.push('/dashboard')} className="flex items-center gap-2 text-[13px] font-medium text-gray-500 hover:text-gray-800 bg-transparent border-none cursor-pointer transition-colors" style={{ fontFamily: 'inherit' }}>
+          <button onClick={() => { saveMemories(); router.push('/dashboard'); }} className="flex items-center gap-2 text-[13px] font-medium text-gray-500 hover:text-gray-800 bg-transparent border-none cursor-pointer transition-colors" style={{ fontFamily: 'inherit' }}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             {lang === 'en' ? 'Dashboard' : 'Tableau de bord'}
           </button>

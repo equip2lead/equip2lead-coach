@@ -108,34 +108,50 @@ export async function POST(req: NextRequest) {
 
     let contextBlock = '';
     let quality: 'strong' | 'weak' | 'none' = 'none';
+    let memoryContext = '';
 
-    const canDoRag = process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.VOYAGE_API_KEY;
+    const hasSupabase = process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const canDoRag = hasSupabase && process.env.VOYAGE_API_KEY;
 
-    if (canDoRag) {
-      try {
-        const supabase = createClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL!,
-          process.env.SUPABASE_SERVICE_ROLE_KEY!
-        );
+    if (hasSupabase) {
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+      );
 
-        const lastUserMessage = [...messages]
-          .reverse()
-          .find((m: any) => m.role === 'user')?.content || '';
+      // RAG lookup
+      if (canDoRag) {
+        try {
+          const lastUserMessage = [...messages]
+            .reverse()
+            .find((m: any) => m.role === 'user')?.content || '';
 
-        const ragResult = await getCoachingContext(
-          lastUserMessage,
-          context?.trackId || null,
-          context?.lang || 'en',
-          supabase
-        );
-        contextBlock = ragResult.contextBlock;
-        quality = ragResult.quality;
-      } catch (ragError) {
-        console.warn('RAG lookup failed, continuing without knowledge base:', ragError);
+          const ragResult = await getCoachingContext(
+            lastUserMessage,
+            context?.trackId || null,
+            context?.lang || 'en',
+            supabase
+          );
+          contextBlock = ragResult.contextBlock;
+          quality = ragResult.quality;
+        } catch (ragError) {
+          console.warn('RAG lookup failed, continuing without knowledge base:', ragError);
+        }
+      }
+
+      // Cross-session memory
+      if (context?.journeyId) {
+        try {
+          const { data: memData } = await supabase.rpc('get_coaching_memory_context', {
+            p_journey_id: context.journeyId,
+            p_max_memories: 10
+          });
+          memoryContext = memData || '';
+        } catch {}
       }
     }
 
-    const systemPrompt = buildSystemPrompt(context, contextBlock, quality);
+    const systemPrompt = buildSystemPrompt(context, contextBlock, quality, memoryContext);
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -178,7 +194,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-function buildSystemPrompt(context: any, contextBlock: string, quality: 'strong' | 'weak' | 'none'): string {
+function buildSystemPrompt(context: any, contextBlock: string, quality: 'strong' | 'weak' | 'none', memoryContext: string = ''): string {
   const { trackName, trackNameFr, trackId, pillarScores, focusAreas, coachLensSummary, preAssessment, userName, lang } = context || {};
 
   const displayTrack = lang === 'fr' ? (trackNameFr || trackName) : (trackName || 'Leadership Coaching');
@@ -236,6 +252,8 @@ USER'S PROFILE:
 - Track: ${displayTrack}${scoresSection}${focusSection}${preSection}
 
 ${coachLensSummary ? `\nCOACH LENS SUMMARY:\n${coachLensSummary}` : ''}
+
+${memoryContext ? `\nCOACHING HISTORY FROM PREVIOUS SESSIONS:\n${memoryContext}` : ''}
 
 ${contextBlock ? contextBlock : ''}
 
