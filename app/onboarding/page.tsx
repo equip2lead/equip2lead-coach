@@ -43,6 +43,35 @@ const featureCards = [
   { emoji: '\u{1F4C8}', title_en: 'Progress', title_fr: 'Progression', desc_en: 'Track your growth week by week with streaks and badges', desc_fr: 'Suivez votre croissance semaine apr\u00e8s semaine avec des s\u00e9ries et des badges' },
 ];
 
+const i18n = {
+  en: {
+    headline: 'Welcome to Equip2Lead Coach \u2014 choose the track you want to start on',
+    subtext: 'Choose the track you want to start on. Each track gives you a personalized assessment, coaching plan, and AI coach focused on that area of your life.',
+    next: 'Next',
+    back: 'Back',
+    howItWorks: 'Here\u2019s how it works',
+    assessmentHeadline: 'First, let\u2019s understand where you are',
+    assessmentSubtext: (trackName: string) => `Your assessment takes about 10 minutes. It maps your current level across 5 pillars of ${trackName}. There are no right or wrong answers \u2014 just honest reflection.`,
+    pillarsHeading: '5 Pillars You\u2019ll Be Assessed On',
+    loadingPillars: 'Loading pillars...',
+    startAssessment: 'Start My Assessment',
+    starting: 'Starting...',
+  },
+  fr: {
+    headline: 'Bienvenue sur Equip2Lead Coach \u2014 choisissez le parcours sur lequel vous souhaitez commencer',
+    subtext: 'Choisissez le parcours sur lequel vous souhaitez commencer. Chaque parcours vous offre une \u00e9valuation personnalis\u00e9e, un plan de coaching et un coach IA ax\u00e9 sur ce domaine de votre vie.',
+    next: 'Suivant',
+    back: 'Retour',
+    howItWorks: 'Voici comment \u00e7a fonctionne',
+    assessmentHeadline: 'D\u2019abord, comprenons o\u00f9 vous en \u00eates',
+    assessmentSubtext: (trackName: string) => `Votre \u00e9valuation prend environ 10 minutes. Elle cartographie votre niveau actuel sur les 5 piliers de ${trackName}. Il n\u2019y a pas de bonnes ou mauvaises r\u00e9ponses \u2014 juste une r\u00e9flexion honn\u00eate.`,
+    pillarsHeading: '5 Piliers \u00e9valu\u00e9s',
+    loadingPillars: 'Chargement...',
+    startAssessment: 'Commencer mon \u00e9valuation',
+    starting: 'D\u00e9marrage...',
+  },
+} as const;
+
 export default function OnboardingPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
@@ -55,10 +84,20 @@ export default function OnboardingPage() {
   const [loading, setLoading] = useState(true);
   const [starting, setStarting] = useState(false);
 
-  // Redirect if user already has a journey
+  // Load profile language, check journey, fetch tracks
   useEffect(() => {
     if (!user) return;
     async function check() {
+      // Read preferred language from profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('preferred_language')
+        .eq('id', user!.id)
+        .single();
+      const profileLang = profile?.preferred_language === 'fr' ? 'fr' : 'en';
+      setLang(profileLang);
+
+      // Redirect if user already has a journey
       const { data: journey } = await supabase.from('journeys')
         .select('id')
         .eq('user_id', user!.id)
@@ -97,7 +136,6 @@ export default function OnboardingPage() {
     if (!selectedTrack || starting) return;
     setStarting(true);
 
-    // Mark onboarding complete
     if (user) {
       await supabase.from('profiles').update({
         onboarding_completed: true,
@@ -116,20 +154,18 @@ export default function OnboardingPage() {
     );
   }
 
-  const selectedTrackObj = tracks.find(t => t.slug === selectedTrack);
+  const t = i18n[lang];
+  const selectedTrackObj = tracks.find(tr => tr.slug === selectedTrack);
   const selectedTrackName = selectedTrackObj ? (lang === 'fr' ? selectedTrackObj.name_fr : selectedTrackObj.name_en) : '';
 
   return (
     <div className="min-h-screen bg-[#0B0B0C] flex flex-col" style={{ fontFamily: "'Outfit', sans-serif" }}>
-      {/* Top bar */}
-      <div className="flex items-center justify-between px-8 max-md:px-5 pt-6 pb-4">
+      {/* Top bar — logo only, no language toggle */}
+      <div className="flex items-center px-8 max-md:px-5 pt-6 pb-4">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-[10px] bg-[#F9250E] flex items-center justify-center text-[16px] font-extrabold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>E</div>
           <span className="text-[17px] font-bold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>Equip<span className="text-[#F9250E]">2</span>Lead</span>
         </div>
-        <button onClick={() => setLang(l => l === 'en' ? 'fr' : 'en')} className="px-2.5 py-1 rounded-md border border-gray-700 bg-transparent text-[11px] font-semibold text-gray-400 cursor-pointer hover:text-white transition-colors" style={{ fontFamily: 'inherit' }}>
-          &#x1F310; {lang === 'en' ? 'FR' : 'EN'}
-        </button>
       </div>
 
       {/* Step indicator */}
@@ -148,12 +184,10 @@ export default function OnboardingPage() {
             <div className="animate-fadeIn">
               <div className="text-center mb-10">
                 <h1 className="text-[32px] max-md:text-[24px] font-extrabold text-white mb-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                  {lang === 'en' ? 'Welcome to Equip2Lead Coach' : 'Bienvenue sur Equip2Lead Coach'}
+                  {t.headline}
                 </h1>
                 <p className="text-[15px] text-gray-400 max-w-[500px] mx-auto leading-[1.6]">
-                  {lang === 'en'
-                    ? "Your personal AI coaching platform built on Dr. Denis Ekobena\u2019s proven leadership framework"
-                    : "Votre plateforme de coaching IA personnalis\u00e9e, bas\u00e9e sur le cadre \u00e9prouv\u00e9 du Dr. Denis Ekobena"}
+                  {t.subtext}
                 </p>
               </div>
 
@@ -192,7 +226,7 @@ export default function OnboardingPage() {
                   className="px-8 py-3.5 rounded-xl border-none cursor-pointer text-[15px] font-bold text-white bg-[#F9250E] hover:-translate-y-px transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                   style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: selectedTrack ? '0 4px 16px rgba(249,37,14,0.25)' : 'none' }}
                 >
-                  {lang === 'en' ? 'Next' : 'Suivant'} &rarr;
+                  {t.next} &rarr;
                 </button>
               </div>
             </div>
@@ -203,7 +237,7 @@ export default function OnboardingPage() {
             <div className="animate-fadeIn">
               <div className="text-center mb-10">
                 <h1 className="text-[32px] max-md:text-[24px] font-extrabold text-white mb-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                  {lang === 'en' ? "Here\u2019s how it works" : "Voici comment \u00e7a fonctionne"}
+                  {t.howItWorks}
                 </h1>
               </div>
 
@@ -227,14 +261,14 @@ export default function OnboardingPage() {
                   className="px-6 py-3 rounded-xl border border-gray-700 bg-transparent cursor-pointer text-[14px] font-semibold text-gray-400 hover:text-white hover:border-gray-600 transition-all"
                   style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                 >
-                  &larr; {lang === 'en' ? 'Back' : 'Retour'}
+                  &larr; {t.back}
                 </button>
                 <button
                   onClick={() => setStep(3)}
                   className="px-8 py-3.5 rounded-xl border-none cursor-pointer text-[15px] font-bold text-white bg-[#F9250E] hover:-translate-y-px transition-all"
                   style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: '0 4px 16px rgba(249,37,14,0.25)' }}
                 >
-                  {lang === 'en' ? 'Next' : 'Suivant'} &rarr;
+                  {t.next} &rarr;
                 </button>
               </div>
             </div>
@@ -245,19 +279,17 @@ export default function OnboardingPage() {
             <div className="animate-fadeIn">
               <div className="text-center mb-10">
                 <h1 className="text-[32px] max-md:text-[24px] font-extrabold text-white mb-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                  {lang === 'en' ? "First, let\u2019s understand where you are" : "D\u2019abord, comprenons o\u00f9 vous en \u00eates"}
+                  {t.assessmentHeadline}
                 </h1>
                 <p className="text-[15px] text-gray-400 max-w-[540px] mx-auto leading-[1.6]">
-                  {lang === 'en'
-                    ? `Your assessment takes about 10 minutes. It maps your current level across 5 pillars of ${selectedTrackName}. There are no right or wrong answers \u2014 just honest reflection.`
-                    : `Votre \u00e9valuation prend environ 10 minutes. Elle cartographie votre niveau actuel sur les 5 piliers de ${selectedTrackName}. Il n\u2019y a pas de bonnes ou mauvaises r\u00e9ponses \u2014 juste une r\u00e9flexion honn\u00eate.`}
+                  {t.assessmentSubtext(selectedTrackName)}
                 </p>
               </div>
 
               {/* Pillar list */}
               <div className="rounded-2xl border border-gray-800 bg-[#111118] p-6 mb-8">
                 <h3 className="text-[13px] font-bold text-gray-500 uppercase tracking-wider mb-4">
-                  {lang === 'en' ? '5 Pillars You\u2019ll Be Assessed On' : '5 Piliers \u00e9valu\u00e9s'}
+                  {t.pillarsHeading}
                 </h3>
                 <div className="flex flex-col gap-3">
                   {pillars.map((p, i) => (
@@ -267,7 +299,7 @@ export default function OnboardingPage() {
                     </div>
                   ))}
                   {pillars.length === 0 && (
-                    <p className="text-[13px] text-gray-600">{lang === 'en' ? 'Loading pillars...' : 'Chargement...'}</p>
+                    <p className="text-[13px] text-gray-600">{t.loadingPillars}</p>
                   )}
                 </div>
               </div>
@@ -278,7 +310,7 @@ export default function OnboardingPage() {
                   className="px-6 py-3 rounded-xl border border-gray-700 bg-transparent cursor-pointer text-[14px] font-semibold text-gray-400 hover:text-white hover:border-gray-600 transition-all"
                   style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                 >
-                  &larr; {lang === 'en' ? 'Back' : 'Retour'}
+                  &larr; {t.back}
                 </button>
                 <button
                   onClick={handleStart}
@@ -286,9 +318,7 @@ export default function OnboardingPage() {
                   className="px-8 py-3.5 rounded-xl border-none cursor-pointer text-[15px] font-bold text-white bg-[#F9250E] hover:-translate-y-px transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: '0 4px 16px rgba(249,37,14,0.25)' }}
                 >
-                  {starting
-                    ? (lang === 'en' ? 'Starting...' : 'D\u00e9marrage...')
-                    : (lang === 'en' ? 'Start My Assessment' : 'Commencer mon \u00e9valuation')} &rarr;
+                  {starting ? t.starting : t.startAssessment} &rarr;
                 </button>
               </div>
             </div>
