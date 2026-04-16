@@ -79,6 +79,7 @@ const i18n = {
 
 import { useAuth } from '@/lib/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
+import { switchLanguage } from '@/lib/language';
 import UserMenu from '@/components/UserMenu';
 
 export default function TrackSelectionPage() {
@@ -88,6 +89,8 @@ export default function TrackSelectionPage() {
   const [lang, setLang] = useState<'en' | 'fr'>('en');
   const [selected, setSelected] = useState<string | null>(null);
   const [activeTrack, setActiveTrack] = useState<string | null>(null);
+  const [activeTrackName, setActiveTrackName] = useState<string>('');
+  const [activeWeek, setActiveWeek] = useState<number>(1);
   const [activeComplete, setActiveComplete] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -104,16 +107,18 @@ export default function TrackSelectionPage() {
 
       const { data: j } = await supabase
         .from('journeys')
-        .select('track_id, status, tracks(slug)')
+        .select('track_id, status, current_week, tracks(slug, name_en, name_fr)')
         .eq('user_id', user!.id)
         .order('started_at', { ascending: false })
         .limit(1)
         .single();
       if (j) {
-        const slug = (j.tracks as any)?.slug;
-        setActiveTrack(slug);
-        setSelected(slug);
-        setActiveComplete(j.status === 'completed' || j.status === 'plan_generated');
+        const tk = j.tracks as any;
+        setActiveTrack(tk?.slug);
+        setSelected(tk?.slug);
+        setActiveTrackName(tk?.name_en || '');
+        setActiveWeek(j.current_week || 1);
+        setActiveComplete(j.status === 'completed');
       }
     }
     load();
@@ -153,7 +158,7 @@ export default function TrackSelectionPage() {
           <div className="text-[16px] font-bold text-gray-800" style={{ fontFamily: "'Libre Baskerville', serif" }}>Equip<span className="text-[#F9250E]">2</span>Lead</div>
         </Link>
         <div className="flex items-center gap-4">
-          <button onClick={() => setLang(l => l === 'en' ? 'fr' : 'en')} className="px-2.5 py-1 rounded-md bg-transparent border-[1.5px] border-gray-200 cursor-pointer text-[11px] font-semibold text-gray-500 hover:border-gray-300 hover:bg-gray-50 transition-all" style={{ fontFamily: 'inherit' }}>🌐 {t.langLabel}</button>
+          <button onClick={() => switchLanguage(lang === 'en' ? 'fr' : 'en', user!.id, supabase, setLang)} className="px-2.5 py-1 rounded-md bg-transparent border-[1.5px] border-gray-200 cursor-pointer text-[11px] font-semibold text-gray-500 hover:border-gray-300 hover:bg-gray-50 transition-all" style={{ fontFamily: 'inherit' }}>🌐 {t.langLabel}</button>
           <UserMenu />
         </div>
       </div>
@@ -241,24 +246,24 @@ export default function TrackSelectionPage() {
         {/* Warning Modal */}
         {showWarning && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-            <div className="bg-white rounded-2xl p-8 max-w-[440px] w-full shadow-2xl">
-              <div className="text-[24px] mb-3">\u26a0\ufe0f</div>
-              <h3 className="text-[18px] font-bold text-gray-900 mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                {lang === 'en' ? 'Track in progress' : 'Parcours en cours'}
+            <div className="bg-white rounded-2xl p-8 max-w-[460px] w-full shadow-2xl">
+              <div className="text-[28px] mb-3">\u26a0\ufe0f</div>
+              <h3 className="text-[20px] font-extrabold text-gray-900 mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                {lang === 'en' ? 'Finish your current track first' : "Terminez d'abord votre parcours actuel"}
               </h3>
-              <p className="text-[14px] text-gray-500 leading-[1.6] mb-6">
+              <p className="text-[14px] text-gray-600 leading-[1.6] mb-6">
                 {lang === 'en'
-                  ? 'You have an active coaching track that isn\u2019t finished yet. Please complete your current track before starting a new one.'
-                  : 'Vous avez un parcours actif non termin\u00e9. Veuillez terminer votre parcours actuel avant d\u2019en commencer un nouveau.'}
+                  ? <>Complete your <strong>{activeTrackName || 'current'}</strong> coaching journey before starting a new one. You\u2019re on <strong>Week {activeWeek} of 12</strong>.</>
+                  : <>Terminez votre parcours de coaching <strong>{activeTrackName || 'actuel'}</strong> avant d\u2019en commencer un nouveau. Vous \u00eates \u00e0 la <strong>semaine {activeWeek} sur 12</strong>.</>}
               </p>
-              <div className="flex gap-3">
-                <button onClick={() => { setShowWarning(false); setSelected(activeTrack); }}
-                  className="flex-1 py-3 rounded-xl bg-[#F9250E] border-none cursor-pointer text-[14px] font-bold text-white" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                  {lang === 'en' ? 'Continue current track' : 'Continuer le parcours actuel'}
+              <div className="flex flex-col gap-2">
+                <button onClick={() => { setShowWarning(false); setSelected(activeTrack); router.push('/dashboard'); }}
+                  className="w-full py-3 rounded-xl bg-[#F9250E] border-none cursor-pointer text-[14px] font-bold text-white hover:-translate-y-px transition-all" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: '0 4px 16px rgba(249,37,14,0.25)' }}>
+                  {lang === 'en' ? 'Continue Current Track' : 'Continuer le parcours actuel'}
                 </button>
-                <button onClick={() => setShowWarning(false)}
-                  className="px-4 py-3 rounded-xl border border-gray-200 bg-white cursor-pointer text-[14px] font-semibold text-gray-600" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                  {lang === 'en' ? 'Cancel' : 'Annuler'}
+                <button onClick={() => { setShowWarning(false); router.push(`/intake?track=${selected}`); }}
+                  className="w-full py-2.5 bg-transparent border-none cursor-pointer text-[12.5px] font-semibold text-gray-400 hover:text-gray-600 transition-colors underline" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  {lang === 'en' ? 'Switch anyway' : 'Changer quand m\u00eame'}
                 </button>
               </div>
             </div>

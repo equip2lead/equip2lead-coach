@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
+import { switchLanguage } from '@/lib/language';
 
 type Track = { id: string; slug: string; name_en: string; name_fr: string; sort_order: number };
 type Pillar = { id: string; name_en: string; name_fr: string; sort_order: number };
@@ -76,20 +77,13 @@ export default function OnboardingPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const supabase = createClient();
-  const [lang, setLangState] = useState<'en' | 'fr'>('en');
+  const [lang, setLang] = useState<'en' | 'fr'>('en');
   const [step, setStep] = useState(1);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
   const [pillars, setPillars] = useState<Pillar[]>([]);
   const [loading, setLoading] = useState(true);
   const [starting, setStarting] = useState(false);
-
-  const setLang = (newLang: 'en' | 'fr') => {
-    setLangState(newLang);
-    if (user) {
-      supabase.from('profiles').update({ preferred_language: newLang }).eq('id', user.id).then(() => {});
-    }
-  };
 
   // Load profile language, check journey, fetch tracks
   useEffect(() => {
@@ -102,7 +96,7 @@ export default function OnboardingPage() {
         .eq('id', user!.id)
         .single();
       const profileLang = profile?.preferred_language === 'fr' ? 'fr' : 'en';
-      setLangState(profileLang);
+      setLang(profileLang);
 
       // Redirect if user already has a journey
       const { data: journey } = await supabase.from('journeys')
@@ -173,7 +167,7 @@ export default function OnboardingPage() {
           <div className="w-9 h-9 rounded-[10px] bg-[#F9250E] flex items-center justify-center text-[16px] font-extrabold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>E</div>
           <span className="text-[17px] font-bold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>Equip<span className="text-[#F9250E]">2</span>Lead</span>
         </div>
-        <button onClick={() => setLang(lang === 'en' ? 'fr' : 'en')} className="px-2.5 py-1 rounded-md border border-gray-700 bg-transparent text-[11px] font-semibold text-gray-400 cursor-pointer hover:text-white transition-colors" style={{ fontFamily: 'inherit' }}>
+        <button onClick={() => switchLanguage(lang === 'en' ? 'fr' : 'en', user!.id, supabase, setLang)} className="px-2.5 py-1 rounded-md border border-gray-700 bg-transparent text-[11px] font-semibold text-gray-400 cursor-pointer hover:text-white transition-colors" style={{ fontFamily: 'inherit' }}>
           &#x1F310; {lang === 'en' ? 'FR' : 'EN'}
         </button>
       </div>

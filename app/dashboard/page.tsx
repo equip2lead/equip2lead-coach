@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
+import { switchLanguage } from '@/lib/language';
 import ProgressDashboard from '@/components/ProgressDashboard';
 
 /* ── Icons ── */
@@ -188,7 +189,7 @@ export default function DashboardPage() {
         </nav>
         <div className="px-4 pb-6 mt-auto flex flex-col gap-1">
           <button onClick={handleSwitchTrack} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer w-full text-left" style={{ fontFamily: 'inherit' }}><SwitchIcon />{lang === 'en' ? 'Switch Track' : 'Changer'}</button>
-          <button onClick={() => setLang(l => l === 'en' ? 'fr' : 'en')} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer w-full text-left" style={{ fontFamily: 'inherit' }}>🌐 {lang === 'en' ? 'FR' : 'EN'}</button>
+          <button onClick={() => switchLanguage(lang === 'en' ? 'fr' : 'en', user!.id, supabase, setLang)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer w-full text-left" style={{ fontFamily: 'inherit' }}>🌐 {lang === 'en' ? 'FR' : 'EN'}</button>
           <button onClick={signOut} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium text-gray-500 hover:text-red-400 hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer w-full text-left" style={{ fontFamily: 'inherit' }}><LogOutIcon />{lang === 'en' ? 'Log out' : 'D\u00e9connexion'}</button>
         </div>
       </aside>
