@@ -18,8 +18,7 @@ const CheckIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColo
 const BookIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>;
 
 type Pillar = { id: string; name_en: string; name_fr: string; sort_order: number; slug: string };
-type Lesson = { id: string; title: string; sub_domain: string; difficulty: string; pillar_id: string; sort_order: number };
-type Progress = { document_id: string; status: string };
+type Lesson = { id: string; title: string; sub_domain: string; difficulty: string; pillar_id: string; sort_order: number; is_recommended: boolean; status: string | null };
 
 export default function MyTrackPage() {
   const router = useRouter();
@@ -31,7 +30,6 @@ export default function MyTrackPage() {
   const [trackName, setTrackName] = useState('');
   const [pillars, setPillars] = useState<Pillar[]>([]);
   const [lessons, setLessons] = useState<Lesson[]>([]);
-  const [progress, setProgress] = useState<Progress[]>([]);
   const [expandedPillar, setExpandedPillar] = useState<string | null>(null);
 
   useEffect(() => {
@@ -49,24 +47,19 @@ export default function MyTrackPage() {
       const track = journey.tracks as any;
       setTrackName(lang === 'fr' ? (track?.name_fr || track?.name_en) : (track?.name_en || ''));
 
-      const [pillarsRes, lessonsRes, progressRes] = await Promise.all([
+      const [pillarsRes, lessonsRes] = await Promise.all([
         supabase.from('pillars')
           .select('id, name_en, name_fr, sort_order, slug')
           .eq('track_id', journey.track_id)
           .order('sort_order'),
-        supabase.from('knowledge_documents')
-          .select('id, title, sub_domain, difficulty, pillar_id, sort_order')
-          .eq('track_id', journey.track_id)
-          .eq('language', lang)
-          .order('sort_order'),
-        supabase.from('lesson_progress')
-          .select('document_id, status')
-          .eq('journey_id', journey.id),
+        supabase.rpc('get_personalized_lessons', {
+          p_journey_id: journey.id,
+          p_language: lang,
+        }),
       ]);
 
       setPillars(pillarsRes.data || []);
       setLessons(lessonsRes.data || []);
-      setProgress(progressRes.data || []);
       if (pillarsRes.data?.length) setExpandedPillar(pillarsRes.data[0].id);
       setLoading(false);
     }
@@ -81,8 +74,7 @@ export default function MyTrackPage() {
     );
   }
 
-  const completedIds = new Set(progress.filter(p => p.status === 'completed').map(p => p.document_id));
-  const startedIds = new Set(progress.filter(p => p.status === 'started').map(p => p.document_id));
+  // Status comes directly from the RPC result on each lesson
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]" style={{ fontFamily: "'Outfit', sans-serif" }}>
@@ -120,7 +112,7 @@ export default function MyTrackPage() {
             {pillars.map((pillar, pi) => {
               const color = pillarColors[pi % pillarColors.length];
               const pillarLessons = lessons.filter(l => l.pillar_id === pillar.id);
-              const completedCount = pillarLessons.filter(l => completedIds.has(l.id)).length;
+              const completedCount = pillarLessons.filter(l => l.status === 'completed').length;
               const totalCount = pillarLessons.length;
               const pct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
               const isExpanded = expandedPillar === pillar.id;
@@ -158,8 +150,8 @@ export default function MyTrackPage() {
                   {isExpanded && pillarLessons.length > 0 && (
                     <div className="border-t border-gray-100 px-5 pb-4">
                       {pillarLessons.map((lesson) => {
-                        const isComplete = completedIds.has(lesson.id);
-                        const isStarted = startedIds.has(lesson.id);
+                        const isComplete = lesson.status === 'completed';
+                        const isStarted = lesson.status === 'started';
                         const diff = difficultyLabels[lesson.difficulty] || difficultyLabels.beginner;
                         return (
                           <Link
@@ -171,9 +163,16 @@ export default function MyTrackPage() {
                               {isComplete ? <CheckIcon /> : <div className="w-2 h-2 rounded-full bg-current" />}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-[14px] font-medium text-gray-800 truncate group-hover:text-[#F9250E] transition-colors">
-                                {lesson.title}
-                              </p>
+                              <div className="flex items-center gap-2">
+                                <p className="text-[14px] font-medium text-gray-800 truncate group-hover:text-[#F9250E] transition-colors">
+                                  {lesson.title}
+                                </p>
+                                {lesson.is_recommended && !isComplete && (
+                                  <span className="px-1.5 py-0.5 rounded-md bg-[#F9250E]/10 text-[9px] font-bold uppercase tracking-wider text-[#F9250E] shrink-0">
+                                    {lang === 'fr' ? 'Recommand\u00e9' : 'Recommended'}
+                                  </span>
+                                )}
+                              </div>
                               <p className="text-[11px] text-gray-400 mt-0.5">{lesson.sub_domain}</p>
                             </div>
                             <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider shrink-0" style={{ color: diff.color, background: `${diff.color}10` }}>
