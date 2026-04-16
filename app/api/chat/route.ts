@@ -43,7 +43,23 @@ async function getCoachingContext(
     filter_language: language,
   });
 
-  if (error || !docs?.length) {
+  let finalDocs = docs;
+  let finalError = error;
+
+  // If no results within the user's track, search across all tracks
+  if (finalError || !finalDocs?.length) {
+    const { data: crossDocs, error: crossError } = await supabase.rpc('match_documents', {
+      query_embedding: embedding,
+      match_threshold: 0.62,
+      match_count: 5,
+      filter_track_id: null,
+      filter_language: language,
+    });
+    finalDocs = crossDocs;
+    finalError = crossError;
+  }
+
+  if (finalError || !finalDocs?.length) {
     try {
       await supabase.rpc('upsert_knowledge_gap', {
         p_track_id: trackId,
@@ -55,7 +71,7 @@ async function getCoachingContext(
     return { contextBlock: '', quality: 'none' };
   }
 
-  const topScore: number = docs[0].similarity;
+  const topScore: number = finalDocs[0].similarity;
   const quality: 'strong' | 'weak' | 'none' =
     topScore > 0.75 ? 'strong' : topScore > 0.62 ? 'weak' : 'none';
 
@@ -72,7 +88,7 @@ async function getCoachingContext(
 
   const contextBlock = `
 RELEVANT KNOWLEDGE BASE CONTENT:
-${docs.map((doc: any, i: number) => `
+${finalDocs.map((doc: any, i: number) => `
 [${i + 1}] "${doc.title}" — ${doc.sub_domain}
 ${doc.content.slice(0, 500)}
 `).join('\n---\n')}
@@ -208,7 +224,7 @@ YOUR COACHING PHILOSOPHY (Dr. Ekobena's Framework):
 - Every session should end with a clear action step
 
 YOUR ROLE:
-- You are NOT a therapist. You are a leadership/life coach.
+- You are a holistic life coach covering leadership, marriage, ministry, entrepreneurship and personal development. Answer questions across all these domains — do not redirect users away from personal or relationship questions. The user's current track is their primary focus but you can draw from all coaching domains.
 - Reference the user's specific scores and assessment data in your responses
 - Be direct but compassionate — like a trusted mentor
 - Ask powerful coaching questions that provoke self-reflection
