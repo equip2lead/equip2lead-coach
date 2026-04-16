@@ -46,12 +46,18 @@ export default function LessonPage() {
   const [prevId, setPrevId] = useState<string | null>(null);
   const [nextId, setNextId] = useState<string | null>(null);
 
+  // Reflection state
+  const [showReflection, setShowReflection] = useState(false);
+  const [reflectionQuestion, setReflectionQuestion] = useState('');
+  const [reflectionAnswer, setReflectionAnswer] = useState('');
+  const [loadingReflection, setLoadingReflection] = useState(false);
+  const [savingReflection, setSavingReflection] = useState(false);
+
   useEffect(() => {
     if (!user || !lessonId) return;
     async function load() {
       setLoading(true);
 
-      // Get journey
       const { data: journey } = await supabase.from('journeys')
         .select('id, track_id')
         .eq('user_id', user!.id)
@@ -59,7 +65,6 @@ export default function LessonPage() {
       if (!journey) { setLoading(false); return; }
       setJourneyId(journey.id);
 
-      // Get lesson
       const { data: doc } = await supabase.from('knowledge_documents')
         .select('id, title, content, sub_domain, difficulty, pillar_id, source, author, sort_order')
         .eq('id', lessonId)
@@ -67,14 +72,12 @@ export default function LessonPage() {
       if (!doc) { setLoading(false); return; }
       setLesson(doc);
 
-      // Get pillar name
       const { data: pillar } = await supabase.from('pillars')
         .select('name_en, name_fr')
         .eq('id', doc.pillar_id)
         .single();
       if (pillar) setPillarName(lang === 'fr' ? pillar.name_fr : pillar.name_en);
 
-      // Get progress
       const { data: prog } = await supabase.from('lesson_progress')
         .select('status')
         .eq('journey_id', journey.id)
@@ -82,7 +85,6 @@ export default function LessonPage() {
         .maybeSingle();
       setIsComplete(prog?.status === 'completed');
 
-      // Mark as started if not already
       if (!prog) {
         await supabase.from('lesson_progress').upsert({
           journey_id: journey.id,
@@ -92,7 +94,6 @@ export default function LessonPage() {
         }, { onConflict: 'journey_id,document_id' });
       }
 
-      // Get prev/next in same pillar
       const { data: siblings } = await supabase.from('knowledge_documents')
         .select('id, sort_order')
         .eq('pillar_id', doc.pillar_id)
@@ -123,9 +124,43 @@ export default function LessonPage() {
         const data = await res.json();
         setIsComplete(true);
         if (data.badge_earned) setBadgeEarned(data.badge_earned);
+
+        // Fetch reflection prompt
+        setLoadingReflection(true);
+        setShowReflection(true);
+        try {
+          const rRes = await fetch(`/api/lessons/reflection?documentId=${lessonId}&journeyId=${journeyId}&language=${lang}`);
+          if (rRes.ok) {
+            const rData = await rRes.json();
+            setReflectionQuestion(rData.question || '');
+          }
+        } catch {}
+        setLoadingReflection(false);
       }
     } catch {}
     setCompleting(false);
+  };
+
+  const handleSaveReflection = async () => {
+    if (!journeyId || !reflectionAnswer.trim() || savingReflection) return;
+    setSavingReflection(true);
+    try {
+      await fetch('/api/memory/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          journeyId,
+          memoryType: 'breakthrough',
+          content: `Lesson: ${lesson?.title}. Reflection: ${reflectionAnswer.trim()}`,
+        }),
+      });
+    } catch {}
+    setSavingReflection(false);
+
+    const q = reflectionQuestion
+      ? `${lesson?.title} — ${reflectionQuestion}`
+      : lesson?.title || '';
+    router.push(`/ai-coach?q=${encodeURIComponent(q)}`);
   };
 
   if (authLoading || loading) {
@@ -151,7 +186,6 @@ export default function LessonPage() {
 
   const diff = difficultyLabels[lesson.difficulty] || difficultyLabels.beginner;
 
-  // Simple markdown-like rendering: bold, paragraphs
   const renderContent = (text: string) => {
     return text.split('\n').map((line, i) => {
       const processed = line
@@ -224,51 +258,120 @@ export default function LessonPage() {
           </div>
         )}
 
-        {/* Actions */}
-        <div className="flex gap-3 flex-wrap mb-8">
-          {!isComplete ? (
-            <button
-              onClick={handleComplete}
-              disabled={completing}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl border-none cursor-pointer text-[14px] font-bold text-white bg-[#F9250E] hover:-translate-y-px transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: '0 4px 16px rgba(249,37,14,0.25)' }}
-            >
-              <CheckIcon />
-              {completing
-                ? (lang === 'en' ? 'Saving...' : 'Enregistrement...')
-                : (lang === 'en' ? 'Mark as Complete' : 'Marquer comme termin\u00e9')}
-            </button>
-          ) : (
-            <div className="flex items-center gap-2 px-6 py-3 rounded-xl bg-green-50 border border-green-200 text-[14px] font-bold text-green-700">
-              <CheckIcon />
-              {lang === 'en' ? 'Completed' : 'Termin\u00e9'}
+        {/* Reflection panel — shown after marking complete */}
+        {showReflection && (
+          <div className="bg-green-50 border border-green-200 rounded-2xl p-6 mb-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center text-green-600"><CheckIcon /></div>
+              <h3 className="text-[17px] font-bold text-gray-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                {lang === 'en' ? 'Lesson Complete!' : 'Le\u00e7on termin\u00e9e !'}
+              </h3>
             </div>
-          )}
-          <button
-            onClick={() => router.push(`/ai-coach?q=${encodeURIComponent(lesson.title)}`)}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 bg-white cursor-pointer text-[13px] font-semibold text-gray-700 hover:-translate-y-px transition-all"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-          >
-            <ChatIcon />
-            {lang === 'en' ? 'Chat about this lesson' : 'Discuter de cette le\u00e7on'}
-          </button>
-        </div>
 
-        {/* Prev / Next */}
-        <div className="flex items-center justify-between">
-          {prevId ? (
-            <button onClick={() => router.push(`/my-track/lesson/${prevId}`)} className="flex items-center gap-2 text-[13px] font-semibold text-gray-500 hover:text-gray-800 bg-transparent border-none cursor-pointer transition-colors" style={{ fontFamily: 'inherit' }}>
-              <ArrowLeft />
-              {lang === 'en' ? 'Previous Lesson' : 'Le\u00e7on pr\u00e9c\u00e9dente'}
+            <h4 className="text-[14px] font-bold text-gray-700 mb-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              {lang === 'en' ? 'Your Personal Reflection' : 'Votre r\u00e9flexion personnelle'}
+            </h4>
+            <div className="w-12 h-0.5 bg-green-300 rounded mb-4" />
+
+            {loadingReflection ? (
+              <div className="flex items-center gap-2 py-4">
+                <div className="w-4 h-4 border-2 border-green-300 border-t-green-600 rounded-full animate-spin" />
+                <span className="text-[13px] text-gray-500">{lang === 'en' ? 'Generating your reflection question...' : 'G\u00e9n\u00e9ration de votre question...'}</span>
+              </div>
+            ) : (
+              <>
+                {reflectionQuestion && (
+                  <p className="text-[14.5px] text-gray-700 leading-[1.65] mb-4 italic">
+                    &ldquo;{reflectionQuestion}&rdquo;
+                  </p>
+                )}
+
+                <textarea
+                  value={reflectionAnswer}
+                  onChange={e => setReflectionAnswer(e.target.value)}
+                  placeholder={lang === 'en' ? 'Write your reflection here...' : '\u00c9crivez votre r\u00e9flexion ici...'}
+                  rows={4}
+                  className="w-full px-4 py-3 rounded-xl border border-green-200 bg-white text-[14px] text-gray-800 outline-none resize-none focus:border-green-400 transition-all placeholder:text-gray-400"
+                  style={{ fontFamily: 'inherit' }}
+                />
+
+                <div className="flex gap-3 flex-wrap mt-4">
+                  <button
+                    onClick={handleSaveReflection}
+                    disabled={!reflectionAnswer.trim() || savingReflection}
+                    className="flex items-center gap-2 px-5 py-3 rounded-xl border-none cursor-pointer text-[13px] font-bold text-white bg-[#F9250E] hover:-translate-y-px transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                    style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: '0 4px 16px rgba(249,37,14,0.25)' }}
+                  >
+                    <ChatIcon />
+                    {savingReflection
+                      ? (lang === 'en' ? 'Saving...' : 'Enregistrement...')
+                      : (lang === 'en' ? 'Save & Chat with Coach' : 'Enregistrer et discuter')}
+                  </button>
+                  {nextId && (
+                    <button
+                      onClick={() => router.push(`/my-track/lesson/${nextId}`)}
+                      className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 bg-white cursor-pointer text-[13px] font-semibold text-gray-700 hover:-translate-y-px transition-all"
+                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                    >
+                      {lang === 'en' ? 'Next Lesson' : 'Le\u00e7on suivante'}
+                      <ArrowRight />
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Actions — only show if reflection panel is NOT showing */}
+        {!showReflection && (
+          <div className="flex gap-3 flex-wrap mb-8">
+            {!isComplete ? (
+              <button
+                onClick={handleComplete}
+                disabled={completing}
+                className="flex items-center gap-2 px-6 py-3 rounded-xl border-none cursor-pointer text-[14px] font-bold text-white bg-[#F9250E] hover:-translate-y-px transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: '0 4px 16px rgba(249,37,14,0.25)' }}
+              >
+                <CheckIcon />
+                {completing
+                  ? (lang === 'en' ? 'Saving...' : 'Enregistrement...')
+                  : (lang === 'en' ? 'Mark as Complete' : 'Marquer comme termin\u00e9')}
+              </button>
+            ) : (
+              <div className="flex items-center gap-2 px-6 py-3 rounded-xl bg-green-50 border border-green-200 text-[14px] font-bold text-green-700">
+                <CheckIcon />
+                {lang === 'en' ? 'Completed' : 'Termin\u00e9'}
+              </div>
+            )}
+            <button
+              onClick={() => router.push(`/ai-coach?q=${encodeURIComponent(lesson.title)}`)}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 bg-white cursor-pointer text-[13px] font-semibold text-gray-700 hover:-translate-y-px transition-all"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            >
+              <ChatIcon />
+              {lang === 'en' ? 'Chat about this lesson' : 'Discuter de cette le\u00e7on'}
             </button>
-          ) : <div />}
-          {nextId ? (
-            <button onClick={() => router.push(`/my-track/lesson/${nextId}`)} className="flex items-center gap-2 text-[13px] font-semibold text-[#F9250E] hover:text-[#C41E0B] bg-transparent border-none cursor-pointer transition-colors" style={{ fontFamily: 'inherit' }}>
-              {lang === 'en' ? 'Next Lesson' : 'Le\u00e7on suivante'}
-              <ArrowRight />
-            </button>
-          ) : <div />}
-        </div>
+          </div>
+        )}
+
+        {/* Prev / Next — only show if reflection panel is NOT showing */}
+        {!showReflection && (
+          <div className="flex items-center justify-between">
+            {prevId ? (
+              <button onClick={() => router.push(`/my-track/lesson/${prevId}`)} className="flex items-center gap-2 text-[13px] font-semibold text-gray-500 hover:text-gray-800 bg-transparent border-none cursor-pointer transition-colors" style={{ fontFamily: 'inherit' }}>
+                <ArrowLeft />
+                {lang === 'en' ? 'Previous Lesson' : 'Le\u00e7on pr\u00e9c\u00e9dente'}
+              </button>
+            ) : <div />}
+            {nextId ? (
+              <button onClick={() => router.push(`/my-track/lesson/${nextId}`)} className="flex items-center gap-2 text-[13px] font-semibold text-[#F9250E] hover:text-[#C41E0B] bg-transparent border-none cursor-pointer transition-colors" style={{ fontFamily: 'inherit' }}>
+                {lang === 'en' ? 'Next Lesson' : 'Le\u00e7on suivante'}
+                <ArrowRight />
+              </button>
+            ) : <div />}
+          </div>
+        )}
       </div>
     </div>
   );

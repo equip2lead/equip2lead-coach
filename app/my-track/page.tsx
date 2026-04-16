@@ -18,7 +18,24 @@ const CheckIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColo
 const BookIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>;
 
 type Pillar = { id: string; name_en: string; name_fr: string; sort_order: number; slug: string };
-type Lesson = { id: string; title: string; sub_domain: string; difficulty: string; pillar_id: string; sort_order: number; is_recommended: boolean; status: string | null };
+type Lesson = { id: string; title: string; sub_domain: string; difficulty: string; pillar_id: string; sort_order: number; is_recommended: boolean; status: string | null; pillar_score: number | null };
+type PillarScore = { pillar_id: string; score: number };
+
+function getPillarContext(score: number | null, lang: string): { text: string; color: string } | null {
+  if (score === null) return null;
+  if (score < 3.0) return {
+    text: lang === 'fr' ? 'Zone prioritaire \u2014 votre \u00e9valuation indique un besoin ici' : 'Priority area \u2014 your assessment shows this needs attention',
+    color: '#DC2626',
+  };
+  if (score < 4.0) return {
+    text: lang === 'fr' ? 'Zone de croissance \u2014 continuez \u00e0 d\u00e9velopper cette comp\u00e9tence' : 'Growth area \u2014 continue developing this skill',
+    color: '#D97706',
+  };
+  return {
+    text: lang === 'fr' ? 'Point fort \u2014 construisez sur cette base' : 'Strength \u2014 build on this foundation',
+    color: '#059669',
+  };
+}
 
 export default function MyTrackPage() {
   const router = useRouter();
@@ -30,7 +47,9 @@ export default function MyTrackPage() {
   const [trackName, setTrackName] = useState('');
   const [pillars, setPillars] = useState<Pillar[]>([]);
   const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [pillarScores, setPillarScores] = useState<PillarScore[]>([]);
   const [expandedPillar, setExpandedPillar] = useState<string | null>(null);
+  const [diffFilter, setDiffFilter] = useState<string>('all');
 
   useEffect(() => {
     if (!user) return;
@@ -47,7 +66,7 @@ export default function MyTrackPage() {
       const track = journey.tracks as any;
       setTrackName(lang === 'fr' ? (track?.name_fr || track?.name_en) : (track?.name_en || ''));
 
-      const [pillarsRes, lessonsRes] = await Promise.all([
+      const [pillarsRes, lessonsRes, scoresRes] = await Promise.all([
         supabase.from('pillars')
           .select('id, name_en, name_fr, sort_order, slug')
           .eq('track_id', journey.track_id)
@@ -56,10 +75,14 @@ export default function MyTrackPage() {
           p_journey_id: journey.id,
           p_language: lang,
         }),
+        supabase.from('pillar_scores')
+          .select('pillar_id, score')
+          .eq('journey_id', journey.id),
       ]);
 
       setPillars(pillarsRes.data || []);
       setLessons(lessonsRes.data || []);
+      setPillarScores((scoresRes.data || []).map((s: any) => ({ pillar_id: s.pillar_id, score: Number(s.score) })));
       if (pillarsRes.data?.length) setExpandedPillar(pillarsRes.data[0].id);
       setLoading(false);
     }
@@ -74,7 +97,15 @@ export default function MyTrackPage() {
     );
   }
 
-  // Status comes directly from the RPC result on each lesson
+  const hasAnyCompleted = lessons.some(l => l.status === 'completed');
+  const filteredLessons = diffFilter === 'all' ? lessons : lessons.filter(l => l.difficulty === diffFilter);
+
+  const filterButtons: { key: string; en: string; fr: string }[] = [
+    { key: 'all', en: 'All', fr: 'Tous' },
+    { key: 'beginner', en: 'Beginner', fr: 'D\u00e9butant' },
+    { key: 'intermediate', en: 'Intermediate', fr: 'Interm\u00e9diaire' },
+    { key: 'advanced', en: 'Advanced', fr: 'Avanc\u00e9' },
+  ];
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]" style={{ fontFamily: "'Outfit', sans-serif" }}>
@@ -103,6 +134,27 @@ export default function MyTrackPage() {
 
       {/* Content */}
       <div className="max-w-[800px] mx-auto px-6 max-md:px-4 py-8">
+        {/* Difficulty filter */}
+        <div className="mb-6">
+          <div className="flex gap-2 flex-wrap">
+            {filterButtons.map(fb => (
+              <button
+                key={fb.key}
+                onClick={() => setDiffFilter(fb.key)}
+                className={`px-4 py-2 rounded-xl text-[13px] font-semibold cursor-pointer border transition-all ${diffFilter === fb.key ? 'bg-[#F9250E] text-white border-[#F9250E]' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'}`}
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              >
+                {lang === 'fr' ? fb.fr : fb.en}
+              </button>
+            ))}
+          </div>
+          {!hasAnyCompleted && (
+            <p className="text-[12px] text-gray-400 mt-2 italic">
+              {lang === 'en' ? 'New here? Start with Beginner lessons' : 'Nouveau ? Commencez par les le\u00e7ons d\u00e9butant'}
+            </p>
+          )}
+        </div>
+
         {pillars.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-[15px] text-gray-400">{lang === 'en' ? 'No content available yet.' : 'Pas encore de contenu disponible.'}</p>
@@ -111,11 +163,14 @@ export default function MyTrackPage() {
           <div className="flex flex-col gap-4">
             {pillars.map((pillar, pi) => {
               const color = pillarColors[pi % pillarColors.length];
-              const pillarLessons = lessons.filter(l => l.pillar_id === pillar.id);
-              const completedCount = pillarLessons.filter(l => l.status === 'completed').length;
-              const totalCount = pillarLessons.length;
+              const pillarLessons = filteredLessons.filter(l => l.pillar_id === pillar.id);
+              const allPillarLessons = lessons.filter(l => l.pillar_id === pillar.id);
+              const completedCount = allPillarLessons.filter(l => l.status === 'completed').length;
+              const totalCount = allPillarLessons.length;
               const pct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
               const isExpanded = expandedPillar === pillar.id;
+              const ps = pillarScores.find(s => s.pillar_id === pillar.id);
+              const ctx = getPillarContext(ps?.score ?? null, lang);
 
               return (
                 <div key={pillar.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
@@ -131,7 +186,13 @@ export default function MyTrackPage() {
                     <div className="flex-1 min-w-0">
                       <h3 className="text-[15px] font-bold text-gray-900 truncate" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                         {lang === 'fr' ? pillar.name_fr : pillar.name_en}
+                        {ps && <span className="ml-2 text-[12px] font-bold" style={{ color }}>{ps.score.toFixed(1)}/5</span>}
                       </h3>
+                      {ctx && (
+                        <p className="text-[11px] font-medium mt-0.5" style={{ color: ctx.color }}>
+                          {ctx.text}
+                        </p>
+                      )}
                       <div className="flex items-center gap-3 mt-1.5">
                         <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden max-w-[200px]">
                           <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: color }} />
@@ -185,7 +246,11 @@ export default function MyTrackPage() {
                   )}
                   {isExpanded && pillarLessons.length === 0 && (
                     <div className="border-t border-gray-100 px-5 py-6 text-center">
-                      <p className="text-[13px] text-gray-400">{lang === 'en' ? 'No lessons available for this pillar yet.' : 'Pas encore de le\u00e7ons pour ce pilier.'}</p>
+                      <p className="text-[13px] text-gray-400">
+                        {diffFilter !== 'all'
+                          ? (lang === 'en' ? `No ${diffFilter} lessons in this pillar.` : `Pas de le\u00e7ons ${diffFilter} dans ce pilier.`)
+                          : (lang === 'en' ? 'No lessons available for this pillar yet.' : 'Pas encore de le\u00e7ons pour ce pilier.')}
+                      </p>
                     </div>
                   )}
                 </div>
