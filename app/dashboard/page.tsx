@@ -90,7 +90,7 @@ export default function DashboardPage() {
       setLoading(true);
       // Check admin
       const { data: profile } = await supabase.from('profiles').select('role').eq('id', user!.id).single();
-      if (profile?.role === 'admin') setIsAdmin(true);
+      if (profile?.role === 'admin' || profile?.role === 'super_admin') setIsAdmin(true);
 
       const { data: j } = await supabase.from('journeys')
         .select('id, track_id, current_week, status, tracks(slug, name_en, name_fr)')
