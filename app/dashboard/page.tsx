@@ -164,7 +164,7 @@ export default function DashboardPage() {
         <nav className="flex-1 px-4 flex flex-col gap-1">
           {[
             { icon: <HomeIcon />, label: lang === 'en' ? 'Dashboard' : 'Tableau de bord', href: '/dashboard', active: true },
-            { icon: <BookIcon />, label: lang === 'en' ? 'My Track' : 'Mon parcours', href: `/pillar-overview?track=${trackSlug}`, active: false },
+            { icon: <BookIcon />, label: lang === 'en' ? 'My Track' : 'Mon parcours', href: '/my-track', active: false },
             { icon: <ChatIcon />, label: lang === 'en' ? 'AI Coach' : 'Coach IA', href: '/ai-coach', active: false },
             { icon: <CalIcon />, label: lang === 'en' ? 'Check-in' : 'Bilan', href: '/weekly-checkin', active: false },
             { icon: <BarIcon />, label: lang === 'en' ? 'Results' : 'R\u00e9sultats', href: `/results?track=${trackSlug}`, active: false },
