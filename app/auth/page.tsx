@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { Logo } from '@/components/Logo';
 
 const ShieldIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-[18px] h-[18px]"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
 const ChatIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-[18px] h-[18px]"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>;
@@ -27,12 +28,12 @@ const i18n = {
     leftSub: 'Join thousands of leaders, ministers, couples, and entrepreneurs transforming their lives through personalised coaching.',
     feat: [
       { t: 'Safe & Confidential', d: 'Your data is encrypted. Separate intakes for couples.' },
-      { t: '24/7 AI Coach', d: "Chat anytime with a coach trained on Dr. Ekobena's frameworks." },
+      { t: '24/7 AI Coach', d: 'Chat anytime with a coach tuned to the Equip2Lead framework.' },
       { t: 'Personalised Roadmap', d: '12-week plan built from your unique assessment answers.' },
     ],
     tabSignup: 'Sign Up', tabLogin: 'Log In',
-    signupTitle: 'Create your account', signupSub: 'Start your personalised coaching journey today',
-    loginTitle: 'Welcome back', loginSub: 'Log in to continue your coaching journey',
+    signupTitle: 'Start your coaching journey', signupSub: 'Free assessment. No credit card. 10–15 minutes.',
+    loginTitle: 'Welcome back', loginSub: 'Sign in to continue your coaching journey.',
     firstName: 'First Name', lastName: 'Last Name', email: 'Email', password: 'Password',
     agree: 'I agree to the Terms & Privacy',
     signupBtn: 'Create Account', loginBtn: 'Log In',
@@ -47,12 +48,12 @@ const i18n = {
     leftSub: 'Rejoignez des milliers de leaders, ministres, couples et entrepreneurs qui transforment leur vie grâce au coaching personnalisé.',
     feat: [
       { t: 'Sûr & Confidentiel', d: 'Vos données sont chiffrées. Évaluations séparées pour les couples.' },
-      { t: 'Coach IA 24h/24', d: 'Discutez à tout moment avec un coach formé aux cadres du Dr. Ekobena.' },
+      { t: 'Coach IA 24h/24', d: 'Discutez à tout moment avec un coach aligné sur le cadre Equip2Lead.' },
       { t: 'Feuille de route personnalisée', d: "Plan de 12 semaines construit à partir de vos réponses d'évaluation." },
     ],
     tabSignup: 'Inscription', tabLogin: 'Connexion',
-    signupTitle: 'Créez votre compte', signupSub: 'Commencez votre parcours de coaching personnalisé',
-    loginTitle: 'Bon retour', loginSub: 'Connectez-vous pour continuer votre parcours',
+    signupTitle: 'Commencez votre parcours', signupSub: 'Évaluation gratuite. Sans carte bancaire. 10 à 15 minutes.',
+    loginTitle: 'Bon retour', loginSub: 'Connectez-vous pour continuer votre parcours de coaching.',
     firstName: 'Prénom', lastName: 'Nom', email: 'Email', password: 'Mot de passe',
     agree: "J'accepte les Conditions & Politique de confidentialité",
     signupBtn: 'Créer un compte', loginBtn: 'Se connecter',
@@ -183,9 +184,8 @@ function AuthContent() {
         <div className="absolute -top-[20%] -right-[20%] w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #5A101055, transparent 65%)', filter: 'blur(80px)' }} />
         <div className="absolute -bottom-[15%] -left-[15%] w-[400px] h-[400px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, #5A101033, transparent 60%)', filter: 'blur(60px)' }} />
         <div className="relative z-[2] max-w-[400px] animate-[fadeIn_0.6s_ease_0.1s_both]">
-          <Link href="/" className="flex items-center gap-2.5 no-underline mb-12">
-            <div className="w-10 h-10 rounded-[10px] bg-[#F9250E] flex items-center justify-center text-[18px] font-extrabold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>E</div>
-            <div className="text-[19px] font-bold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>Equip<span className="text-[#F9250E]">2</span>Lead</div>
+          <Link href="/" className="no-underline inline-block mb-12">
+            <Logo size="lg" onDark />
           </Link>
           <h2 className="text-white text-[36px] max-md:text-[28px] font-extrabold leading-[1.15] tracking-tight mb-5" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
             {t.leftH[0]}<br/>{t.leftH[1]}<em className="not-italic text-[#F9250E]">{t.leftH[2]}</em>
@@ -213,7 +213,7 @@ function AuthContent() {
         <div className="w-full max-w-[440px] animate-[fadeIn_0.5s_ease_both]">
           {/* Header */}
           <div className="text-center mb-9">
-            <h1 className="text-[26px] font-extrabold text-gray-900 mb-2 tracking-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            <h1 className="text-[28px] font-serif font-bold text-gray-900 mb-2 tracking-tight">
               {isSignup ? t.signupTitle : t.loginTitle}
             </h1>
             <p className="text-[14.5px] text-gray-500 leading-[1.5]">{isSignup ? t.signupSub : t.loginSub}</p>

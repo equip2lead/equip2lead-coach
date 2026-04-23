@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
 import { switchLanguage } from '@/lib/language';
+import { Logo } from '@/components/Logo';
 
 type Track = { id: string; slug: string; name_en: string; name_fr: string; sort_order: number };
 type Pillar = { id: string; name_en: string; name_fr: string; sort_order: number };
@@ -46,8 +47,8 @@ const featureCards = [
 
 const i18n = {
   en: {
-    headline: 'Welcome to Equip2Lead Coach \u2014 choose the track you want to start on',
-    subtext: 'Choose the track you want to start on. Each track gives you a personalized assessment, coaching plan, and AI coach focused on that area of your life.',
+    headline: "Let's start with a diagnostic.",
+    subtext: "In 10 minutes you'll know where you are across 5 pillars and 21 dimensions \u2014 then we'll build your personalised 12-week plan.",
     next: 'Next',
     back: 'Back',
     howItWorks: 'Here\u2019s how it works',
@@ -59,8 +60,8 @@ const i18n = {
     starting: 'Starting...',
   },
   fr: {
-    headline: 'Bienvenue sur Equip2Lead Coach \u2014 choisissez le parcours sur lequel vous souhaitez commencer',
-    subtext: 'Choisissez le parcours sur lequel vous souhaitez commencer. Chaque parcours vous offre une \u00e9valuation personnalis\u00e9e, un plan de coaching et un coach IA ax\u00e9 sur ce domaine de votre vie.',
+    headline: 'Commençons par un diagnostic.',
+    subtext: 'En 10 minutes, vous saurez o\u00f9 vous en \u00eates sur 5 piliers et 21 dimensions \u2014 puis nous b\u00e2tirons votre plan personnalis\u00e9 de 12 semaines.',
     next: 'Suivant',
     back: 'Retour',
     howItWorks: 'Voici comment \u00e7a fonctionne',
@@ -163,10 +164,7 @@ export default function OnboardingPage() {
     <div className="min-h-screen bg-[#0B0B0C] flex flex-col" style={{ fontFamily: "'Outfit', sans-serif" }}>
       {/* Top bar */}
       <div className="flex items-center justify-between px-8 max-md:px-5 pt-6 pb-4">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-[10px] bg-[#F9250E] flex items-center justify-center text-[16px] font-extrabold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>E</div>
-          <span className="text-[17px] font-bold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>Equip<span className="text-[#F9250E]">2</span>Lead</span>
-        </div>
+        <Logo size="sm" onDark />
         <button onClick={() => switchLanguage(lang === 'en' ? 'fr' : 'en', user!.id, supabase, setLang)} className="px-2.5 py-1 rounded-md border border-gray-700 bg-transparent text-[11px] font-semibold text-gray-400 cursor-pointer hover:text-white transition-colors" style={{ fontFamily: 'inherit' }}>
           &#x1F310; {lang === 'en' ? 'FR' : 'EN'}
         </button>

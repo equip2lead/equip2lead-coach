@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
 import { switchLanguage } from '@/lib/language';
 import ProgressDashboard from '@/components/ProgressDashboard';
+import { Logo } from '@/components/Logo';
 
 /* ── Icons ── */
 const ChatIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>;
@@ -155,9 +156,8 @@ export default function DashboardPage() {
       {/* ── Sidebar ── */}
       <aside className={`fixed inset-y-0 left-0 z-40 w-[260px] bg-[#0B0B0C] flex flex-col transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="px-6 pt-7 pb-4">
-          <Link href="/" className="flex items-center gap-2.5 no-underline">
-            <div className="w-9 h-9 rounded-[10px] bg-[#F9250E] flex items-center justify-center text-[16px] font-extrabold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>E</div>
-            <span className="text-[17px] font-bold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>Equip<span className="text-[#F9250E]">2</span>Lead</span>
+          <Link href="/" className="no-underline inline-block">
+            <Logo size="sm" onDark />
           </Link>
         </div>
         {journey && (
@@ -226,8 +226,9 @@ export default function DashboardPage() {
             </div>
             <div className="max-w-[1100px] mx-auto">
               <p className="text-white/60 text-[12px] font-semibold uppercase tracking-wider mb-1">{trackName}</p>
-              <h1 className="text-[28px] max-md:text-[22px] font-extrabold text-white mb-1" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{lang === 'en' ? 'Welcome' : 'Bienvenue'}, {userName}</h1>
-              <p className="text-white/60 text-[14px]">{lang === 'en' ? `Week ${currentWeek} of 12` : `Semaine ${currentWeek} sur 12`}{weekPlan ? ` \u2014 ${lang === 'en' ? weekPlan.title_en : weekPlan.title_fr}` : ''}</p>
+              <h1 className="text-[34px] max-md:text-[26px] font-serif font-bold text-white mb-2 leading-tight">{lang === 'en' ? 'Hello' : 'Bonjour'}, {userName}</h1>
+              <p className="text-white/70 text-[15px]">{lang === 'en' ? 'Continue your coaching journey.' : 'Continuez votre parcours de coaching.'}</p>
+              <p className="text-white/50 text-[13px] mt-1">{lang === 'en' ? `Week ${currentWeek} of 12` : `Semaine ${currentWeek} sur 12`}{weekPlan ? ` \u2014 ${lang === 'en' ? weekPlan.title_en : weekPlan.title_fr}` : ''}</p>
             </div>
           </div>
           {/* Stats row */}
