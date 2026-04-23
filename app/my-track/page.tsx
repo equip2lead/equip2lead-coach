@@ -19,8 +19,24 @@ const CheckIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColo
 const BookIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>;
 
 type Pillar = { id: string; name_en: string; name_fr: string; sort_order: number; slug: string };
-type Lesson = { id: string; title: string; sub_domain: string; difficulty: string; pillar_id: string; sort_order: number; is_recommended: boolean; status: string | null; pillar_score: number | null };
+type Lesson = {
+  document_id: string;
+  title: string;
+  sub_domain: string;
+  pillar_id: string;
+  lesson_order: number;
+  is_recommended: boolean;
+  pillar_score: number | null;
+  status: 'started' | 'completed' | 'skipped' | null;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+};
 type PillarScore = { pillar_id: string; score: number };
+
+function bucketToDifficulty(order: number): 'beginner' | 'intermediate' | 'advanced' {
+  if (order < 200) return 'beginner';
+  if (order < 300) return 'intermediate';
+  return 'advanced';
+}
 
 function getPillarContext(score: number | null, lang: string): { text: string; color: string } | null {
   if (score === null) return null;
@@ -44,6 +60,7 @@ export default function MyTrackPage() {
   const supabase = createClient();
   const [lang, setLang] = useState<'en' | 'fr'>('en');
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [journeyId, setJourneyId] = useState<string | null>(null);
   const [trackName, setTrackName] = useState('');
   const [pillars, setPillars] = useState<Pillar[]>([]);
@@ -56,33 +73,61 @@ export default function MyTrackPage() {
     if (!user) return;
     async function load() {
       setLoading(true);
+      setLoadError(null);
 
-      const { data: journey } = await supabase.from('journeys')
+      const { data: journey, error: journeyErr } = await supabase.from('journeys')
         .select('id, track_id, tracks(slug, name_en, name_fr)')
         .eq('user_id', user!.id)
-        .order('started_at', { ascending: false }).limit(1).single();
-      if (!journey) { setLoading(false); return; }
+        .order('started_at', { ascending: false }).limit(1).maybeSingle();
+      if (journeyErr) console.error('[my-track] journey query error:', journeyErr);
+      if (!journey) {
+        setLoadError('no_journey');
+        setLoading(false);
+        return;
+      }
 
       setJourneyId(journey.id);
       const track = journey.tracks as any;
       setTrackName(lang === 'fr' ? (track?.name_fr || track?.name_en) : (track?.name_en || ''));
 
-      const [pillarsRes, lessonsRes, scoresRes] = await Promise.all([
+      const [pillarsRes, lessonsRes, scoresRes, progressRes] = await Promise.all([
         supabase.from('pillars')
           .select('id, name_en, name_fr, sort_order, slug')
           .eq('track_id', journey.track_id)
           .order('sort_order'),
-        supabase.rpc('get_personalized_lessons', {
-          p_journey_id: journey.id,
-          p_language: lang,
-        }),
+        supabase.rpc('get_personalized_lessons', { p_journey_id: journey.id }),
         supabase.from('pillar_scores')
           .select('pillar_id, score')
           .eq('journey_id', journey.id),
+        supabase.from('lesson_progress')
+          .select('document_id, status')
+          .eq('journey_id', journey.id),
       ]);
 
+      if (lessonsRes.error) console.error('[my-track] get_personalized_lessons error:', lessonsRes.error);
+      if (!lessonsRes.data?.length) console.log('[my-track] RPC returned 0 lessons for journey', journey.id, 'sample response:', lessonsRes.data);
+
+      const progressMap = new Map<string, 'started' | 'completed' | 'skipped'>();
+      (progressRes.data || []).forEach((p: any) => {
+        if (p.status) progressMap.set(p.document_id, p.status);
+      });
+
+      const normalized: Lesson[] = (lessonsRes.data || []).map((row: any) => ({
+        document_id: row.document_id,
+        title: row.title,
+        sub_domain: row.sub_domain,
+        pillar_id: row.pillar_id,
+        lesson_order: Number(row.lesson_order ?? 100),
+        is_recommended: !!row.is_recommended,
+        pillar_score: row.pillar_score !== null && row.pillar_score !== undefined ? Number(row.pillar_score) : null,
+        status:
+          progressMap.get(row.document_id) ??
+          (row.is_completed ? 'completed' : row.is_started ? 'started' : null),
+        difficulty: bucketToDifficulty(Number(row.lesson_order ?? 100)),
+      }));
+
       setPillars(pillarsRes.data || []);
-      setLessons(lessonsRes.data || []);
+      setLessons(normalized);
       setPillarScores((scoresRes.data || []).map((s: any) => ({ pillar_id: s.pillar_id, score: Number(s.score) })));
       if (pillarsRes.data?.length) setExpandedPillar(pillarsRes.data[0].id);
       setLoading(false);
@@ -94,6 +139,28 @@ export default function MyTrackPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]" style={{ fontFamily: "'Outfit', sans-serif" }}>
         <div className="w-6 h-6 border-2 border-gray-300 border-t-[#F9250E] rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (loadError === 'no_journey') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB] px-6 text-center" style={{ fontFamily: "'Outfit', sans-serif" }}>
+        <div>
+          <p className="text-[16px] text-gray-700 font-semibold mb-2">
+            {lang === 'en' ? 'No active journey' : 'Aucun parcours actif'}
+          </p>
+          <p className="text-[13.5px] text-gray-500 mb-5">
+            {lang === 'en' ? 'Complete onboarding to start a coaching track.' : 'Terminez l’intégration pour démarrer un parcours.'}
+          </p>
+          <button
+            onClick={() => router.push('/onboarding')}
+            className="px-5 py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#F9250E] border-none cursor-pointer"
+            style={{ fontFamily: 'inherit' }}
+          >
+            {lang === 'en' ? 'Go to onboarding' : 'Aller à l’intégration'}
+          </button>
+        </div>
       </div>
     );
   }
@@ -217,8 +284,8 @@ export default function MyTrackPage() {
                         const diff = difficultyLabels[lesson.difficulty] || difficultyLabels.beginner;
                         return (
                           <Link
-                            key={lesson.id}
-                            href={`/my-track/lesson/${lesson.id}`}
+                            key={lesson.document_id}
+                            href={`/my-track/lesson/${lesson.document_id}`}
                             className="flex items-center gap-3 py-3.5 border-b border-gray-50 last:border-b-0 no-underline group"
                           >
                             <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${isComplete ? 'bg-green-100 text-green-600' : isStarted ? 'bg-amber-50 text-amber-500' : 'bg-gray-100 text-gray-300'}`}>
