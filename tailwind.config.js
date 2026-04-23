@@ -18,9 +18,9 @@ module.exports = {
         rose: { DEFAULT: '#F43F5E' },
       },
       fontFamily: {
-        sans: ['Outfit', 'Plus Jakarta Sans', 'sans-serif'],
-        serif: ['Libre Baskerville', 'serif'],
-        display: ['Outfit', 'sans-serif'],
+        sans: ['var(--font-outfit)', 'Outfit', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Libre Baskerville', 'Georgia', 'serif'],
+        display: ['var(--font-outfit)', 'Outfit', 'sans-serif'],
       },
       borderRadius: {
         card: '12px',
