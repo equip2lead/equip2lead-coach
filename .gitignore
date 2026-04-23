@@ -5,3 +5,4 @@ node_modules/
 *.tgz
 *.psd
 *.DS_Store
+.vercel
