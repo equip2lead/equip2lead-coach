@@ -235,7 +235,7 @@ export default function LessonPage() {
       <div className="bg-white border-b border-gray-200 px-6 max-md:px-4 h-16 flex items-center justify-between sticky top-0 z-10">
         <button onClick={() => router.push('/my-track')} className="flex items-center gap-2 text-[13px] font-medium text-gray-500 hover:text-gray-800 bg-transparent border-none cursor-pointer transition-colors" style={{ fontFamily: 'inherit' }}>
           <BackIcon />
-          {lang === 'en' ? 'My Track' : 'Mon Parcours'}
+          {lang === 'en' ? 'My Lessons' : 'Mes Leçons'}
         </button>
         <button onClick={() => switchLanguage(lang === 'en' ? 'fr' : 'en', user!.id, supabase, setLang)} className="px-2.5 py-1 rounded-md border border-gray-200 bg-transparent text-[11px] font-semibold text-gray-500 cursor-pointer" style={{ fontFamily: 'inherit' }}>
           &#x1F310; {lang === 'en' ? 'FR' : 'EN'}

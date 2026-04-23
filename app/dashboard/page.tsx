@@ -70,6 +70,18 @@ export default function DashboardPage() {
   const [currentStreak, setCurrentStreak] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showSwitchWarn, setShowSwitchWarn] = useState(false);
+  const [activeTrackFlash, setActiveTrackFlash] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem('flash_active_track') === '1') {
+        sessionStorage.removeItem('flash_active_track');
+        setActiveTrackFlash(true);
+        const t = setTimeout(() => setActiveTrackFlash(false), 5000);
+        return () => clearTimeout(t);
+      }
+    } catch {}
+  }, []);
 
   const handleSwitchTrack = () => {
     setSidebarOpen(false);
@@ -174,7 +186,7 @@ export default function DashboardPage() {
         <nav className="flex-1 px-4 flex flex-col gap-1">
           {[
             { icon: <HomeIcon />, label: lang === 'en' ? 'Dashboard' : 'Tableau de bord', href: '/dashboard', active: true },
-            { icon: <BookIcon />, label: lang === 'en' ? 'My Track' : 'Mon parcours', href: '/my-track', active: false },
+            { icon: <BookIcon />, label: lang === 'en' ? 'My Lessons' : 'Mes Leçons', href: '/my-track', active: false },
             { icon: <ChatIcon />, label: lang === 'en' ? 'AI Coach' : 'Coach IA', href: '/ai-coach', active: false },
             { icon: <CalIcon />, label: lang === 'en' ? 'Check-in' : 'Bilan', href: '/weekly-checkin', active: false },
             { icon: <BarIcon />, label: lang === 'en' ? 'Results' : 'R\u00e9sultats', href: `/results?track=${trackSlug}`, active: false },
@@ -197,6 +209,23 @@ export default function DashboardPage() {
 
       {/* ── Main ── */}
       <main className="flex-1 lg:ml-[260px]">
+        {activeTrackFlash && (
+          <div className="bg-amber-50 border-b border-amber-200 px-6 py-3 text-[13px] text-amber-900 flex items-center justify-between gap-3">
+            <span>
+              {lang === 'en'
+                ? 'You already have an active track. Contact support to switch.'
+                : 'Vous avez déjà un parcours actif. Contactez le support pour en changer.'}
+            </span>
+            <button
+              onClick={() => setActiveTrackFlash(false)}
+              className="text-amber-700 hover:text-amber-900 bg-transparent border-none cursor-pointer"
+              aria-label="dismiss"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         {/* No journey state */}
         {!journey && (
           <div className="flex items-center justify-center min-h-screen">
@@ -461,6 +490,19 @@ export default function DashboardPage() {
             </div>
           )}
         </div>
+
+        {journey && (
+          <div className="px-8 max-md:px-5 pb-8 pt-2 text-center">
+            <a
+              href="mailto:contact@equip2lead.coach?subject=Request%20to%20switch%20coaching%20track"
+              className="text-[12px] text-neutral-500 hover:text-[#F9250E] transition-colors no-underline"
+            >
+              {lang === 'en'
+                ? 'Need to switch tracks? Contact support'
+                : 'Besoin de changer de parcours ? Contactez le support'}
+            </a>
+          </div>
+        )}
         </>)}
       </main>
 

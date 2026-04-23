@@ -178,7 +178,7 @@ export default function MyTrackPage() {
             <BookIcon />
             <div>
               <h1 className="text-[15px] font-bold text-gray-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                {lang === 'en' ? 'My Track' : 'Mon Parcours'}
+                {lang === 'en' ? 'My Lessons' : 'Mes Leçons'}
               </h1>
               <p className="text-[11px] text-gray-400">{trackName}</p>
             </div>

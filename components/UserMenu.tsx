@@ -10,6 +10,7 @@ export default function UserMenu() {
   const supabase = createClient();
   const [open, setOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [hasActiveJourney, setHasActiveJourney] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   const userName = user?.user_metadata?.first_name || user?.email?.split('@')[0] || 'User';
@@ -20,8 +21,17 @@ export default function UserMenu() {
   useEffect(() => {
     if (!user) return;
     supabase.from('profiles').select('role').eq('id', user.id).single().then(({ data }) => {
-      if (data?.role === 'admin') setIsAdmin(true);
+      if (data?.role === 'admin' || data?.role === 'super_admin') setIsAdmin(true);
     });
+    supabase
+      .from('journeys')
+      .select('id, status')
+      .eq('user_id', user.id)
+      .eq('status', 'active')
+      .maybeSingle()
+      .then(({ data }) => {
+        setHasActiveJourney(!!data);
+      });
   }, [user?.id]);
 
   // Close on click outside
@@ -35,12 +45,15 @@ export default function UserMenu() {
 
   if (!user) return null;
 
-  const items = [
+  const items: { label: string; href: string; icon: string }[] = [
     { label: 'Dashboard', href: '/dashboard', icon: 'M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z' },
-    { label: 'My Track', href: '/track-selection', icon: 'M4 19.5A2.5 2.5 0 016.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z' },
     { label: 'AI Coach', href: '/ai-coach', icon: 'M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z' },
     { label: 'Settings', href: '/settings', icon: 'M12 15a3 3 0 100-6 3 3 0 000 6zM19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z' },
   ];
+
+  if (!hasActiveJourney) {
+    items.splice(1, 0, { label: 'Choose Track', href: '/track-selection', icon: 'M12 2L3 14h9l-1 8 10-12h-9l1-8z' });
+  }
 
   if (isAdmin) {
     items.push({ label: 'Admin', href: '/admin', icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z' });

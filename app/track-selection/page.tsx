@@ -97,14 +97,15 @@ export default function TrackSelectionPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const t = i18n[lang];
 
-  // Load user's active journey + admin status
+  // Load user's active journey + admin status. Non-admins with an active
+  // journey are redirected to /dashboard — see "Track lock" in the PM spec.
   useEffect(() => {
     if (!user) return;
     async function load() {
-      // Check admin role
       const { data: profile } = await supabase
         .from('profiles').select('role').eq('id', user!.id).single();
-      if (profile?.role === 'admin') setIsAdmin(true);
+      const isAdminRole = profile?.role === 'admin' || profile?.role === 'super_admin';
+      if (isAdminRole) setIsAdmin(true);
 
       const { data: j } = await supabase
         .from('journeys')
@@ -112,7 +113,16 @@ export default function TrackSelectionPage() {
         .eq('user_id', user!.id)
         .order('started_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
+
+      if (j?.status === 'active' && !isAdminRole) {
+        try {
+          sessionStorage.setItem('flash_active_track', '1');
+        } catch {}
+        router.replace('/dashboard');
+        return;
+      }
+
       if (j) {
         const tk = j.tracks as any;
         setActiveTrack(tk?.slug);
