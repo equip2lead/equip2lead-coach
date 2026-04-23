@@ -85,6 +85,33 @@ function AuthContent() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const [showForgot, setShowForgot] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotStatus, setForgotStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [forgotError, setForgotError] = useState('');
+
+  async function handleForgotSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setForgotStatus('sending');
+    setForgotError('');
+    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail.trim(), {
+      redirectTo: `${window.location.origin}/auth/reset-password`,
+    });
+    if (error) {
+      setForgotStatus('error');
+      setForgotError(error.message);
+    } else {
+      setForgotStatus('sent');
+    }
+  }
+
+  function closeForgot() {
+    setShowForgot(false);
+    setForgotStatus('idle');
+    setForgotError('');
+    setForgotEmail('');
+  }
+
   const t = i18n[lang];
   const isSignup = tab === 'signup';
   const FeatIcons = [ShieldIcon, ChatIcon, BarIcon];
@@ -283,7 +310,7 @@ function AuthContent() {
                   <input type="checkbox" className="w-[18px] h-[18px] rounded accent-[#F9250E]" />
                   <span>{t.remember}</span>
                 </label>
-                <a href="#" className="text-[13px] font-semibold text-[#F9250E] no-underline hover:underline">{t.forgot}</a>
+                <button type="button" onClick={() => setShowForgot(true)} className="text-[13px] font-semibold text-[#F9250E] bg-transparent border-none cursor-pointer hover:underline p-0" style={{ fontFamily: 'inherit' }}>{t.forgot}</button>
               </div>
             )}
 
@@ -305,6 +332,81 @@ function AuthContent() {
           </div>
         </div>
       </div>
+
+      {showForgot && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+          onClick={closeForgot}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl border border-neutral-800 bg-[#141417] p-8 animate-[fadeIn_0.15s_ease]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {forgotStatus === 'sent' ? (
+              <>
+                <h2 className="mb-3 font-serif text-[22px] font-bold text-white">
+                  {lang === 'en' ? 'Check your email' : 'Vérifiez votre boîte mail'}
+                </h2>
+                <p className="mb-6 text-[14px] text-neutral-400 leading-[1.6]">
+                  {lang === 'en' ? (
+                    <>If an account exists for <strong className="text-white">{forgotEmail}</strong>, a password reset link is on its way. Check your spam folder if you don't see it in 2 minutes.</>
+                  ) : (
+                    <>Si un compte existe pour <strong className="text-white">{forgotEmail}</strong>, un lien de réinitialisation arrive. Vérifiez vos spams s'il n'apparaît pas sous 2 minutes.</>
+                  )}
+                </p>
+                <button
+                  onClick={closeForgot}
+                  className="w-full rounded-xl bg-[#F9250E] py-3 font-bold text-white hover:bg-[#E0200B] transition-colors border-none cursor-pointer text-[14px]"
+                  style={{ fontFamily: 'inherit' }}
+                >
+                  {lang === 'en' ? 'Got it' : 'Compris'}
+                </button>
+              </>
+            ) : (
+              <form onSubmit={handleForgotSubmit}>
+                <h2 className="mb-3 font-serif text-[22px] font-bold text-white">
+                  {lang === 'en' ? 'Reset your password' : 'Réinitialiser votre mot de passe'}
+                </h2>
+                <p className="mb-5 text-[14px] text-neutral-400 leading-[1.6]">
+                  {lang === 'en'
+                    ? "Enter your email and we'll send you a link to set a new password."
+                    : 'Entrez votre email et nous vous enverrons un lien pour définir un nouveau mot de passe.'}
+                </p>
+                <input
+                  type="email"
+                  required
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="mb-4 w-full rounded-xl border border-neutral-700 bg-[#0B0B0C] px-4 py-3 text-[14px] text-white outline-none focus:border-[#F9250E] placeholder:text-neutral-500"
+                  style={{ fontFamily: 'inherit' }}
+                />
+                {forgotError && <p className="mb-3 text-[13px] text-red-400">{forgotError}</p>}
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={closeForgot}
+                    className="flex-1 rounded-xl border border-neutral-700 py-3 text-[14px] font-semibold text-neutral-200 hover:bg-neutral-800 bg-transparent cursor-pointer transition-colors"
+                    style={{ fontFamily: 'inherit' }}
+                  >
+                    {lang === 'en' ? 'Cancel' : 'Annuler'}
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={forgotStatus === 'sending' || !forgotEmail.trim()}
+                    className="flex-1 rounded-xl bg-[#F9250E] py-3 text-[14px] font-bold text-white hover:bg-[#E0200B] disabled:opacity-50 disabled:cursor-not-allowed border-none cursor-pointer transition-colors"
+                    style={{ fontFamily: 'inherit' }}
+                  >
+                    {forgotStatus === 'sending'
+                      ? lang === 'en' ? 'Sending…' : 'Envoi…'
+                      : lang === 'en' ? 'Send reset link' : 'Envoyer le lien'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         @keyframes fadeIn {
