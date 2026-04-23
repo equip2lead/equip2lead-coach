@@ -9,9 +9,9 @@ import { switchLanguage } from '@/lib/language';
 
 const pillarColors = ['#2563EB', '#7C3AED', '#059669', '#DC2626', '#D97706'];
 const difficultyLabels: Record<string, { en: string; fr: string; color: string }> = {
-  beginner: { en: 'Beginner', fr: 'D\u00e9butant', color: '#059669' },
-  intermediate: { en: 'Intermediate', fr: 'Interm\u00e9diaire', color: '#D97706' },
-  advanced: { en: 'Advanced', fr: 'Avanc\u00e9', color: '#DC2626' },
+  beginner: { en: 'Foundation', fr: 'Fondation', color: '#059669' },
+  intermediate: { en: 'Application', fr: 'Application', color: '#D97706' },
+  advanced: { en: 'Mastery', fr: 'Ma\u00eetrise', color: '#F9250E' },
 };
 
 const BackIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>;
@@ -67,7 +67,6 @@ export default function MyTrackPage() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [pillarScores, setPillarScores] = useState<PillarScore[]>([]);
   const [expandedPillar, setExpandedPillar] = useState<string | null>(null);
-  const [diffFilter, setDiffFilter] = useState<string>('all');
 
   useEffect(() => {
     if (!user) return;
@@ -165,16 +164,6 @@ export default function MyTrackPage() {
     );
   }
 
-  const hasAnyCompleted = lessons.some(l => l.status === 'completed');
-  const filteredLessons = diffFilter === 'all' ? lessons : lessons.filter(l => l.difficulty === diffFilter);
-
-  const filterButtons: { key: string; en: string; fr: string }[] = [
-    { key: 'all', en: 'All', fr: 'Tous' },
-    { key: 'beginner', en: 'Beginner', fr: 'D\u00e9butant' },
-    { key: 'intermediate', en: 'Intermediate', fr: 'Interm\u00e9diaire' },
-    { key: 'advanced', en: 'Advanced', fr: 'Avanc\u00e9' },
-  ];
-
   return (
     <div className="min-h-screen bg-[#F9FAFB]" style={{ fontFamily: "'Outfit', sans-serif" }}>
       {/* Header */}
@@ -202,27 +191,6 @@ export default function MyTrackPage() {
 
       {/* Content */}
       <div className="max-w-[800px] mx-auto px-6 max-md:px-4 py-8">
-        {/* Difficulty filter */}
-        <div className="mb-6">
-          <div className="flex gap-2 flex-wrap">
-            {filterButtons.map(fb => (
-              <button
-                key={fb.key}
-                onClick={() => setDiffFilter(fb.key)}
-                className={`px-4 py-2 rounded-xl text-[13px] font-semibold cursor-pointer border transition-all ${diffFilter === fb.key ? 'bg-[#F9250E] text-white border-[#F9250E]' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'}`}
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-              >
-                {lang === 'fr' ? fb.fr : fb.en}
-              </button>
-            ))}
-          </div>
-          {!hasAnyCompleted && (
-            <p className="text-[12px] text-gray-400 mt-2 italic">
-              {lang === 'en' ? 'New here? Start with Beginner lessons' : 'Nouveau ? Commencez par les le\u00e7ons d\u00e9butant'}
-            </p>
-          )}
-        </div>
-
         {pillars.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-[15px] text-gray-400">{lang === 'en' ? 'No content available yet.' : 'Pas encore de contenu disponible.'}</p>
@@ -231,10 +199,9 @@ export default function MyTrackPage() {
           <div className="flex flex-col gap-4">
             {pillars.map((pillar, pi) => {
               const color = pillarColors[pi % pillarColors.length];
-              const pillarLessons = filteredLessons.filter(l => l.pillar_id === pillar.id);
-              const allPillarLessons = lessons.filter(l => l.pillar_id === pillar.id);
-              const completedCount = allPillarLessons.filter(l => l.status === 'completed').length;
-              const totalCount = allPillarLessons.length;
+              const pillarLessons = lessons.filter(l => l.pillar_id === pillar.id);
+              const completedCount = pillarLessons.filter(l => l.status === 'completed' || l.status === 'skipped').length;
+              const totalCount = pillarLessons.length;
               const pct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
               const isExpanded = expandedPillar === pillar.id;
               const ps = pillarScores.find(s => s.pillar_id === pillar.id);
@@ -281,22 +248,28 @@ export default function MyTrackPage() {
                       {pillarLessons.map((lesson) => {
                         const isComplete = lesson.status === 'completed';
                         const isStarted = lesson.status === 'started';
+                        const isSkipped = lesson.status === 'skipped';
                         const diff = difficultyLabels[lesson.difficulty] || difficultyLabels.beginner;
                         return (
                           <Link
                             key={lesson.document_id}
                             href={`/my-track/lesson/${lesson.document_id}`}
-                            className="flex items-center gap-3 py-3.5 border-b border-gray-50 last:border-b-0 no-underline group"
+                            className={`flex items-center gap-3 py-3.5 border-b border-gray-50 last:border-b-0 no-underline group ${isSkipped ? 'opacity-50' : ''}`}
                           >
-                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${isComplete ? 'bg-green-100 text-green-600' : isStarted ? 'bg-amber-50 text-amber-500' : 'bg-gray-100 text-gray-300'}`}>
-                              {isComplete ? <CheckIcon /> : <div className="w-2 h-2 rounded-full bg-current" />}
+                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${isComplete ? 'bg-green-100 text-green-600' : isSkipped ? 'bg-gray-100 text-gray-400' : isStarted ? 'bg-amber-50 text-amber-500' : 'bg-gray-100 text-gray-300'}`}>
+                              {isComplete ? <CheckIcon /> : isSkipped ? <span className="text-[11px]">\u2014</span> : <div className="w-2 h-2 rounded-full bg-current" />}
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2">
-                                <p className="text-[14px] font-medium text-gray-800 truncate group-hover:text-[#F9250E] transition-colors">
+                                <p className={`text-[14px] font-medium truncate transition-colors ${isSkipped ? 'text-gray-500 line-through' : 'text-gray-800 group-hover:text-[#F9250E]'}`}>
                                   {lesson.title}
                                 </p>
-                                {lesson.is_recommended && !isComplete && (
+                                {isSkipped && (
+                                  <span className="px-1.5 py-0.5 rounded-md bg-gray-100 text-[9px] font-bold uppercase tracking-wider text-gray-500 shrink-0">
+                                    {lang === 'fr' ? 'Connu' : 'Known'}
+                                  </span>
+                                )}
+                                {lesson.is_recommended && !isComplete && !isSkipped && (
                                   <span className="px-1.5 py-0.5 rounded-md bg-[#F9250E]/10 text-[9px] font-bold uppercase tracking-wider text-[#F9250E] shrink-0">
                                     {lang === 'fr' ? 'Recommand\u00e9' : 'Recommended'}
                                   </span>
@@ -315,9 +288,7 @@ export default function MyTrackPage() {
                   {isExpanded && pillarLessons.length === 0 && (
                     <div className="border-t border-gray-100 px-5 py-6 text-center">
                       <p className="text-[13px] text-gray-400">
-                        {diffFilter !== 'all'
-                          ? (lang === 'en' ? `No ${diffFilter} lessons in this pillar.` : `Pas de le\u00e7ons ${diffFilter} dans ce pilier.`)
-                          : (lang === 'en' ? 'No lessons available for this pillar yet.' : 'Pas encore de le\u00e7ons pour ce pilier.')}
+                        {lang === 'en' ? 'No lessons available for this pillar yet.' : 'Pas encore de le\u00e7ons pour ce pilier.'}
                       </p>
                     </div>
                   )}

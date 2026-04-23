@@ -13,9 +13,9 @@ const ArrowLeft = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColo
 const ArrowRight = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M5 12h14M12 5l7 7-7 7"/></svg>;
 
 const difficultyLabels: Record<string, { en: string; fr: string; color: string }> = {
-  beginner: { en: 'Beginner', fr: 'D\u00e9butant', color: '#059669' },
-  intermediate: { en: 'Intermediate', fr: 'Interm\u00e9diaire', color: '#D97706' },
-  advanced: { en: 'Advanced', fr: 'Avanc\u00e9', color: '#DC2626' },
+  beginner: { en: 'Foundation', fr: 'Fondation', color: '#059669' },
+  intermediate: { en: 'Application', fr: 'Application', color: '#D97706' },
+  advanced: { en: 'Mastery', fr: 'Ma\u00eetrise', color: '#F9250E' },
 };
 
 type Lesson = {
@@ -42,7 +42,9 @@ export default function LessonPage() {
   const [pillarName, setPillarName] = useState('');
   const [journeyId, setJourneyId] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
+  const [isSkipped, setIsSkipped] = useState(false);
   const [completing, setCompleting] = useState(false);
+  const [skipping, setSkipping] = useState(false);
   const [badgeEarned, setBadgeEarned] = useState<string | null>(null);
   const [prevId, setPrevId] = useState<string | null>(null);
   const [nextId, setNextId] = useState<string | null>(null);
@@ -85,6 +87,7 @@ export default function LessonPage() {
         .eq('document_id', lessonId)
         .maybeSingle();
       setIsComplete(prog?.status === 'completed');
+      setIsSkipped(prog?.status === 'skipped');
 
       if (!prog) {
         await supabase.from('lesson_progress').upsert({
@@ -111,6 +114,27 @@ export default function LessonPage() {
     }
     load();
   }, [user?.id, lessonId, lang]);
+
+  const handleSkip = async () => {
+    if (!journeyId || skipping) return;
+    setSkipping(true);
+    try {
+      const res = await fetch('/api/lessons/skip', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ journeyId, documentId: lessonId }),
+      });
+      if (res.ok) {
+        setIsSkipped(true);
+        if (nextId) {
+          router.push(`/my-track/lesson/${nextId}`);
+        } else {
+          router.push('/my-track');
+        }
+      }
+    } catch {}
+    setSkipping(false);
+  };
 
   const handleComplete = async () => {
     if (!journeyId || completing) return;
@@ -327,23 +351,39 @@ export default function LessonPage() {
         {/* Actions — only show if reflection panel is NOT showing */}
         {!showReflection && (
           <div className="flex gap-3 flex-wrap mb-8">
-            {!isComplete ? (
-              <button
-                onClick={handleComplete}
-                disabled={completing}
-                className="flex items-center gap-2 px-6 py-3 rounded-xl border-none cursor-pointer text-[14px] font-bold text-white bg-[#F9250E] hover:-translate-y-px transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: '0 4px 16px rgba(249,37,14,0.25)' }}
-              >
-                <CheckIcon />
-                {completing
-                  ? (lang === 'en' ? 'Saving...' : 'Enregistrement...')
-                  : (lang === 'en' ? 'Mark as Complete' : 'Marquer comme termin\u00e9')}
-              </button>
-            ) : (
+            {isComplete ? (
               <div className="flex items-center gap-2 px-6 py-3 rounded-xl bg-green-50 border border-green-200 text-[14px] font-bold text-green-700">
                 <CheckIcon />
                 {lang === 'en' ? 'Completed' : 'Termin\u00e9'}
               </div>
+            ) : isSkipped ? (
+              <div className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-100 border border-gray-200 text-[14px] font-bold text-gray-600">
+                {lang === 'en' ? 'Marked as known' : 'Marqu\u00e9 comme connu'}
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={handleComplete}
+                  disabled={completing || skipping}
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl border-none cursor-pointer text-[14px] font-bold text-white bg-[#F9250E] hover:-translate-y-px transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: '0 4px 16px rgba(249,37,14,0.25)' }}
+                >
+                  <CheckIcon />
+                  {completing
+                    ? (lang === 'en' ? 'Saving...' : 'Enregistrement...')
+                    : (lang === 'en' ? 'Mark as Complete' : 'Marquer comme termin\u00e9')}
+                </button>
+                <button
+                  onClick={handleSkip}
+                  disabled={skipping || completing}
+                  className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 bg-white cursor-pointer text-[13px] font-semibold text-gray-700 hover:-translate-y-px transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                >
+                  {skipping
+                    ? (lang === 'en' ? 'Skipping...' : 'Saut...')
+                    : (lang === 'en' ? 'I already know this' : 'Je connais d\u00e9j\u00e0')}
+                </button>
+              </>
             )}
             <button
               onClick={() => router.push(`/ai-coach?q=${encodeURIComponent(lesson.title)}`)}
