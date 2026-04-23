@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Logo } from '@/components/Logo';
 
 const BookIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[13px] h-[13px]"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>;
 const ClockIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[13px] h-[13px]"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>;
@@ -153,9 +154,8 @@ export default function TrackSelectionPage() {
     <div className="min-h-screen bg-[#F9FAFB]" style={{ fontFamily: "'Outfit', sans-serif" }}>
       {/* Top Bar */}
       <div className="bg-white border-b border-gray-200 px-8 max-md:px-5 h-16 flex items-center justify-between sticky top-0 z-50">
-        <Link href="/" className="flex items-center gap-2.5 no-underline">
-          <div className="w-[34px] h-[34px] rounded-[9px] bg-[#F9250E] flex items-center justify-center text-[15px] font-extrabold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>E</div>
-          <div className="text-[16px] font-bold text-gray-800" style={{ fontFamily: "'Libre Baskerville', serif" }}>Equip<span className="text-[#F9250E]">2</span>Lead</div>
+        <Link href="/" className="no-underline inline-block">
+          <Logo size="sm" />
         </Link>
         <div className="flex items-center gap-4">
           <button onClick={() => switchLanguage(lang === 'en' ? 'fr' : 'en', user!.id, supabase, setLang)} className="px-2.5 py-1 rounded-md bg-transparent border-[1.5px] border-gray-200 cursor-pointer text-[11px] font-semibold text-gray-500 hover:border-gray-300 hover:bg-gray-50 transition-all" style={{ fontFamily: 'inherit' }}>🌐 {t.langLabel}</button>

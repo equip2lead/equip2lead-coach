@@ -7,6 +7,7 @@ import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
 import UserMenu from '@/components/UserMenu';
+import { Logo } from '@/components/Logo';
 
 const pillarColors = ['#2563EB', '#7C3AED', '#059669', '#DC2626', '#D97706'];
 
@@ -275,9 +276,8 @@ function PillarOverviewContent() {
       {/* Top Bar */}
       <div className="bg-white border-b border-gray-200 px-8 max-md:px-5 h-16 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-5">
-          <Link href="/" className="flex items-center gap-2.5 no-underline">
-            <div className="w-[34px] h-[34px] rounded-[9px] bg-[#F9250E] flex items-center justify-center text-[15px] font-extrabold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>E</div>
-            <div className="text-[16px] font-bold text-gray-800 max-md:hidden" style={{ fontFamily: "'Libre Baskerville', serif" }}>Equip<span className="text-[#F9250E]">2</span>Lead</div>
+          <Link href="/" className="no-underline inline-block">
+            <Logo size="sm" />
           </Link>
         </div>
         <div className="flex items-center gap-4">

@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { Logo } from '@/components/Logo';
 
 const i18n = {
   en: {
@@ -87,11 +88,8 @@ function CheckEmailContent() {
 
       <div className="relative z-10 max-w-[480px] w-full text-center">
         {/* Logo */}
-        <div className="flex items-center justify-center gap-2.5 mb-14">
-          <div className="w-10 h-10 rounded-[10px] bg-[#F9250E] flex items-center justify-center text-[18px] font-extrabold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>E</div>
-          <span className="text-[19px] font-bold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>
-            Equip<span className="text-[#F9250E]">2</span>Lead
-          </span>
+        <div className="flex items-center justify-center mb-14">
+          <Logo size="md" onDark />
         </div>
 
         {/* Envelope icon */}

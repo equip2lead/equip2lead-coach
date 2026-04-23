@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { switchLanguage } from '@/lib/language';
 import UserMenu from '@/components/UserMenu';
+import { Logo } from '@/components/Logo';
 
 const pillarColors = ['#2563EB', '#7C3AED', '#059669', '#DC2626', '#D97706'];
 
@@ -119,9 +120,8 @@ function ResultsContent() {
     <div className="min-h-screen bg-[#F9FAFB]" style={{ fontFamily: "'Outfit', sans-serif" }}>
       {/* Top Bar */}
       <div className="bg-white border-b border-gray-200 px-8 max-md:px-5 h-16 flex items-center justify-between sticky top-0 z-50">
-        <Link href="/dashboard" className="flex items-center gap-2.5 no-underline">
-          <div className="w-[34px] h-[34px] rounded-[9px] bg-[#F9250E] flex items-center justify-center text-[15px] font-extrabold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>E</div>
-          <div className="text-[16px] font-bold text-gray-800 max-md:hidden" style={{ fontFamily: "'Libre Baskerville', serif" }}>Equip<span className="text-[#F9250E]">2</span>Lead</div>
+        <Link href="/dashboard" className="no-underline inline-block">
+          <Logo size="sm" />
         </Link>
         <div className="flex items-center gap-4">
           <button onClick={() => switchLanguage(lang === 'en' ? 'fr' : 'en', user!.id, supabase, setLang)} className="px-2.5 py-1 rounded-md bg-transparent border-[1.5px] border-gray-200 cursor-pointer text-[11px] font-semibold text-gray-500" style={{ fontFamily: 'inherit' }}>🌐 {lang === 'en' ? 'FR' : 'EN'}</button>

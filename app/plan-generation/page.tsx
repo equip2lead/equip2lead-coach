@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
+import { Logo } from '@/components/Logo';
 
 type Phase = 'analyzing' | 'generating' | 'finalizing' | 'done';
 
@@ -255,16 +256,8 @@ function PlanGenerationContent() {
       />
 
       <div className="relative z-10 max-w-[480px] w-full px-6 text-center">
-        <div className="flex items-center justify-center gap-2.5 mb-16">
-          <div
-            className="w-10 h-10 rounded-[10px] bg-[#F9250E] flex items-center justify-center text-[18px] font-extrabold text-white"
-            style={{ fontFamily: "'Libre Baskerville', serif" }}
-          >
-            E
-          </div>
-          <span className="text-[19px] font-bold text-white" style={{ fontFamily: "'Libre Baskerville', serif" }}>
-            Equip<span className="text-[#F9250E]">2</span>Lead
-          </span>
+        <div className="flex items-center justify-center mb-16">
+          <Logo size="md" onDark />
         </div>
 
         {error ? (

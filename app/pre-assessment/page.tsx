@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
+import { Logo } from '@/components/Logo';
 
 /* ═══ STEP TYPES ═══ */
 type StepSelect = { type: 'select'; en: string; fr: string; tag?: string; tagFr?: string; options: string[]; optionsFr: string[] };
@@ -175,7 +176,7 @@ function PreAssessContent() {
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100 px-6 py-4">
         <div className="max-w-[600px] mx-auto flex items-center justify-between">
-          <h1 className="text-[16px] font-extrabold tracking-wider text-gray-900" style={{ fontFamily: "'Libre Baskerville', serif" }}>EQUIP2LEAD</h1>
+          <Logo size="sm" showTag={false} />
           <div className="flex items-center gap-3">
             <span className="text-[13px] font-semibold text-gray-400">{step + 1} / {total}</span>
             <button onClick={() => setLang(l => l === 'en' ? 'fr' : 'en')} className="px-2 py-1 rounded-md border border-gray-200 bg-transparent text-[11px] font-semibold text-gray-500 cursor-pointer" style={{ fontFamily: 'inherit' }}>{lang === 'en' ? 'FR' : 'EN'}</button>
