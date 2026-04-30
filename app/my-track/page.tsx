@@ -120,7 +120,7 @@ export default function MyTrackPage() {
       console.log('[my-track] STEP 6 RPC error:', lessonsRes.error);
       console.log('[my-track] STEP 7 RPC lessons count:', lessonsRes.data?.length);
       console.log('[my-track] STEP 8 RPC first 2 lessons:', lessonsRes.data?.slice(0, 2));
-      console.log('[my-track] STEP 9 unique pillar_ids in RPC lessons:', [...new Set((lessonsRes.data || []).map((l: any) => l.pillar_id))]);
+      console.log('[my-track] STEP 9 unique pillar_ids in RPC lessons:', Array.from(new Set((lessonsRes.data || []).map((l: any) => l.pillar_id))));
       console.log('[my-track] STEP 10 pillar ids from `pillars` table:', (pillarsRes.data || []).map((p: any) => p.id));
 
       if (lessonsRes.error) console.error('[my-track] get_personalized_lessons error:', lessonsRes.error);
