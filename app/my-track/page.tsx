@@ -88,7 +88,7 @@ export default function MyTrackPage() {
           .from('journeys')
           .select('id, track_id, current_week, status')
           .eq('user_id', user.id)
-          .not('status', 'in', '(completed,archived)')
+          .in('status', ['active', 'paused'])
           .order('started_at', { ascending: false })
           .limit(1)
           .maybeSingle(),

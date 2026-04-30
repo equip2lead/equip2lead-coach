@@ -218,7 +218,7 @@ function PlanGenerationContent() {
 
       await supabase
         .from('journeys')
-        .update({ status: 'plan_generated', updated_at: new Date().toISOString() })
+        .update({ status: 'active', updated_at: new Date().toISOString() })
         .eq('id', journey.id);
 
       setPhase('done');

@@ -103,7 +103,7 @@ export default function LessonsPage() {
           .from('journeys')
           .select('id, track_id, status, tracks(slug, name_en, name_fr)')
           .eq('user_id', user.id)
-          .not('status', 'in', '(completed,archived)')
+          .in('status', ['active', 'paused'])
           .order('started_at', { ascending: false })
           .limit(1)
           .maybeSingle();
