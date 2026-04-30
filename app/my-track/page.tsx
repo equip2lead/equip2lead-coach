@@ -1,58 +1,55 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
 import { switchLanguage } from '@/lib/language';
-
-const pillarColors = ['#2563EB', '#7C3AED', '#059669', '#DC2626', '#D97706'];
-const difficultyLabels: Record<string, { en: string; fr: string; color: string }> = {
-  beginner: { en: 'Foundation', fr: 'Fondation', color: '#059669' },
-  intermediate: { en: 'Application', fr: 'Application', color: '#D97706' },
-  advanced: { en: 'Mastery', fr: 'Ma\u00eetrise', color: '#F9250E' },
-};
+import { Logo } from '@/components/Logo';
 
 const BackIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>;
-const CheckIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><polyline points="20 6 9 17 4 12"/></svg>;
-const BookIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>;
+const LockIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>;
 
-type Pillar = { id: string; name_en: string; name_fr: string; sort_order: number; slug: string };
-type Lesson = {
-  document_id: string;
-  title: string;
-  sub_domain: string;
-  pillar_id: string;
-  lesson_order: number;
-  is_recommended: boolean;
-  pillar_score: number | null;
-  status: 'started' | 'completed' | 'skipped' | null;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
+type Track = {
+  id: string;
+  slug: string;
+  name_en: string;
+  name_fr: string;
+  sort_order: number;
 };
-type PillarScore = { pillar_id: string; score: number };
 
-function bucketToDifficulty(order: number): 'beginner' | 'intermediate' | 'advanced' {
-  if (order < 200) return 'beginner';
-  if (order < 300) return 'intermediate';
-  return 'advanced';
-}
-
-function getPillarContext(score: number | null, lang: string): { text: string; color: string } | null {
-  if (score === null) return null;
-  if (score < 3.0) return {
-    text: lang === 'fr' ? 'Zone prioritaire \u2014 votre \u00e9valuation indique un besoin ici' : 'Priority area \u2014 your assessment shows this needs attention',
-    color: '#DC2626',
-  };
-  if (score < 4.0) return {
-    text: lang === 'fr' ? 'Zone de croissance \u2014 continuez \u00e0 d\u00e9velopper cette comp\u00e9tence' : 'Growth area \u2014 continue developing this skill',
-    color: '#D97706',
-  };
-  return {
-    text: lang === 'fr' ? 'Point fort \u2014 construisez sur cette base' : 'Strength \u2014 build on this foundation',
+const trackMeta: Record<string, { color: string; icon: string; tagline_en: string; tagline_fr: string }> = {
+  leadership: {
+    color: '#F9250E',
+    icon: '👑',
+    tagline_en: 'Lead with clarity, character, and confidence',
+    tagline_fr: 'Diriger avec clarté, caractère et confiance',
+  },
+  ministry: {
+    color: '#2563EB',
+    icon: '📖',
+    tagline_en: 'Serve with purpose, sustain with wisdom',
+    tagline_fr: 'Servir avec un but, durer avec sagesse',
+  },
+  marriage: {
+    color: '#DB2777',
+    icon: '❤️',
+    tagline_en: 'Build a thriving partnership',
+    tagline_fr: 'Bâtir un partenariat florissant',
+  },
+  entrepreneur: {
+    color: '#EA580C',
+    icon: '🚀',
+    tagline_en: 'Build a Kingdom-minded business',
+    tagline_fr: 'Bâtir une entreprise au cœur du Royaume',
+  },
+  personal: {
     color: '#059669',
-  };
-}
+    icon: '🌱',
+    tagline_en: 'Grow as the person God designed you to be',
+    tagline_fr: 'Grandir comme la personne que Dieu a conçue',
+  },
+};
 
 export default function MyTrackPage() {
   const router = useRouter();
@@ -60,130 +57,71 @@ export default function MyTrackPage() {
   const supabase = createClient();
   const [lang, setLang] = useState<'en' | 'fr'>('en');
   const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [journeyId, setJourneyId] = useState<string | null>(null);
-  const [trackName, setTrackName] = useState('');
-  const [pillars, setPillars] = useState<Pillar[]>([]);
-  const [lessons, setLessons] = useState<Lesson[]>([]);
-  const [pillarScores, setPillarScores] = useState<PillarScore[]>([]);
-  const [expandedPillar, setExpandedPillar] = useState<string | null>(null);
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [activeTrackId, setActiveTrackId] = useState<string | null>(null);
+  const [activeTrackName, setActiveTrackName] = useState<string>('');
+  const [currentWeek, setCurrentWeek] = useState<number>(1);
+  const [switchModalTrack, setSwitchModalTrack] = useState<Track | null>(null);
 
   useEffect(() => {
-    if (!user) return;
-    async function load() {
-      setLoading(true);
-      setLoadError(null);
+    if (authLoading) return;
+    if (!user) {
+      router.replace('/auth');
+      return;
+    }
+    (async () => {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('preferred_language')
+        .eq('id', user.id)
+        .single();
+      const userLang: 'en' | 'fr' = profile?.preferred_language === 'fr' ? 'fr' : 'en';
+      setLang(userLang);
 
-      console.log('[my-track] STEP 1 mounting, user.id:', user!.id);
-
-      const { data: allJourneys } = await supabase.from('journeys')
-        .select('id, track_id, status, started_at')
-        .eq('user_id', user!.id)
-        .order('started_at', { ascending: false });
-      console.log('[my-track] STEP 2 ALL journeys for user:', allJourneys);
-
-      // Accept any in-progress status (active, paused, plan_generated, etc.) — exclude only terminal states
-      const { data: journey, error: journeyErr } = await supabase.from('journeys')
-        .select('id, track_id, status, tracks(slug, name_en, name_fr)')
-        .eq('user_id', user!.id)
-        .not('status', 'in', '(completed,archived)')
-        .order('started_at', { ascending: false }).limit(1).maybeSingle();
-      console.log('[my-track] STEP 3 journey selected:', journey, 'error:', journeyErr);
-
-      if (journeyErr) console.error('[my-track] journey query error:', journeyErr);
-      if (!journey) {
-        console.warn('[my-track] no journey found — setting no_journey error');
-        setLoadError('no_journey');
-        setLoading(false);
-        return;
-      }
-
-      setJourneyId(journey.id);
-      const track = journey.tracks as any;
-      setTrackName(lang === 'fr' ? (track?.name_fr || track?.name_en) : (track?.name_en || ''));
-
-      console.log('[my-track] STEP 4 calling get_personalized_lessons with p_journey_id:', journey.id);
-
-      const [pillarsRes, lessonsRes, scoresRes, progressRes] = await Promise.all([
-        supabase.from('pillars')
-          .select('id, name_en, name_fr, sort_order, slug')
-          .eq('track_id', journey.track_id)
+      const [tracksRes, journeyRes] = await Promise.all([
+        supabase
+          .from('tracks')
+          .select('id, slug, name_en, name_fr, sort_order')
+          .eq('is_active', true)
           .order('sort_order'),
-        supabase.rpc('get_personalized_lessons', { p_journey_id: journey.id }),
-        supabase.from('pillar_scores')
-          .select('pillar_id, score')
-          .eq('journey_id', journey.id),
-        supabase.from('lesson_progress')
-          .select('document_id, status')
-          .eq('journey_id', journey.id),
+        supabase
+          .from('journeys')
+          .select('id, track_id, current_week, status')
+          .eq('user_id', user.id)
+          .not('status', 'in', '(completed,archived)')
+          .order('started_at', { ascending: false })
+          .limit(1)
+          .maybeSingle(),
       ]);
 
-      console.log('[my-track] STEP 5 pillars from `pillars` table — count:', pillarsRes.data?.length, 'rows:', pillarsRes.data);
-      console.log('[my-track] STEP 6 RPC error:', lessonsRes.error);
-      console.log('[my-track] STEP 7 RPC lessons count:', lessonsRes.data?.length);
-      console.log('[my-track] STEP 8 RPC first 2 lessons:', lessonsRes.data?.slice(0, 2));
-      console.log('[my-track] STEP 9 unique pillar_ids in RPC lessons:', Array.from(new Set((lessonsRes.data || []).map((l: any) => l.pillar_id))));
-      console.log('[my-track] STEP 10 pillar ids from `pillars` table:', (pillarsRes.data || []).map((p: any) => p.id));
+      const ts: Track[] = tracksRes.data || [];
+      setTracks(ts);
 
-      if (lessonsRes.error) console.error('[my-track] get_personalized_lessons error:', lessonsRes.error);
-      if (!lessonsRes.data?.length) console.log('[my-track] RPC returned 0 lessons for journey', journey.id, 'sample response:', lessonsRes.data);
+      const j = journeyRes.data;
+      if (j) {
+        setActiveTrackId(j.track_id);
+        setCurrentWeek(j.current_week || 1);
+        const t = ts.find((x) => x.id === j.track_id);
+        if (t) setActiveTrackName(userLang === 'fr' ? t.name_fr : t.name_en);
+      }
 
-      const progressMap = new Map<string, 'started' | 'completed' | 'skipped'>();
-      (progressRes.data || []).forEach((p: any) => {
-        if (p.status) progressMap.set(p.document_id, p.status);
-      });
-
-      const normalized: Lesson[] = (lessonsRes.data || []).map((row: any) => ({
-        document_id: row.document_id,
-        title: row.title,
-        sub_domain: row.sub_domain,
-        pillar_id: row.pillar_id,
-        lesson_order: Number(row.lesson_order ?? 100),
-        is_recommended: !!row.is_recommended,
-        pillar_score: row.pillar_score !== null && row.pillar_score !== undefined ? Number(row.pillar_score) : null,
-        status:
-          progressMap.get(row.document_id) ??
-          (row.is_completed ? 'completed' : row.is_started ? 'started' : null),
-        difficulty: bucketToDifficulty(Number(row.lesson_order ?? 100)),
-      }));
-
-      console.log('[my-track] STEP 11 normalized lessons count:', normalized.length, 'first 2:', normalized.slice(0, 2));
-
-      setPillars(pillarsRes.data || []);
-      setLessons(normalized);
-      setPillarScores((scoresRes.data || []).map((s: any) => ({ pillar_id: s.pillar_id, score: Number(s.score) })));
-      if (pillarsRes.data?.length) setExpandedPillar(pillarsRes.data[0].id);
       setLoading(false);
+    })();
+  }, [authLoading, user?.id]);
+
+  const handleLockedClick = (track: Track) => {
+    if (!activeTrackId) {
+      // Brand-new user with no journey — start assessment for this track
+      router.push(`/track-selection?slug=${track.slug}`);
+      return;
     }
-    load();
-  }, [user?.id, lang]);
+    setSwitchModalTrack(track);
+  };
 
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]" style={{ fontFamily: "'Outfit', sans-serif" }}>
         <div className="w-6 h-6 border-2 border-gray-300 border-t-[#F9250E] rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (loadError === 'no_journey') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB] px-6 text-center" style={{ fontFamily: "'Outfit', sans-serif" }}>
-        <div>
-          <p className="text-[16px] text-gray-700 font-semibold mb-2">
-            {lang === 'en' ? 'No active journey' : 'Aucun parcours actif'}
-          </p>
-          <p className="text-[13.5px] text-gray-500 mb-5">
-            {lang === 'en' ? 'Complete onboarding to start a coaching track.' : 'Terminez l’intégration pour démarrer un parcours.'}
-          </p>
-          <button
-            onClick={() => router.push('/onboarding')}
-            className="px-5 py-2.5 rounded-xl text-[13px] font-bold text-white bg-[#F9250E] border-none cursor-pointer"
-            style={{ fontFamily: 'inherit' }}
-          >
-            {lang === 'en' ? 'Go to onboarding' : 'Aller à l’intégration'}
-          </button>
-        </div>
       </div>
     );
   }
@@ -198,15 +136,7 @@ export default function MyTrackPage() {
             {lang === 'en' ? 'Dashboard' : 'Tableau de bord'}
           </button>
           <div className="w-px h-8 bg-gray-200" />
-          <div className="flex items-center gap-2.5">
-            <BookIcon />
-            <div>
-              <h1 className="text-[15px] font-bold text-gray-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                {lang === 'en' ? 'My Lessons' : 'Mes Leçons'}
-              </h1>
-              <p className="text-[11px] text-gray-400">{trackName}</p>
-            </div>
-          </div>
+          <Logo size="sm" />
         </div>
         <button onClick={() => switchLanguage(lang === 'en' ? 'fr' : 'en', user!.id, supabase, setLang)} className="px-2.5 py-1 rounded-md border border-gray-200 bg-transparent text-[11px] font-semibold text-gray-500 cursor-pointer" style={{ fontFamily: 'inherit' }}>
           &#x1F310; {lang === 'en' ? 'FR' : 'EN'}
@@ -215,113 +145,149 @@ export default function MyTrackPage() {
 
       {/* Content */}
       <div className="max-w-[800px] mx-auto px-6 max-md:px-4 py-8">
-        {pillars.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-[15px] text-gray-400">{lang === 'en' ? 'No content available yet.' : 'Pas encore de contenu disponible.'}</p>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-4">
-            {pillars.map((pillar, pi) => {
-              const color = pillarColors[pi % pillarColors.length];
-              const pillarLessons = lessons.filter(l => l.pillar_id === pillar.id);
-              const completedCount = pillarLessons.filter(l => l.status === 'completed' || l.status === 'skipped').length;
-              const totalCount = pillarLessons.length;
-              const pct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
-              const isExpanded = expandedPillar === pillar.id;
-              const ps = pillarScores.find(s => s.pillar_id === pillar.id);
-              const ctx = getPillarContext(ps?.score ?? null, lang);
+        <div className="mb-8">
+          <h1 className="text-[26px] font-extrabold text-gray-900 mb-1" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            {lang === 'en' ? 'My Track' : 'Mon Parcours'}
+          </h1>
+          <p className="text-[14px] text-gray-500">
+            {activeTrackId
+              ? (lang === 'en' ? 'Your active coaching journey and other available tracks.' : 'Votre parcours actif et les autres parcours disponibles.')
+              : (lang === 'en' ? 'Choose a track to begin your coaching journey.' : 'Choisissez un parcours pour commencer.')}
+          </p>
+        </div>
 
-              return (
-                <div key={pillar.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
-                  {/* Pillar header */}
-                  <button
-                    onClick={() => setExpandedPillar(isExpanded ? null : pillar.id)}
-                    className="w-full flex items-center gap-4 p-5 bg-transparent border-none cursor-pointer text-left transition-colors hover:bg-gray-50"
-                    style={{ fontFamily: 'inherit' }}
-                  >
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-[14px] font-bold shrink-0" style={{ background: `${color}12`, color }}>
-                      {pillar.sort_order}
+        <div className="flex flex-col gap-4">
+          {tracks.map((track) => {
+            const meta = trackMeta[track.slug] || { color: '#6B7280', icon: '✨', tagline_en: '', tagline_fr: '' };
+            const isActive = activeTrackId === track.id;
+            const isLocked = activeTrackId !== null && !isActive;
+            const name = lang === 'fr' ? track.name_fr : track.name_en;
+            const tagline = lang === 'fr' ? meta.tagline_fr : meta.tagline_en;
+
+            return (
+              <div
+                key={track.id}
+                className={`bg-white rounded-2xl border overflow-hidden shadow-sm transition-all ${isActive ? 'border-[#F9250E]/30' : 'border-gray-200'}`}
+                style={isActive ? { boxShadow: '0 4px 24px rgba(249,37,14,0.08)' } : undefined}
+              >
+                <div className="p-6 max-md:p-5">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center text-[24px] shrink-0" style={{ background: `${meta.color}15` }}>
+                      {meta.icon}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-[15px] font-bold text-gray-900 truncate" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                        {lang === 'fr' ? pillar.name_fr : pillar.name_en}
-                        {ps && <span className="ml-2 text-[12px] font-bold" style={{ color }}>{ps.score.toFixed(1)}/5</span>}
-                      </h3>
-                      {ctx && (
-                        <p className="text-[11px] font-medium mt-0.5" style={{ color: ctx.color }}>
-                          {ctx.text}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-3 mt-1.5">
-                        <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden max-w-[200px]">
-                          <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: color }} />
-                        </div>
-                        <span className="text-[12px] font-semibold text-gray-400 shrink-0">
-                          {completedCount}/{totalCount} {lang === 'en' ? 'lessons' : 'le\u00e7ons'}
-                        </span>
+                      {/* Status badge */}
+                      <div className="mb-2">
+                        {isActive ? (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-green-100 text-green-700">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                            {lang === 'en' ? 'Active' : 'Actif'}
+                          </span>
+                        ) : isLocked ? (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500">
+                            <LockIcon />
+                            {lang === 'en' ? 'Locked' : 'Verrouillé'}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-600">
+                            {lang === 'en' ? 'Available' : 'Disponible'}
+                          </span>
+                        )}
                       </div>
-                    </div>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`w-5 h-5 text-gray-400 shrink-0 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
-                      <polyline points="6 9 12 15 18 9"/>
-                    </svg>
-                  </button>
+                      <h3 className="text-[17px] font-bold text-gray-900 mb-1" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        {name}
+                      </h3>
+                      <p className="text-[13px] text-gray-500 mb-3">{tagline}</p>
+                      <div className="text-[12px] text-gray-400 mb-4">
+                        {isActive ? (
+                          <>
+                            {lang === 'en' ? '5 pillars · ' : '5 piliers · '}
+                            {lang === 'en' ? `Week ${currentWeek} of 12` : `Semaine ${currentWeek} sur 12`}
+                          </>
+                        ) : (
+                          <>{lang === 'en' ? '5 pillars · 12-week plan' : '5 piliers · plan de 12 semaines'}</>
+                        )}
+                      </div>
 
-                  {/* Lesson list */}
-                  {isExpanded && pillarLessons.length > 0 && (
-                    <div className="border-t border-gray-100 px-5 pb-4">
-                      {pillarLessons.map((lesson) => {
-                        const isComplete = lesson.status === 'completed';
-                        const isStarted = lesson.status === 'started';
-                        const isSkipped = lesson.status === 'skipped';
-                        const diff = difficultyLabels[lesson.difficulty] || difficultyLabels.beginner;
-                        return (
-                          <Link
-                            key={lesson.document_id}
-                            href={`/my-track/lesson/${lesson.document_id}`}
-                            className={`flex items-center gap-3 py-3.5 border-b border-gray-50 last:border-b-0 no-underline group ${isSkipped ? 'opacity-50' : ''}`}
-                          >
-                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${isComplete ? 'bg-green-100 text-green-600' : isSkipped ? 'bg-gray-100 text-gray-400' : isStarted ? 'bg-amber-50 text-amber-500' : 'bg-gray-100 text-gray-300'}`}>
-                              {isComplete ? <CheckIcon /> : isSkipped ? <span className="text-[11px]">\u2014</span> : <div className="w-2 h-2 rounded-full bg-current" />}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2">
-                                <p className={`text-[14px] font-medium truncate transition-colors ${isSkipped ? 'text-gray-500 line-through' : 'text-gray-800 group-hover:text-[#F9250E]'}`}>
-                                  {lesson.title}
-                                </p>
-                                {isSkipped && (
-                                  <span className="px-1.5 py-0.5 rounded-md bg-gray-100 text-[9px] font-bold uppercase tracking-wider text-gray-500 shrink-0">
-                                    {lang === 'fr' ? 'Connu' : 'Known'}
-                                  </span>
-                                )}
-                                {lesson.is_recommended && !isComplete && !isSkipped && (
-                                  <span className="px-1.5 py-0.5 rounded-md bg-[#F9250E]/10 text-[9px] font-bold uppercase tracking-wider text-[#F9250E] shrink-0">
-                                    {lang === 'fr' ? 'Recommand\u00e9' : 'Recommended'}
-                                  </span>
-                                )}
-                              </div>
-                              <p className="text-[11px] text-gray-400 mt-0.5">{lesson.sub_domain}</p>
-                            </div>
-                            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider shrink-0" style={{ color: diff.color, background: `${diff.color}10` }}>
-                              {lang === 'fr' ? diff.fr : diff.en}
-                            </span>
-                          </Link>
-                        );
-                      })}
+                      {isActive ? (
+                        <button
+                          onClick={() => router.push('/lessons')}
+                          className="px-5 py-2.5 rounded-xl border-none cursor-pointer text-[13px] font-bold text-white bg-[#F9250E] hover:-translate-y-px transition-all"
+                          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: '0 4px 16px rgba(249,37,14,0.25)' }}
+                        >
+                          {lang === 'en' ? 'Continue lessons →' : 'Continuer les leçons →'}
+                        </button>
+                      ) : isLocked ? (
+                        <button
+                          onClick={() => handleLockedClick(track)}
+                          className="px-5 py-2.5 rounded-xl border border-gray-300 bg-white cursor-pointer text-[13px] font-semibold text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all"
+                          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                        >
+                          {lang === 'en' ? 'Take assessment to unlock' : 'Passer l\'évaluation pour débloquer'}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => router.push(`/track-selection?slug=${track.slug}`)}
+                          className="px-5 py-2.5 rounded-xl border-none cursor-pointer text-[13px] font-bold text-white hover:-translate-y-px transition-all"
+                          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", background: meta.color, boxShadow: `0 4px 16px ${meta.color}40` }}
+                        >
+                          {lang === 'en' ? 'Start assessment' : 'Commencer l\'évaluation'}
+                        </button>
+                      )}
                     </div>
-                  )}
-                  {isExpanded && pillarLessons.length === 0 && (
-                    <div className="border-t border-gray-100 px-5 py-6 text-center">
-                      <p className="text-[13px] text-gray-400">
-                        {lang === 'en' ? 'No lessons available for this pillar yet.' : 'Pas encore de le\u00e7ons pour ce pilier.'}
-                      </p>
-                    </div>
-                  )}
+                  </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
+              </div>
+            );
+          })}
+        </div>
       </div>
+
+      {/* Track-switch modal */}
+      {switchModalTrack && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setSwitchModalTrack(null)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl bg-white p-8 max-md:p-6 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+            style={{ fontFamily: "'Outfit', sans-serif" }}
+          >
+            <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center mb-4 text-gray-500">
+              <LockIcon />
+            </div>
+            <h2 className="text-[22px] font-extrabold text-gray-900 mb-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              {lang === 'fr' ? 'Un seul parcours à la fois' : 'One track at a time'}
+            </h2>
+            <p className="text-[14px] text-gray-600 leading-[1.6] mb-6">
+              {lang === 'fr'
+                ? `Vous travaillez actuellement sur ${activeTrackName}. Pour passer à ${switchModalTrack.name_fr}, terminez votre parcours actuel ou contactez le support.`
+                : `You're currently working on ${activeTrackName}. To switch to ${switchModalTrack.name_en}, finish your current track or contact support.`}
+            </p>
+            <div className="flex gap-3 max-md:flex-col">
+              <button
+                onClick={() => setSwitchModalTrack(null)}
+                className="flex-1 rounded-xl border border-gray-200 bg-white py-3 text-[13px] font-semibold text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              >
+                {lang === 'fr' ? 'Fermer' : 'Close'}
+              </button>
+              <a
+                href={`mailto:contact@equip2lead.coach?subject=${encodeURIComponent(
+                  lang === 'fr'
+                    ? `Demande de changement de parcours: ${switchModalTrack.name_fr}`
+                    : `Track switch request: ${switchModalTrack.name_en}`
+                )}`}
+                className="flex-1 rounded-xl bg-[#F9250E] py-3 text-center text-[13px] font-bold text-white no-underline hover:bg-[#d91f0c] transition-colors"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: '0 4px 16px rgba(249,37,14,0.25)' }}
+              >
+                {lang === 'fr' ? 'Contacter le support' : 'Contact support'}
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
