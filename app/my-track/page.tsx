@@ -74,12 +74,23 @@ export default function MyTrackPage() {
       setLoading(true);
       setLoadError(null);
 
+      console.log('[my-track] STEP 1 mounting, user.id:', user!.id);
+
+      const { data: allJourneys } = await supabase.from('journeys')
+        .select('id, track_id, status, started_at')
+        .eq('user_id', user!.id)
+        .order('started_at', { ascending: false });
+      console.log('[my-track] STEP 2 ALL journeys for user:', allJourneys);
+
       const { data: journey, error: journeyErr } = await supabase.from('journeys')
-        .select('id, track_id, tracks(slug, name_en, name_fr)')
+        .select('id, track_id, status, tracks(slug, name_en, name_fr)')
         .eq('user_id', user!.id)
         .order('started_at', { ascending: false }).limit(1).maybeSingle();
+      console.log('[my-track] STEP 3 journey selected:', journey, 'error:', journeyErr);
+
       if (journeyErr) console.error('[my-track] journey query error:', journeyErr);
       if (!journey) {
+        console.warn('[my-track] no journey found — setting no_journey error');
         setLoadError('no_journey');
         setLoading(false);
         return;
@@ -88,6 +99,8 @@ export default function MyTrackPage() {
       setJourneyId(journey.id);
       const track = journey.tracks as any;
       setTrackName(lang === 'fr' ? (track?.name_fr || track?.name_en) : (track?.name_en || ''));
+
+      console.log('[my-track] STEP 4 calling get_personalized_lessons with p_journey_id:', journey.id);
 
       const [pillarsRes, lessonsRes, scoresRes, progressRes] = await Promise.all([
         supabase.from('pillars')
@@ -102,6 +115,13 @@ export default function MyTrackPage() {
           .select('document_id, status')
           .eq('journey_id', journey.id),
       ]);
+
+      console.log('[my-track] STEP 5 pillars from `pillars` table — count:', pillarsRes.data?.length, 'rows:', pillarsRes.data);
+      console.log('[my-track] STEP 6 RPC error:', lessonsRes.error);
+      console.log('[my-track] STEP 7 RPC lessons count:', lessonsRes.data?.length);
+      console.log('[my-track] STEP 8 RPC first 2 lessons:', lessonsRes.data?.slice(0, 2));
+      console.log('[my-track] STEP 9 unique pillar_ids in RPC lessons:', [...new Set((lessonsRes.data || []).map((l: any) => l.pillar_id))]);
+      console.log('[my-track] STEP 10 pillar ids from `pillars` table:', (pillarsRes.data || []).map((p: any) => p.id));
 
       if (lessonsRes.error) console.error('[my-track] get_personalized_lessons error:', lessonsRes.error);
       if (!lessonsRes.data?.length) console.log('[my-track] RPC returned 0 lessons for journey', journey.id, 'sample response:', lessonsRes.data);
@@ -124,6 +144,8 @@ export default function MyTrackPage() {
           (row.is_completed ? 'completed' : row.is_started ? 'started' : null),
         difficulty: bucketToDifficulty(Number(row.lesson_order ?? 100)),
       }));
+
+      console.log('[my-track] STEP 11 normalized lessons count:', normalized.length, 'first 2:', normalized.slice(0, 2));
 
       setPillars(pillarsRes.data || []);
       setLessons(normalized);
