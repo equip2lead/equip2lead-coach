@@ -218,7 +218,7 @@ function IntakeContent() {
     const preData: Record<string, any> = {};
     ctxSteps.forEach((s, i) => { preData[`context_${i}`] = { question: s.en, answer: ctxAnswers[i] }; });
     visSteps.forEach((s, i) => { preData[`vision_${i}`] = { question: s.en, answer: visionAnswers[i] }; });
-    await supabase.from('journeys').update({ pre_assessment_data: preData, status: 'completed', updated_at: new Date().toISOString() }).eq('id', journeyId);
+    await supabase.from('journeys').update({ pre_assessment_data: preData, updated_at: new Date().toISOString() }).eq('id', journeyId);
   };
 
   // ── Current sub-domain questions for grouped display ──
