@@ -15,7 +15,7 @@ const ArrowRight = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentCol
 const difficultyLabels: Record<string, { en: string; fr: string; color: string }> = {
   beginner: { en: 'Foundation', fr: 'Fondation', color: '#059669' },
   intermediate: { en: 'Application', fr: 'Application', color: '#D97706' },
-  advanced: { en: 'Mastery', fr: 'Ma\u00eetrise', color: '#F9250E' },
+  advanced: { en: 'Mastery', fr: 'Maîtrise', color: '#F9250E' },
 };
 
 type Lesson = {
@@ -64,7 +64,8 @@ export default function LessonPage() {
       const { data: journey } = await supabase.from('journeys')
         .select('id, track_id')
         .eq('user_id', user!.id)
-        .order('started_at', { ascending: false }).limit(1).single();
+        .not('status', 'in', '(completed,archived)')
+        .order('started_at', { ascending: false }).limit(1).maybeSingle();
       if (!journey) { setLoading(false); return; }
       setJourneyId(journey.id);
 
@@ -127,9 +128,9 @@ export default function LessonPage() {
       if (res.ok) {
         setIsSkipped(true);
         if (nextId) {
-          router.push(`/my-track/lesson/${nextId}`);
+          router.push(`/lessons/${nextId}`);
         } else {
-          router.push('/my-track');
+          router.push('/lessons');
         }
       }
     } catch {}
@@ -200,9 +201,9 @@ export default function LessonPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]" style={{ fontFamily: "'Outfit', sans-serif" }}>
         <div className="text-center">
-          <p className="text-[16px] text-gray-500 mb-4">{lang === 'en' ? 'Lesson not found' : 'Le\u00e7on introuvable'}</p>
-          <button onClick={() => router.push('/my-track')} className="text-[13px] font-semibold text-[#F9250E] bg-transparent border-none cursor-pointer" style={{ fontFamily: 'inherit' }}>
-            &larr; {lang === 'en' ? 'Back to Track' : 'Retour au parcours'}
+          <p className="text-[16px] text-gray-500 mb-4">{lang === 'en' ? 'Lesson not found' : 'Leçon introuvable'}</p>
+          <button onClick={() => router.push('/lessons')} className="text-[13px] font-semibold text-[#F9250E] bg-transparent border-none cursor-pointer" style={{ fontFamily: 'inherit' }}>
+            &larr; {lang === 'en' ? 'Back to Lessons' : 'Retour aux leçons'}
           </button>
         </div>
       </div>
@@ -233,9 +234,9 @@ export default function LessonPage() {
     <div className="min-h-screen bg-[#F9FAFB]" style={{ fontFamily: "'Outfit', sans-serif" }}>
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 max-md:px-4 h-16 flex items-center justify-between sticky top-0 z-10">
-        <button onClick={() => router.push('/my-track')} className="flex items-center gap-2 text-[13px] font-medium text-gray-500 hover:text-gray-800 bg-transparent border-none cursor-pointer transition-colors" style={{ fontFamily: 'inherit' }}>
+        <button onClick={() => router.push('/lessons')} className="flex items-center gap-2 text-[13px] font-medium text-gray-500 hover:text-gray-800 bg-transparent border-none cursor-pointer transition-colors" style={{ fontFamily: 'inherit' }}>
           <BackIcon />
-          {lang === 'en' ? 'My Lessons' : 'Mes Leçons'}
+          {lang === 'en' ? 'Lessons' : 'Leçons'}
         </button>
         <button onClick={() => switchLanguage(lang === 'en' ? 'fr' : 'en', user!.id, supabase, setLang)} className="px-2.5 py-1 rounded-md border border-gray-200 bg-transparent text-[11px] font-semibold text-gray-500 cursor-pointer" style={{ fontFamily: 'inherit' }}>
           &#x1F310; {lang === 'en' ? 'FR' : 'EN'}
@@ -289,19 +290,19 @@ export default function LessonPage() {
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center text-green-600"><CheckIcon /></div>
               <h3 className="text-[17px] font-bold text-gray-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                {lang === 'en' ? 'Lesson Complete!' : 'Le\u00e7on termin\u00e9e !'}
+                {lang === 'en' ? 'Lesson Complete!' : 'Leçon terminée !'}
               </h3>
             </div>
 
             <h4 className="text-[14px] font-bold text-gray-700 mb-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              {lang === 'en' ? 'Your Personal Reflection' : 'Votre r\u00e9flexion personnelle'}
+              {lang === 'en' ? 'Your Personal Reflection' : 'Votre réflexion personnelle'}
             </h4>
             <div className="w-12 h-0.5 bg-green-300 rounded mb-4" />
 
             {loadingReflection ? (
               <div className="flex items-center gap-2 py-4">
                 <div className="w-4 h-4 border-2 border-green-300 border-t-green-600 rounded-full animate-spin" />
-                <span className="text-[13px] text-gray-500">{lang === 'en' ? 'Generating your reflection question...' : 'G\u00e9n\u00e9ration de votre question...'}</span>
+                <span className="text-[13px] text-gray-500">{lang === 'en' ? 'Generating your reflection question...' : 'Génération de votre question...'}</span>
               </div>
             ) : (
               <>
@@ -314,7 +315,7 @@ export default function LessonPage() {
                 <textarea
                   value={reflectionAnswer}
                   onChange={e => setReflectionAnswer(e.target.value)}
-                  placeholder={lang === 'en' ? 'Write your reflection here...' : '\u00c9crivez votre r\u00e9flexion ici...'}
+                  placeholder={lang === 'en' ? 'Write your reflection here...' : 'Écrivez votre réflexion ici...'}
                   rows={4}
                   className="w-full px-4 py-3 rounded-xl border border-green-200 bg-white text-[14px] text-gray-800 outline-none resize-none focus:border-green-400 transition-all placeholder:text-gray-400"
                   style={{ fontFamily: 'inherit' }}
@@ -334,11 +335,11 @@ export default function LessonPage() {
                   </button>
                   {nextId && (
                     <button
-                      onClick={() => router.push(`/my-track/lesson/${nextId}`)}
+                      onClick={() => router.push(`/lessons/${nextId}`)}
                       className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 bg-white cursor-pointer text-[13px] font-semibold text-gray-700 hover:-translate-y-px transition-all"
                       style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                     >
-                      {lang === 'en' ? 'Next Lesson' : 'Le\u00e7on suivante'}
+                      {lang === 'en' ? 'Next Lesson' : 'Leçon suivante'}
                       <ArrowRight />
                     </button>
                   )}
@@ -348,17 +349,17 @@ export default function LessonPage() {
           </div>
         )}
 
-        {/* Actions — only show if reflection panel is NOT showing */}
+        {/* Actions */}
         {!showReflection && (
           <div className="flex gap-3 flex-wrap mb-8">
             {isComplete ? (
               <div className="flex items-center gap-2 px-6 py-3 rounded-xl bg-green-50 border border-green-200 text-[14px] font-bold text-green-700">
                 <CheckIcon />
-                {lang === 'en' ? 'Completed' : 'Termin\u00e9'}
+                {lang === 'en' ? 'Completed' : 'Terminé'}
               </div>
             ) : isSkipped ? (
               <div className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-100 border border-gray-200 text-[14px] font-bold text-gray-600">
-                {lang === 'en' ? 'Marked as known' : 'Marqu\u00e9 comme connu'}
+                {lang === 'en' ? 'Marked as known' : 'Marqué comme connu'}
               </div>
             ) : (
               <>
@@ -371,7 +372,7 @@ export default function LessonPage() {
                   <CheckIcon />
                   {completing
                     ? (lang === 'en' ? 'Saving...' : 'Enregistrement...')
-                    : (lang === 'en' ? 'Mark as Complete' : 'Marquer comme termin\u00e9')}
+                    : (lang === 'en' ? 'Mark as Complete' : 'Marquer comme terminé')}
                 </button>
                 <button
                   onClick={handleSkip}
@@ -381,7 +382,7 @@ export default function LessonPage() {
                 >
                   {skipping
                     ? (lang === 'en' ? 'Skipping...' : 'Saut...')
-                    : (lang === 'en' ? 'I already know this' : 'Je connais d\u00e9j\u00e0')}
+                    : (lang === 'en' ? 'I already know this' : 'Je connais déjà')}
                 </button>
               </>
             )}
@@ -391,23 +392,23 @@ export default function LessonPage() {
               style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
             >
               <ChatIcon />
-              {lang === 'en' ? 'Chat about this lesson' : 'Discuter de cette le\u00e7on'}
+              {lang === 'en' ? 'Chat about this lesson' : 'Discuter de cette leçon'}
             </button>
           </div>
         )}
 
-        {/* Prev / Next — only show if reflection panel is NOT showing */}
+        {/* Prev / Next */}
         {!showReflection && (
           <div className="flex items-center justify-between">
             {prevId ? (
-              <button onClick={() => router.push(`/my-track/lesson/${prevId}`)} className="flex items-center gap-2 text-[13px] font-semibold text-gray-500 hover:text-gray-800 bg-transparent border-none cursor-pointer transition-colors" style={{ fontFamily: 'inherit' }}>
+              <button onClick={() => router.push(`/lessons/${prevId}`)} className="flex items-center gap-2 text-[13px] font-semibold text-gray-500 hover:text-gray-800 bg-transparent border-none cursor-pointer transition-colors" style={{ fontFamily: 'inherit' }}>
                 <ArrowLeft />
-                {lang === 'en' ? 'Previous Lesson' : 'Le\u00e7on pr\u00e9c\u00e9dente'}
+                {lang === 'en' ? 'Previous Lesson' : 'Leçon précédente'}
               </button>
             ) : <div />}
             {nextId ? (
-              <button onClick={() => router.push(`/my-track/lesson/${nextId}`)} className="flex items-center gap-2 text-[13px] font-semibold text-[#F9250E] hover:text-[#C41E0B] bg-transparent border-none cursor-pointer transition-colors" style={{ fontFamily: 'inherit' }}>
-                {lang === 'en' ? 'Next Lesson' : 'Le\u00e7on suivante'}
+              <button onClick={() => router.push(`/lessons/${nextId}`)} className="flex items-center gap-2 text-[13px] font-semibold text-[#F9250E] hover:text-[#C41E0B] bg-transparent border-none cursor-pointer transition-colors" style={{ fontFamily: 'inherit' }}>
+                {lang === 'en' ? 'Next Lesson' : 'Leçon suivante'}
                 <ArrowRight />
               </button>
             ) : <div />}
