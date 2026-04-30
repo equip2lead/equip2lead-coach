@@ -7,38 +7,15 @@ import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { Logo } from '@/components/Logo';
 
-type Phase = 'analyzing' | 'generating' | 'finalizing' | 'done';
+type Phase = 'metadata' | 'weeks-1-3' | 'weeks-4-6' | 'weeks-7-9' | 'weeks-10-12';
 
-type ApiWeek = {
-  week: number;
-  theme: string;
-  focus_area: string;
-  exercises: string[];
-  key_question: string;
-};
-
-type ApiResult = {
-  coachLens: string;
-  weeklyPlan: ApiWeek[];
-  twelveMonthVision: string;
-};
-
-const stepLabels = {
-  en: {
-    analyzing: 'Analyzing your scores...',
-    generating: 'Building your 12-week plan...',
-    finalizing: 'Almost ready...',
-    done: 'Your coaching journey is ready',
-  },
-  fr: {
-    analyzing: 'Analyse de vos scores...',
-    generating: 'Construction de votre plan 12 semaines...',
-    finalizing: 'Presque prêt...',
-    done: 'Votre parcours de coaching est prêt',
-  },
-};
-
-const phaseOrder: Phase[] = ['analyzing', 'generating', 'finalizing', 'done'];
+const PHASES: { id: Phase; label_en: string; label_fr: string }[] = [
+  { id: 'metadata', label_en: 'Analyzing your assessment...', label_fr: 'Analyse de votre évaluation...' },
+  { id: 'weeks-1-3', label_en: 'Building Foundation phase (Weeks 1–3)...', label_fr: 'Phase Fondation (Semaines 1–3)...' },
+  { id: 'weeks-4-6', label_en: 'Building Development phase (Weeks 4–6)...', label_fr: 'Phase Développement (Semaines 4–6)...' },
+  { id: 'weeks-7-9', label_en: 'Building Mastery phase (Weeks 7–9)...', label_fr: 'Phase Maîtrise (Semaines 7–9)...' },
+  { id: 'weeks-10-12', label_en: 'Building Integration phase (Weeks 10–12)...', label_fr: 'Phase Intégration (Semaines 10–12)...' },
+];
 
 function PlanGenerationContent() {
   const router = useRouter();
@@ -48,8 +25,10 @@ function PlanGenerationContent() {
   const { user } = useAuth();
 
   const [lang, setLang] = useState<'en' | 'fr'>('en');
-  const [phase, setPhase] = useState<Phase>('analyzing');
-  const [error, setError] = useState<string | null>(null);
+  const [journeyId, setJourneyId] = useState<string | null>(null);
+  const [currentPhaseIdx, setCurrentPhaseIdx] = useState(0);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState<{ phaseIdx: number; msg: string } | null>(null);
   const [attempt, setAttempt] = useState(0);
   const runningRef = useRef(false);
 
@@ -57,10 +36,10 @@ function PlanGenerationContent() {
     if (!user || runningRef.current) return;
     runningRef.current = true;
     setError(null);
-    setPhase('analyzing');
+    setDone(false);
 
     try {
-      // Load profile language preference
+      // 1. Language
       const { data: profile } = await supabase
         .from('profiles')
         .select('preferred_language')
@@ -69,15 +48,14 @@ function PlanGenerationContent() {
       const userLang: 'en' | 'fr' = profile?.preferred_language === 'fr' ? 'fr' : 'en';
       setLang(userLang);
 
-      // Resolve track
+      // 2. Resolve track and journey
       const { data: track } = await supabase
         .from('tracks')
-        .select('id, name_en, name_fr')
+        .select('id')
         .eq('slug', trackSlug)
         .single();
       if (!track) throw new Error('Track not found');
 
-      // Resolve journey
       const { data: journey } = await supabase
         .from('journeys')
         .select('id')
@@ -85,161 +63,61 @@ function PlanGenerationContent() {
         .eq('track_id', track.id)
         .single();
       if (!journey) throw new Error('Journey not found');
+      setJourneyId(journey.id);
 
-      // If plan already exists, skip straight to dashboard
+      // 3. Skip if plan already complete
       const { data: existing } = await supabase
         .from('coaching_plans')
-        .select('id')
+        .select('plan_data')
         .eq('journey_id', journey.id)
         .maybeSingle();
-      if (existing) {
-        setPhase('done');
-        router.push('/dashboard');
+      const existingWeeks = (existing?.plan_data as any)?.weeks;
+      if (existing && Array.isArray(existingWeeks) && existingWeeks.length === 12) {
+        setDone(true);
+        setCurrentPhaseIdx(PHASES.length);
+        setTimeout(() => router.push('/dashboard'), 600);
         return;
       }
 
-      // Pillar scores
-      const { data: scores } = await supabase
-        .from('pillar_scores')
-        .select('pillar_id, score, sub_domain_scores')
-        .eq('journey_id', journey.id);
-      if (!scores || scores.length === 0) throw new Error('No assessment scores found');
-
-      const pillarIds = scores.map((s) => s.pillar_id);
-      const { data: pillars } = await supabase
-        .from('pillars')
-        .select('id, name_en, name_fr, sort_order')
-        .in('id', pillarIds)
-        .order('sort_order');
-
-      const trackName = userLang === 'fr' ? track.name_fr : track.name_en;
-
-      const pillarScores = scores.map((sc) => {
-        const p = pillars?.find((pp) => pp.id === sc.pillar_id);
-        return {
-          name: p ? (userLang === 'fr' ? p.name_fr : p.name_en) : 'Unknown',
-          score: Number(sc.score),
-          subScores: (sc.sub_domain_scores as Record<string, number>) || undefined,
-        };
-      });
-
-      // Top 3 weakest sub-domains
-      const allSubs: { name: string; score: number; pillar_en: string; pillar_fr: string }[] = [];
-      scores.forEach((sc) => {
-        const p = pillars?.find((pp) => pp.id === sc.pillar_id);
-        if (sc.sub_domain_scores && p) {
-          Object.entries(sc.sub_domain_scores as Record<string, number>).forEach(([name, score]) => {
-            allSubs.push({ name, score: score as number, pillar_en: p.name_en, pillar_fr: p.name_fr });
-          });
+      // 4. Run phases sequentially, starting from currentPhaseIdx (allows retry)
+      for (let i = currentPhaseIdx; i < PHASES.length; i++) {
+        setCurrentPhaseIdx(i);
+        const phase = PHASES[i].id;
+        const res = await fetch('/api/plan-generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ journey_id: journey.id, phase }),
+        });
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body.error || `Phase ${phase} failed (${res.status})`);
         }
-      });
-      allSubs.sort((a, b) => a.score - b.score);
-      const focusAreasRaw = allSubs.slice(0, 3);
-      const focusAreasApi = focusAreasRaw.map((s) => ({
-        name: s.name,
-        score: s.score,
-        pillar: userLang === 'fr' ? s.pillar_fr : s.pillar_en,
-      }));
-
-      // Weakest/strongest pillar + overall
-      const sortedPillars = scores
-        .map((sc) => ({ ...sc, pillar: pillars?.find((p) => p.id === sc.pillar_id) }))
-        .sort((a, b) => Number(a.score) - Number(b.score));
-      const weakest = sortedPillars[0]?.pillar;
-      const strongest = sortedPillars[sortedPillars.length - 1]?.pillar;
-      const overallScore = scores.reduce((a, s) => a + Number(s.score), 0) / scores.length;
-
-      // Call Claude
-      setPhase('generating');
-      const res = await fetch('/api/plan-generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          journeyId: journey.id,
-          trackName,
-          pillarScores,
-          focusAreas: focusAreasApi,
-          lang: userLang,
-        }),
-      });
-
-      if (!res.ok) {
-        const errBody = await res.json().catch(() => ({ error: 'Unknown error' }));
-        throw new Error(errBody.error || `Request failed (${res.status})`);
       }
 
-      const ai: ApiResult = await res.json();
-
-      // Persist — map AI shape to dashboard-expected schema
-      setPhase('finalizing');
-
-      const focusAreasStored = focusAreasRaw.map((s) => ({
-        name: s.name,
-        score: s.score,
-        pillar_en: s.pillar_en,
-        pillar_fr: s.pillar_fr,
-      }));
-
-      const weeks = ai.weeklyPlan.map((w) => ({
-        week: w.week,
-        title_en: w.theme,
-        title_fr: w.theme,
-        desc_en: w.key_question,
-        desc_fr: w.key_question,
-        focus: w.focus_area,
-        exercises: w.exercises.map((ex) => ({
-          type: 'exercise',
-          title_en: ex,
-          title_fr: ex,
-        })),
-      }));
-
-      const { error: upsertErr } = await supabase.from('coaching_plans').upsert(
-        {
-          journey_id: journey.id,
-          focus_areas: focusAreasStored,
-          coach_lens_summary: ai.coachLens,
-          plan_data: {
-            weeks,
-            vision_en: ai.twelveMonthVision,
-            vision_fr: ai.twelveMonthVision,
-            weakest_pillar_en: weakest?.name_en || '',
-            weakest_pillar_fr: weakest?.name_fr || '',
-            strongest_pillar_en: strongest?.name_en || '',
-            strongest_pillar_fr: strongest?.name_fr || '',
-            overall_score: overallScore,
-            generated_lang: userLang,
-          },
-        },
-        { onConflict: 'journey_id' }
-      );
-
-      if (upsertErr) throw new Error(upsertErr.message || 'Failed to save plan');
-
-      await supabase
-        .from('journeys')
-        .update({ status: 'active', updated_at: new Date().toISOString() })
-        .eq('id', journey.id);
-
-      setPhase('done');
+      setCurrentPhaseIdx(PHASES.length);
+      setDone(true);
       setTimeout(() => router.push('/dashboard'), 800);
     } catch (err) {
-      console.error('[PlanGeneration] Error:', err);
+      console.error('[PlanGeneration] error:', err);
       const message = err instanceof Error ? err.message : 'Something went wrong';
-      setError(message);
+      setError({ phaseIdx: currentPhaseIdx, msg: message });
     } finally {
       runningRef.current = false;
     }
-  }, [user, supabase, trackSlug, router]);
+  // currentPhaseIdx intentionally excluded: it's mutated inside the loop and
+  // we read it as initial value for retry on attempt change.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, supabase, trackSlug, router, attempt]);
 
   useEffect(() => {
     if (!user) return;
     runGeneration();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id, attempt]);
 
-  const labels = stepLabels[lang];
-  const currentIndex = phaseOrder.indexOf(phase);
-  const done = phase === 'done';
+  const errorPhaseLabel = error
+    ? (lang === 'en' ? PHASES[error.phaseIdx]?.label_en : PHASES[error.phaseIdx]?.label_fr)
+    : '';
 
   return (
     <div
@@ -255,8 +133,8 @@ function PlanGenerationContent() {
         style={{ background: 'radial-gradient(circle, rgba(37,99,235,0.05), transparent 60%)', filter: 'blur(80px)' }}
       />
 
-      <div className="relative z-10 max-w-[480px] w-full px-6 text-center">
-        <div className="flex items-center justify-center mb-16">
+      <div className="relative z-10 max-w-[520px] w-full px-6 text-center">
+        <div className="flex items-center justify-center mb-12">
           <Logo size="md" onDark />
         </div>
 
@@ -271,10 +149,13 @@ function PlanGenerationContent() {
             </div>
             <div>
               <h2 className="text-white text-[20px] font-bold mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                {lang === 'en' ? 'Plan generation failed' : 'Échec de la génération'}
+                {lang === 'en' ? 'Generation paused' : 'Génération interrompue'}
               </h2>
-              <p className="text-white/60 text-[13px] max-w-[360px]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                {error}
+              <p className="text-white/60 text-[13px] max-w-[400px]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                {errorPhaseLabel}
+              </p>
+              <p className="text-white/40 text-[12px] mt-2 max-w-[400px]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                {error.msg}
               </p>
             </div>
             <div className="flex gap-3">
@@ -283,7 +164,7 @@ function PlanGenerationContent() {
                 className="px-6 py-3 rounded-xl border-none cursor-pointer text-[14px] font-bold text-white bg-[#F9250E] transition-all hover:-translate-y-px"
                 style={{ boxShadow: '0 4px 24px rgba(249,37,14,0.35)', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
               >
-                {lang === 'en' ? 'Retry' : 'Réessayer'}
+                {lang === 'en' ? 'Retry from this phase' : 'Reprendre cette phase'}
               </button>
               <button
                 onClick={() => router.push('/dashboard')}
@@ -319,15 +200,14 @@ function PlanGenerationContent() {
               )}
             </div>
 
-            <div className="flex flex-col gap-4 mb-12">
-              {phaseOrder.map((p, i) => {
-                const isActive = i === currentIndex && !done;
-                const isDone = i < currentIndex || done;
-                const isFuture = i > currentIndex && !done;
-                const isLast = i === phaseOrder.length - 1;
+            <div className="flex flex-col gap-3 mb-12 text-left">
+              {PHASES.map((p, i) => {
+                const isActive = i === currentPhaseIdx && !done;
+                const isDone = i < currentPhaseIdx || done;
+                const isFuture = i > currentPhaseIdx && !done;
                 return (
                   <div
-                    key={p}
+                    key={p.id}
                     className={`flex items-center gap-3 transition-all duration-500 ${isFuture ? 'opacity-30' : 'opacity-100'}`}
                   >
                     <div
@@ -343,16 +223,12 @@ function PlanGenerationContent() {
                       {isActive && <div className="w-2 h-2 rounded-full bg-[#F9250E] animate-pulse" />}
                     </div>
                     <span
-                      className={`text-[14px] font-medium transition-colors ${
+                      className={`text-[13.5px] font-medium transition-colors ${
                         isDone ? 'text-white' : isActive ? 'text-[#F9250E] font-semibold' : 'text-white/30'
                       }`}
                       style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                     >
-                      {isLast && done ? (
-                        <span className="text-[#F9250E] font-bold">{labels[p]}</span>
-                      ) : (
-                        labels[p]
-                      )}
+                      {lang === 'en' ? p.label_en : p.label_fr}
                     </span>
                   </div>
                 );
@@ -361,6 +237,9 @@ function PlanGenerationContent() {
 
             {done && (
               <div className="flex flex-col items-center gap-3 animate-[fadeUp_0.5s_ease_0.3s_both]">
+                <h2 className="text-white text-[18px] font-bold mb-1" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  {lang === 'en' ? 'Your coaching journey is ready' : 'Votre parcours de coaching est prêt'}
+                </h2>
                 <button
                   onClick={() => router.push('/dashboard')}
                   className="px-10 py-4 rounded-xl border-none cursor-pointer text-[15px] font-bold text-white bg-[#F9250E] transition-all hover:-translate-y-px"
@@ -387,24 +266,12 @@ function PlanGenerationContent() {
 
       <style jsx>{`
         @keyframes scaleIn {
-          from {
-            transform: scale(0);
-            opacity: 0;
-          }
-          to {
-            transform: scale(1);
-            opacity: 1;
-          }
+          from { transform: scale(0); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
         }
         @keyframes fadeUp {
-          from {
-            opacity: 0;
-            transform: translateY(12px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
     </div>
