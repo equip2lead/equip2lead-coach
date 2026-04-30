@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
 export const maxDuration = 60;
+export const dynamic = 'force-dynamic';
 
 type PillarScore = {
   name: string;
