@@ -82,9 +82,11 @@ export default function MyTrackPage() {
         .order('started_at', { ascending: false });
       console.log('[my-track] STEP 2 ALL journeys for user:', allJourneys);
 
+      // Accept any in-progress status (active, paused, plan_generated, etc.) — exclude only terminal states
       const { data: journey, error: journeyErr } = await supabase.from('journeys')
         .select('id, track_id, status, tracks(slug, name_en, name_fr)')
         .eq('user_id', user!.id)
+        .not('status', 'in', '(completed,archived)')
         .order('started_at', { ascending: false }).limit(1).maybeSingle();
       console.log('[my-track] STEP 3 journey selected:', journey, 'error:', journeyErr);
 
