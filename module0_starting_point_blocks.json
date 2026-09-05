@@ -1,0 +1,908 @@
+{
+  "material_title_match": null,
+  "create_new_row": true,
+  "new_row_data": {
+    "title": "Starting Point — Welcome to Your Journey",
+    "subtitle": "Before You Begin: The Foundation for Everything That Follows",
+    "module_number": 0,
+    "track": "leadership",
+    "pillar": "personal_leadership",
+    "estimated_duration_minutes": 45,
+    "cover_image_alt": "A single doorway opening onto a path leading through morning light",
+    "difficulty": "beginner",
+    "is_starting_point": true
+  },
+  "language": "en",
+  "blocks": [
+    {
+      "type": "heading",
+      "data": {
+        "level": 2,
+        "text": "Starting Point — Welcome to Your Journey"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "By Dr. Denis Ekobena · Equip2Lead Coach"
+      }
+    },
+    {
+      "type": "callout",
+      "data": {
+        "variant": "note",
+        "text": "[VIDEO PLACEHOLDER — pending recording] 3-4 minutes, Denis on camera, warm and direct: 'Welcome. Before we begin, I want to tell you what this program is — and what it isn't. This isn't another leadership course. There are already thousands of those. This is a formation journey. Everyone who finishes tells me the same thing: I am not the same person I was when I started. Let's begin.'"
+      }
+    },
+    {
+      "type": "callout",
+      "data": {
+        "variant": "info",
+        "text": "This is the foundational orientation every user sees before beginning their track. It sets the definition of leadership, the framework of the program, and what will be asked of you over the coming twelve modules. Take your time with it."
+      }
+    },
+    {
+      "type": "callout",
+      "data": {
+        "variant": "info",
+        "text": "Time commitment: About 45 minutes of reading + 20 minutes of first-assignment work. You can do this in one sitting or spread it across two or three."
+      }
+    },
+    {
+      "type": "divider",
+      "data": {}
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 2,
+        "text": "Section 1 — Why You're Here and What Leadership Really Is"
+      }
+    },
+    {
+      "type": "callout",
+      "data": {
+        "variant": "note",
+        "text": "[IMAGE PLACEHOLDER — pending selection] A person standing at the threshold of an open door, morning light ahead"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "If you are reading this, one of two things is true."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Either you already know you were called to lead — and you're looking for a program that will actually take you deeper than the surface teaching most leadership content offers."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Or something in your life — a role, a responsibility, a burden of influence you did not ask for — has revealed to you that you need to grow. And you're serious about it."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Either way, welcome. You are in the right place."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "This program was not built for people who want to sound like leaders. It was built for people who want to become leaders — the kind whose influence lasts, whose character holds under pressure, and whose fruit remains long after they leave the room."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "That is a different journey than most leadership programs offer. And it takes different tools."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "What Is Leadership? — The Definition That Frames Everything"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Before we begin, we have to agree on what leadership actually is. Most people cannot define it clearly. They confuse it with position, personality, or performance. So let's settle this from the start."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Here is the definition this entire program is built on:"
+      }
+    },
+    {
+      "type": "pull_quote_card",
+      "data": {
+        "text": "Leadership is influence — the ability of one person to inspire, guide, and develop others toward a shared purpose."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Let me break that apart, because every word matters."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Leadership is influence. John Maxwell has said it, and after 40 years of studying leaders across nations and industries, I have found no better definition. Leadership is not a title. It is not a position. It is not a personality type. It is not being loud or being in charge. Leadership is influence — the measurable effect you have on others."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "The ability of one person. Leadership starts with one — you. Not the team. Not the culture. Not the organization. You. If you cannot lead one person (yourself), you cannot lead a hundred."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "To inspire, guide, and develop others. Real leaders do three things simultaneously: they inspire (they set fire in others), they guide (they show the way), and they develop (they build the person for the long run). Leaders who only inspire produce excited people who go nowhere. Leaders who only guide produce compliant followers. Leaders who develop others produce more leaders."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Toward a shared purpose. Leadership without direction is just personality. Direction without shared ownership is dictatorship. Real leadership pulls people toward something bigger than themselves — and gets them to want it too."
+      }
+    },
+    {
+      "type": "callout",
+      "data": {
+        "variant": "info",
+        "text": "If you internalize nothing else from this section, internalize this: you are leading whenever your words, actions, or example cause someone to think, act, or become better. That means you are already a leader. The question is not whether you lead — it is how well you lead."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "The Three Ways Leadership Is Used — Only One Is Real"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "There are only three ways any leader can use influence over people. Watch for these in yourself and in others."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 4,
+        "text": "1. Leadership TO People — Exploitation"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "The leader uses people to accomplish their agenda, then discards them. Common in politics, some businesses, and unfortunately, some ministries. It produces results in the short term and destruction in the long term. The people leave depleted. The leader is remembered as effective — and toxic."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 4,
+        "text": "2. Leadership FOR People — Paternalism"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "The leader does everything for their people, keeping them dependent. It looks kind. It feels heroic. But it produces followers who cannot function without the leader — and a leader who quietly needs the dependency to feel valuable. It creates a large ministry with small people."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 4,
+        "text": "3. Leadership THROUGH People — The Real Thing"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "The leader develops others so that everyone grows. Power is shared. Authority is distributed. The leader's greatest joy is watching others surpass them."
+      }
+    },
+    {
+      "type": "pull_quote_card",
+      "data": {
+        "text": "Only secure leaders give their power to others."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "This program is built entirely to help you become a THROUGH-people leader. You cannot become one by accident. It requires the inner work you will do in the twelve modules ahead."
+      }
+    },
+    {
+      "type": "reflection_questions",
+      "data": {
+        "title": "Before You Move On",
+        "questions": [
+          "Which of the three (TO / FOR / THROUGH) most describes how you currently use influence with the people you lead? Be honest — not aspirational.",
+          "Who in your life has led you THROUGH — investing in you so you grew into more? What did they do differently?",
+          "If a member of your team described how you lead to a stranger, would they describe someone who exploits, protects, or develops? Why?"
+        ]
+      }
+    },
+    {
+      "type": "divider",
+      "data": {}
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 2,
+        "text": "Section 2 — The Framework: Know → Be → Do"
+      }
+    },
+    {
+      "type": "callout",
+      "data": {
+        "variant": "note",
+        "text": "[IMAGE PLACEHOLDER — pending selection] A tree with visible roots, trunk, and fruit — the metaphor of formation"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Every world-class program has a signature framework that everything hangs on. Ours is three words. Remember them. You will hear them again in every module."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "KNOW — You must know yourself, know God, and know your calling."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Before you do anything, you must know. Self-awareness. Identity. Purpose. The leader who does not know who they are will be shaped by whoever is loudest around them. This is the foundation — and where most leaders skip a step."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "BE — Before you do, you must become."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Being precedes doing. Character precedes competence. The person you are becoming determines the leader you will be. A gifted person with poor character will eventually collapse under the weight of their gift. A person of deep character with modest gifts will steadily grow in influence for a lifetime."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "DO — What you do must flow from who you are."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Only after knowing and becoming can your doing be sustainable. Actions that flow from character produce fruit that lasts. Actions that flow from performance produce results that die when you leave the room."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "This is the arc of the entire twelve-module program. Every module fits somewhere on this arc."
+      }
+    },
+    {
+      "type": "pull_quote_card",
+      "data": {
+        "text": "KNOW → BE → DO — the pathway of Christ-centered leadership formation.",
+        "attribution": "Dr. Denis Ekobena"
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "Why This Order Matters"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Most leadership training in the world today is built backwards. It starts with DO — techniques, tactics, skills, hacks. It teaches you what to do without asking who you are. That works for a season. It produces results. It also produces the burnt-out, morally compromised, publicly-fallen leaders you have watched come apart on the news."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "The order matters because being always leaks into doing. What you are on the inside eventually shows up on the outside. You can pretend for a season, but you cannot pretend forever."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "So we start where it actually starts: with knowing. Then we build being. Then — and only then — we build doing."
+      }
+    },
+    {
+      "type": "reflection_questions",
+      "data": {
+        "title": "Before You Move On",
+        "questions": [
+          "Which of the three (Know / Be / Do) do you currently invest the most time in developing? Which do you invest the least?",
+          "Think of a leader you know who has fallen publicly. Looking back, where did they invest — Know, Be, or Do? What was missing?",
+          "If you had to give yourself a score out of 10 on each — how self-aware are you (Know), how solid is your character (Be), how effective is your leadership execution (Do)?"
+        ]
+      }
+    },
+    {
+      "type": "divider",
+      "data": {}
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 2,
+        "text": "Section 3 — The Five Pillars and the Twelve-Module Journey"
+      }
+    },
+    {
+      "type": "callout",
+      "data": {
+        "variant": "note",
+        "text": "[IMAGE PLACEHOLDER — pending selection] Five stone pillars supporting a temple, symbolic of the leadership foundation"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Your assessment measured you across five pillars. These pillars are the map of the entire leadership landscape. Every leader has some strength and some weakness in each. The goal is not perfection — it is growth in every pillar."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "Pillar 1 — Personal Leadership (Leading Yourself)"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Self-awareness, self-discipline, emotional intelligence, personal accountability, character. Modules 1, 2, 3 in this track."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "Pillar 2 — Directional Leadership (Vision & Strategy)"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Vision, strategic thinking, decision-making, goal-setting, direction. Modules 4, 5."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "Pillar 3 — Relational Leadership (Leading People)"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Trust, communication, influence, empathy, conflict resolution. Modules 6, 7, 8."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "Pillar 4 — Performance Leadership (Executing With Excellence)"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Delegation, coaching, feedback, managing performance, developing others. Modules 9, 10."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "Pillar 5 — Multiplication & Impact (Leaving a Legacy)"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Multiplying leaders, building teams, servant leadership, legacy, kingdom impact. Modules 11, 12."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Your assessment score will highlight where you should probably start — but the entire path is open to you."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "The Twelve Modules at a Glance"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Here is the full arc. Each module stands alone — you can start with any of them based on your assessment or your own sense of where you need to grow."
+      }
+    },
+    {
+      "type": "table",
+      "data": {
+        "headers": [
+          "#",
+          "Module",
+          "Pillar",
+          "Core Question"
+        ],
+        "rows": [
+          [
+            "1",
+            "The Leader Within",
+            "Personal",
+            "Who am I when nobody is watching?"
+          ],
+          [
+            "2",
+            "Character in the Dark",
+            "Personal",
+            "What am I made of?"
+          ],
+          [
+            "3",
+            "Emotional Intelligence",
+            "Personal",
+            "Can I manage myself under pressure?"
+          ],
+          [
+            "4",
+            "The Power of Vision",
+            "Directional",
+            "Where am I going and why?"
+          ],
+          [
+            "5",
+            "The 5 Levels & Laws of Leadership",
+            "Directional",
+            "How do I decide well when it matters?"
+          ],
+          [
+            "6",
+            "Building Trust",
+            "Relational",
+            "Do people trust me — really?"
+          ],
+          [
+            "7",
+            "Communication That Connects",
+            "Relational",
+            "Am I heard, or just loud?"
+          ],
+          [
+            "8",
+            "Servant Leadership — The Jesus Model",
+            "Relational",
+            "Am I leading for me, or for them?"
+          ],
+          [
+            "9",
+            "Coaching & Developing People",
+            "Performance",
+            "Am I making people better?"
+          ],
+          [
+            "10",
+            "Feedback & Managing Performance",
+            "Performance",
+            "Can I have the conversation I've been avoiding?"
+          ],
+          [
+            "11",
+            "Kouzes & Posner — 5 Practices",
+            "Multiplication",
+            "What practices define exemplary leaders?"
+          ],
+          [
+            "12",
+            "Leadership Legacy",
+            "Multiplication",
+            "What am I leaving behind?"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Each module contains: a rich reading of six to seven sections, reflection questions, an introductory video, an embedded video from a world-class leader, a signature assignment you will submit, and materials you can print and take with you."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "How This Program Works"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "The AI has read your assessment. Based on your scores, it will recommend where to start. These are the modules where you have the greatest opportunity to grow right now."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "But you are not locked in. You can browse the full library at any time. If you feel called to a specific module, take it. The AI's recommendations are a starting point, not a cage."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "The AI Coach is with you throughout. As you read, questions will surface. Confusions will emerge. You'll want to think out loud. That is what the AI Coach is for. It is trained on my teaching, my books, and this curriculum. It will not replace human wisdom — but it will help you think, apply, and stay engaged 24 hours a day, in English or French."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Every module has an assignment you will submit. This is not busywork. Writing crystallizes thinking. Every assignment you submit is stored in your journey — you can look back three months later and see how much you have grown."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "You are on your own timeline. Some people finish a module a week. Some take a month per module. There is no shame in slow. The only shame is stopping."
+      }
+    },
+    {
+      "type": "reflection_questions",
+      "data": {
+        "title": "Before You Move On",
+        "questions": [
+          "Look at the five pillars. Which one do you already know is your greatest strength? Give one concrete example.",
+          "Which pillar do you already know is your greatest area for growth? Give one concrete example of how it has cost you.",
+          "Look at the twelve module titles. Which one do you feel most drawn to right now — before the AI recommends anything?",
+          "Which one do you feel most resistant to? That resistance often points to exactly where you need to go."
+        ]
+      }
+    },
+    {
+      "type": "divider",
+      "data": {}
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 2,
+        "text": "Section 4 — The Slow-Cooker Principle and What This Program Costs You"
+      }
+    },
+    {
+      "type": "callout",
+      "data": {
+        "variant": "note",
+        "text": "[IMAGE PLACEHOLDER — pending selection] Bread rising in a bowl, or a slow-cooked meal — the metaphor of patient formation"
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "The Slow-Cooker Principle"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Before you begin, understand this:"
+      }
+    },
+    {
+      "type": "pull_quote_card",
+      "data": {
+        "text": "Leadership is not a microwave experience. God prepares leaders in a slow-cooker."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Moses spent forty years in the wilderness before he led Israel out of Egypt. David spent thirteen years running from Saul before he sat on the throne. Joseph went from pit to slavery to prison before the palace. Jesus spent thirty years in preparation for three years of ministry."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "The pattern is not accidental. It is the way God builds leaders who last."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Do not rush this program. Do not read Module 1 in one sitting and skip to Module 12. The transformation you are looking for happens slowly, in the daily practice of leading yourself well."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "You are in a slow-cooker. Let it cook you."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "What This Program Costs You"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Not money. Something more valuable."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "It will cost you honesty. You cannot fake your way through this. If you write the reflection answers to impress me or to impress yourself, you will get nothing from it. The program only works if you tell the truth."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "It will cost you comfort. Every module will surface something in you that needs to change. Some of it will be hard to look at. That is not a bug — it is the entire point."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "It will cost you time. Roughly 90 to 120 minutes of reading per module, plus 30 to 60 minutes of assignment work. Twelve modules equals around 25 hours of serious engagement, spread over however long you take. This is a small investment for the transformation on offer."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "It will cost you the illusion that you are already there. The most dangerous leader is the one who thinks they have arrived. This program is built to keep humbling you — because a humble leader keeps growing."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "The Ultimate Test"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Every world-class program has a test of success. Ours is this:"
+      }
+    },
+    {
+      "type": "pull_quote_card",
+      "data": {
+        "text": "The ultimate test of leadership is not what happens when you are present. It is what happens when you are gone."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "At the end of Module 12, you will look back on the twelve modules and ask yourself the questions that actually matter:"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Am I becoming the kind of leader whose influence outlives their presence?"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Are the people I lead growing into more of who God made them to be — or shrinking to fit the shape of my need to control them?"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "If I disappeared tomorrow, would what I built stand — or would it collapse?"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "These questions cannot be answered by charisma. They cannot be answered by talent. They can only be answered by the character you build in the hidden years — and by whether you keep doing the inner work long after you have to."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "This program is a return to that work."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "A Final Word Before You Begin"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "I have taught these principles for over two decades — in churches in Yaoundé, in boardrooms in Charlotte, in leadership schools across francophone and anglophone Africa, in ministry training centers on three continents. I have watched hundreds of leaders walk this path. I have watched some finish and change everything about how they lead. I have watched others start strong and drift away."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "The difference is not intelligence. It is not talent. It is not opportunity. The difference is daily engagement."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "The leaders who transform are the ones who keep showing up — module after module, week after week, honest reflection after honest reflection — even when it's uncomfortable, even when they'd rather not."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Show up. That is the only requirement."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Welcome to Equip2Lead Coach. The world needs the leader you are becoming."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "— Dr. Denis Ekobena"
+      }
+    },
+    {
+      "type": "divider",
+      "data": {}
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 2,
+        "text": "Your First Assignment — Set Your Intention Before You Begin"
+      }
+    },
+    {
+      "type": "callout",
+      "data": {
+        "variant": "note",
+        "text": "[IMAGE PLACEHOLDER — pending selection] An open notebook with a pen resting on it, morning light on the page"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Before you open Module 1 (or whichever module the AI recommends first), spend twenty minutes with the questions below. Write your answers. Do not just think them."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Save your answers. You will return to them at the end of Module 12. What you write today will surprise you then."
+      }
+    },
+    {
+      "type": "assignment_prompt",
+      "data": {
+        "title": "Set Your Intention",
+        "instructions": "Answer all five questions honestly, in first person. This is between you and God — and your future self. Take your time. This is the foundation of everything that follows.",
+        "prompts": [
+          {
+            "number": 1,
+            "heading": "Why did you come to this program?",
+            "guidance": "Not the polite answer. The real one. What is the pressure, the ache, the calling, the crisis that made you enroll? What did you hope this would give you?"
+          },
+          {
+            "number": 2,
+            "heading": "What kind of leader are you today?",
+            "guidance": "Describe yourself honestly — strengths and weaknesses. If a member of your team wrote this description, what would they say that you would find hard to read?"
+          },
+          {
+            "number": 3,
+            "heading": "What kind of leader do you want to become in the next twelve months?",
+            "guidance": "Be specific. Not \"a better leader\" — but the actual traits, capacities, and character that need to grow in you."
+          },
+          {
+            "number": 4,
+            "heading": "What is standing between those two versions of you?",
+            "guidance": "Name the obstacle honestly. Is it a habit? A fear? A wound? A relationship? A season? A pattern of thinking? Something else?"
+          },
+          {
+            "number": 5,
+            "heading": "What are you willing to do — really — to close that gap?",
+            "guidance": "This is the commitment question. What price are you willing to pay? What are you willing to give up, take on, confront, or change? Vague answers here produce vague transformation."
+          }
+        ],
+        "word_min": 200,
+        "word_max": 600,
+        "submit_label": "Submit and Begin"
+      }
+    },
+    {
+      "type": "callout",
+      "data": {
+        "variant": "info",
+        "text": "When you submit, the AI Coach will read your answers and use them to shape how it coaches you throughout the twelve modules. Your first module recommendation will appear on your dashboard. Welcome to the work."
+      }
+    },
+    {
+      "type": "divider",
+      "data": {}
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 3,
+        "text": "Starting Point Complete"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "You have just laid the foundation. The AI Coach now knows why you're here, who you are, and what you're willing to commit to. Your first module is ready when you are."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Do not rush to Module 1. Let what you have written settle. Then return to your dashboard and begin."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Welcome to formation. This is where all real leadership begins."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "— Dr. Denis Ekobena"
+      }
+    }
+  ]
+}

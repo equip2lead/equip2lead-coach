@@ -27,3 +27,10 @@ ALTER TABLE lesson_modules
 CREATE INDEX IF NOT EXISTS lesson_modules_ordering_idx
   ON lesson_modules (track_id, is_starting_point DESC, module_number)
   WHERE is_published;
+
+-- At most one starting point per track. Two would leave "sorts to the top"
+-- with no defined answer, and the list would pick one arbitrarily rather than
+-- surfacing the mistake. Cheaper to catch here than to notice in production.
+CREATE UNIQUE INDEX IF NOT EXISTS lesson_modules_one_starting_point_idx
+  ON lesson_modules (track_id)
+  WHERE is_starting_point;

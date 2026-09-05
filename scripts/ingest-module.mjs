@@ -167,20 +167,44 @@ console.log(`
   types                ${Object.entries(byType).sort((a, b) => b[1] - a[1]).map(([t, n]) => `${t}:${n}`).join('  ')}
 `);
 
+// new_row_data keys that map straight onto a lesson_modules column and need
+// no transform. Listed rather than passed through wholesale so a typo in an
+// authored file surfaces as an unmapped field below instead of silently
+// travelling to a column that does not exist.
+const PASSTHROUGH = {
+  subtitle: 'subtitle_en',
+  module_number: 'module_number',
+  estimated_duration_minutes: 'estimated_duration_minutes',
+  cover_image_url: 'cover_image_url',
+  cover_image_alt: 'cover_image_alt',
+  is_starting_point: 'is_starting_point',
+  sort_order: 'sort_order',
+};
+// Handled above by a transform of their own, so not "unmapped".
+const TRANSFORMED = new Set(['title', 'track', 'pillar', 'difficulty']);
+
+const row = {
+  slug,
+  title_en: meta.title,
+  track_slug: meta.track ?? null,
+  pillar_slug: pillarSlug,
+  difficulty,
+  source_title_match: src.material_title_match ?? null,
+  language: src.language ?? 'en',
+};
+for (const [key, column] of Object.entries(PASSTHROUGH)) {
+  if (meta[key] !== undefined) row[column] = meta[key];
+}
+
+const unmapped = Object.keys(meta).filter((k) => !TRANSFORMED.has(k) && !(k in PASSTHROUGH));
+if (unmapped.length) {
+  console.log(`  note: new_row_data keys with no column mapping, ignored: ${unmapped.join(', ')}`);
+}
+
+console.log(`  starting point       ${row.is_starting_point ? 'yes' : 'no'}`);
+console.log(`  source document      ${row.source_title_match ?? '\u2014 (none; new content)'}`);
+
 if (outPath) {
-  writeFileSync(outPath, JSON.stringify({
-    slug,
-    title_en: meta.title,
-    subtitle_en: meta.subtitle ?? null,
-    module_number: meta.module_number ?? null,
-    track_slug: meta.track ?? null,
-    pillar_slug: pillarSlug,
-    difficulty,
-    estimated_duration_minutes: meta.estimated_duration_minutes ?? null,
-    cover_image_alt: meta.cover_image_alt ?? null,
-    source_title_match: src.material_title_match ?? null,
-    language: src.language ?? 'en',
-    body_blocks: out,
-  }, null, 0));
+  writeFileSync(outPath, JSON.stringify({ ...row, body_blocks: out }, null, 0));
   console.log(`  wrote ${outPath}\n`);
 }
