@@ -91,27 +91,30 @@ export function splitBlocksBySection(blocks: AnyBlock[]): SplitResult {
 
   const groups: AnyBlock[][] = [];
   let current: AnyBlock[] = [];
-  // Whether the heading that opened the current group announces an
-  // assignment. If it does, the assignment_prompt inside it is the unit the
-  // heading promised and must not split again; if it does not, an
-  // assignment_prompt appearing mid-section starts its own unit.
-  let currentIsAssignmentGroup = false;
+  // Whether any level-2 heading has opened the current group. If one has, it
+  // titles this unit and the assignment inside belongs to it — whatever the
+  // heading's wording. Only an assignment that no heading introduced needs a
+  // boundary of its own.
+  //
+  // An earlier version tested the heading text against ASSIGNMENT_PREFIX
+  // instead. That looked equivalent and was not: Module 0's assignment is
+  // headed "Your First Assignment — Set Your Intention Before You Begin",
+  // which does not start with the word, so the prompt split away from its own
+  // heading and left an untitled section behind. Heading level is the signal;
+  // heading wording is not.
+  let currentHasHeading = false;
 
   for (const block of blocks) {
     const boundary =
       isH2(block) ||
-      (block.type === 'assignment_prompt' && !currentIsAssignmentGroup && current.length > 0);
+      (block.type === 'assignment_prompt' && !currentHasHeading && current.length > 0);
 
     if (boundary && current.length > 0) {
       groups.push(current);
       current = [];
-      currentIsAssignmentGroup = false;
+      currentHasHeading = false;
     }
-    if (current.length === 0) {
-      currentIsAssignmentGroup =
-        block.type === 'assignment_prompt' ||
-        (isH2(block) && ASSIGNMENT_PREFIX.test(headingText(block)));
-    }
+    if (isH2(block)) currentHasHeading = true;
     current.push(block);
   }
   if (current.length > 0) groups.push(current);

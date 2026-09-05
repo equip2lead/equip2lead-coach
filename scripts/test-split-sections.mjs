@@ -115,20 +115,41 @@ const dashes = splitBlocksBySection([
 ]);
 eq('dash and case variants all strip', dashes.sections.map((s) => s.shortTitle), ['hyphen', 'en dash', 'colon upper']);
 
-const unheaded = splitBlocksBySection([
+const assignment = (id = 'as') => ({ id, type: 'assignment_prompt', assignment_key: 'a1', title: 'T', instructions: 'I', prompts: [] });
+
+// A heading opened the group, so the assignment belongs to it. Splitting here
+// would manufacture an untitled section out of content the author placed
+// under a title on purpose.
+const headedByAnything = splitBlocksBySection([
   h2('Module title'), p('intro'),
-  h2('Section 1 — Only section'), p('a'),
-  { id: 'as', type: 'assignment_prompt', assignment_key: 'a1', title: 'T', instructions: 'I', prompts: [] },
+  h2('Section 1 — Only section'), p('a'), assignment(),
 ]);
-eq('an assignment with no heading still opens its own section', unheaded.sections.length, 2);
-eq('  ...and is flagged', unheaded.sections[1].hasAssignment, true);
+eq('an assignment under a heading stays in that section', headedByAnything.sections.length, 1);
+eq('  ...and the section keeps its title', headedByAnything.sections[0].title, 'Section 1 — Only section');
+
+// The real shape from Module 0: a heading that introduces an assignment
+// without starting with the word "Assignment". Testing heading *text* rather
+// than heading *level* split this into a stub plus an untitled section.
+const obliquelyHeaded = splitBlocksBySection([
+  h2('Module title'), p('intro'),
+  h2('Your First Assignment — Set Your Intention'), p('a'), assignment(),
+]);
+eq('an obliquely-headed assignment is one section', obliquelyHeaded.sections.length, 1);
+eq('  ...titled by its heading, not "Section N"', obliquelyHeaded.sections[0].title, 'Your First Assignment — Set Your Intention');
+eq('  ...and flagged as carrying the assignment', obliquelyHeaded.sections[0].hasAssignment, true);
 
 const headedAssignment = splitBlocksBySection([
   h2('Module title'), p('intro'),
-  h2('Assignment — Headed'), p('a'),
-  { id: 'as', type: 'assignment_prompt', assignment_key: 'a1', title: 'T', instructions: 'I', prompts: [] },
+  h2('Assignment — Headed'), p('a'), assignment(),
 ]);
 eq('a headed assignment does not split twice', headedAssignment.sections.length, 1);
+
+// No heading anywhere: the assignment has nothing to belong to, so it gets a
+// boundary of its own rather than trailing off the end of the prose.
+const noHeadings = splitBlocksBySection([p('intro'), p('more'), assignment()]);
+eq('an assignment in a module with no headings is separated', noHeadings.sections.length, 1);
+eq('  ...with the prose before it as front matter', noHeadings.frontMatter.length, 2);
+eq('  ...and the assignment in the section', noHeadings.sections[0].hasAssignment, true);
 
 const deeper = splitBlocksBySection([
   h2('Module title'), p('i'),
