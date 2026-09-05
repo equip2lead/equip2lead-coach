@@ -17,7 +17,7 @@ export default async function SectionPage({ params }: { params: { id: string; se
 
   const { data: mod } = await supabase
     .from('lesson_modules')
-    .select('id, title_en, title_fr, body_blocks, is_published')
+    .select('id, title_en, title_fr, body_blocks, is_published, module_number, is_starting_point')
     .eq('id', params.id)
     .maybeSingle();
   if (!mod) notFound();
@@ -49,6 +49,8 @@ export default async function SectionPage({ params }: { params: { id: string; se
       <CurriculumSidebar
         moduleId={mod.id}
         moduleTitle={title}
+        moduleNumber={mod.module_number}
+        isStartingPoint={mod.is_starting_point}
         sections={sections.map((s) => ({ number: s.number, shortTitle: s.shortTitle, readingMinutes: s.readingMinutes }))}
         current={section.number}
         completed={progress.completed}

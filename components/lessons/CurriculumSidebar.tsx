@@ -14,10 +14,12 @@ export type CurriculumEntry = { number: number; shortTitle: string; readingMinut
  * reader wants the lesson, not the map.
  */
 export function CurriculumSidebar({
-  moduleId, moduleTitle, sections, current, completed, lang,
+  moduleId, moduleTitle, moduleNumber, isStartingPoint, sections, current, completed, lang,
 }: {
   moduleId: string;
   moduleTitle: string;
+  moduleNumber: number | null;
+  isStartingPoint: boolean;
   sections: CurriculumEntry[];
   current: number;
   completed: number[];
@@ -25,6 +27,16 @@ export function CurriculumSidebar({
 }) {
   const [open, setOpen] = useState(false);
   const done = (n: number) => completed.includes(n);
+
+  // The starting point sits outside the numbered curriculum, so labelling it
+  // "Module 0" would file it as the first of the series rather than as the
+  // thing that comes before the series. A door icon rather than a number
+  // carries the same distinction at a glance.
+  const eyebrow = isStartingPoint
+    ? (lang === 'en' ? 'Starting Point' : 'Point de départ')
+    : moduleNumber != null
+      ? `Module ${moduleNumber}`
+      : null;
 
   const list = (
     <ol className="flex list-none flex-col gap-0.5 p-0">
@@ -74,7 +86,15 @@ export function CurriculumSidebar({
           <Link href={`/lessons/${moduleId}`} className="text-[11px] font-bold uppercase tracking-wider text-[#F9250E] no-underline hover:underline">
             ← {lang === 'en' ? 'Module overview' : 'Aperçu du module'}
           </Link>
-          <h2 className="mt-2 text-[14.5px] font-bold leading-snug text-white" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+          {eyebrow && (
+            <p className={`mt-2 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-wider ${
+              isStartingPoint ? 'bg-emerald-500/15 text-emerald-300' : 'bg-white/10 text-gray-400'
+            }`}>
+              {isStartingPoint && <span aria-hidden="true">🚪</span>}
+              {eyebrow}
+            </p>
+          )}
+          <h2 className="mt-1.5 text-[14.5px] font-bold leading-snug text-white" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
             {moduleTitle}
           </h2>
           <p className="mt-1 text-[11.5px] text-gray-500">
@@ -94,7 +114,14 @@ export function CurriculumSidebar({
           style={{ fontFamily: 'inherit' }}
         >
           <span className="min-w-0">
-            <span className="block truncate text-[13px] font-semibold text-white">{moduleTitle}</span>
+            <span className="block truncate text-[13px] font-semibold text-white">
+              {eyebrow && (
+                <span className={`mr-1.5 text-[9.5px] font-bold uppercase tracking-wider ${isStartingPoint ? 'text-emerald-300' : 'text-gray-500'}`}>
+                  {eyebrow} ·
+                </span>
+              )}
+              {moduleTitle}
+            </span>
             <span className="block text-[11px] text-gray-500">
               {lang === 'en' ? 'Section' : 'Section'} {current} {lang === 'en' ? 'of' : 'sur'} {sections.length} ·{' '}
               {completed.length} {lang === 'en' ? 'complete' : 'terminées'}

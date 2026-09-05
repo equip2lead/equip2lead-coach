@@ -73,6 +73,7 @@ type ModuleCard = {
   minutes: number;
   sectionCount: number;
   completedCount: number;
+  isStartingPoint: boolean;
 };
 
 export default function LessonsPage() {
@@ -157,9 +158,10 @@ export default function LessonsPage() {
         // correct when content is edited without a migration to keep in step.
         const { data: modRows } = await supabase
           .from('lesson_modules')
-          .select('id, title_en, title_fr, subtitle_en, subtitle_fr, module_number, difficulty, estimated_duration_minutes, body_blocks')
+          .select('id, title_en, title_fr, subtitle_en, subtitle_fr, module_number, is_starting_point, difficulty, estimated_duration_minutes, body_blocks')
           .eq('track_id', journey.track_id)
           .eq('is_published', true)
+          .order('is_starting_point', { ascending: false })
           .order('module_number', { ascending: true, nullsFirst: false })
           .order('sort_order', { ascending: true });
 
@@ -182,6 +184,7 @@ export default function LessonsPage() {
               minutes: m.estimated_duration_minutes ?? sections.reduce((n, x) => n + x.readingMinutes, 0),
               sectionCount: sections.length,
               completedCount: (moduleProgress.get(m.id) || []).filter((n) => n >= 1 && n <= sections.length).length,
+              isStartingPoint: !!m.is_starting_point,
             };
           })
         );
@@ -298,25 +301,42 @@ export default function LessonsPage() {
                   <button
                     key={m.id}
                     onClick={() => router.push(`/lessons/${m.id}`)}
-                    className="w-full cursor-pointer rounded-2xl border-2 border-[#F9250E]/15 bg-white p-5 text-left transition-all hover:-translate-y-px hover:border-[#F9250E]/35 hover:shadow-md max-md:p-4"
+                    className={`w-full cursor-pointer rounded-2xl border-2 bg-white p-5 text-left transition-all hover:-translate-y-px hover:shadow-md max-md:p-4 ${
+                      m.isStartingPoint
+                        ? 'border-emerald-500/30 hover:border-emerald-500/50'
+                        : 'border-[#F9250E]/15 hover:border-[#F9250E]/35'
+                    }`}
                     style={{ fontFamily: 'inherit' }}
                   >
                     <div className="flex items-start gap-4">
-                      <span aria-hidden="true" className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[15px] font-bold ${finished ? 'bg-emerald-50 text-emerald-600' : 'bg-[#F9250E]/10 text-[#F9250E]'}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                        {finished ? '✓' : m.module_number ?? '•'}
+                      <span aria-hidden="true" className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[15px] font-bold ${finished ? 'bg-emerald-50 text-emerald-600' : m.isStartingPoint ? 'bg-emerald-50 text-emerald-600' : 'bg-[#F9250E]/10 text-[#F9250E]'}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        {finished ? '✓' : m.isStartingPoint ? '🚪' : m.module_number ?? '•'}
                       </span>
                       <div className="min-w-0 flex-1">
+                        {/* Labelled by what it is rather than by a number:
+                            "Module 0" would file it as the first of the
+                            series instead of the thing that precedes it. */}
+                        {m.isStartingPoint && (
+                          <span className="mb-1 inline-block rounded-full bg-emerald-600 px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-wider text-white">
+                            {lang === 'en' ? 'Start here' : 'Commencez ici'}
+                          </span>
+                        )}
                         <p className="text-[16px] font-bold leading-snug text-gray-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                          {m.module_number != null && `${lang === 'en' ? 'Module' : 'Module'} ${m.module_number}: `}{m.title}
+                          {!m.isStartingPoint && m.module_number != null && `${lang === 'en' ? 'Module' : 'Module'} ${m.module_number}: `}{m.title}
                         </p>
+                        {m.isStartingPoint && !finished && (
+                          <p className="mt-0.5 text-[12px] font-semibold text-emerald-700">
+                            {lang === 'en' ? 'Recommended first' : 'À faire en premier'}
+                          </p>
+                        )}
                         <p className="mt-1 text-[12.5px] text-gray-500">
                           {m.sectionCount} {lang === 'en' ? 'sections' : 'sections'} · {m.completedCount}/{m.sectionCount} {lang === 'en' ? 'complete' : 'terminées'} · {m.minutes} min
                         </p>
                         <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-gray-100">
-                          <div className="h-full rounded-full bg-[#F9250E] transition-all duration-500" style={{ width: `${pct}%` }} />
+                          <div className={`h-full rounded-full transition-all duration-500 ${m.isStartingPoint ? 'bg-emerald-500' : 'bg-[#F9250E]'}`} style={{ width: `${pct}%` }} />
                         </div>
                       </div>
-                      <span className="shrink-0 self-center text-[12px] font-bold text-[#F9250E]">
+                      <span className={`shrink-0 self-center text-[12px] font-bold ${m.isStartingPoint ? 'text-emerald-600' : 'text-[#F9250E]'}`}>
                         {finished ? (lang === 'en' ? 'Review' : 'Revoir') : started ? (lang === 'en' ? 'Continue' : 'Continuer') : (lang === 'en' ? 'Start' : 'Commencer')} →
                       </span>
                     </div>

@@ -70,6 +70,8 @@ export default function DashboardPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showSwitchWarn, setShowSwitchWarn] = useState(false);
   const [activeTrackFlash, setActiveTrackFlash] = useState(false);
+  const [startingPoint, setStartingPoint] = useState<{ id: string; title: string; subtitle: string | null; minutes: number | null } | null>(null);
+  const [startingPointDone, setStartingPointDone] = useState(false);
 
   useEffect(() => {
     try {
@@ -125,6 +127,33 @@ export default function DashboardPage() {
         supabase.from('weekly_checkins').select('id').eq('journey_id', j.id),
         supabase.from('streaks').select('current_streak, longest_streak').eq('journey_id', j.id).maybeSingle(),
       ]);
+
+      // The track's starting point, and whether this journey has finished it.
+      // No admin bypass: an admin who has not done the orientation has not
+      // done it, and the dashboard should say so.
+      const { data: sp } = await supabase
+        .from('lesson_modules')
+        .select('id, title_en, title_fr, subtitle_en, subtitle_fr, estimated_duration_minutes')
+        .eq('track_id', j.track_id)
+        .eq('is_starting_point', true)
+        .eq('is_published', true)
+        .maybeSingle();
+
+      if (sp) {
+        const { data: spProgress } = await supabase
+          .from('lesson_progress')
+          .select('status')
+          .eq('journey_id', j.id)
+          .eq('lesson_module_id', sp.id)
+          .maybeSingle();
+        setStartingPoint({
+          id: sp.id,
+          title: (lang === 'fr' ? sp.title_fr : sp.title_en) || sp.title_en,
+          subtitle: (lang === 'fr' ? sp.subtitle_fr : sp.subtitle_en) || sp.subtitle_en,
+          minutes: sp.estimated_duration_minutes,
+        });
+        setStartingPointDone(spProgress?.status === 'completed');
+      }
 
       setPillars(pillarsRes.data || []);
       setScores((scoresRes.data || []).map((s: any) => ({ ...s, score: Number(s.score) })));
@@ -272,9 +301,47 @@ export default function DashboardPage() {
           {/* ═══ TAB: Overview ═══ */}
           {tab === 'overview' && (
             <div className="flex flex-col gap-6">
+              {/* Starting Point — shown until it is finished, then it stops
+                  asking. Deliberately not gated on role: an admin who has not
+                  done the orientation has not done it. */}
+              {startingPoint && !startingPointDone && (
+                <div className="rounded-2xl border-2 border-emerald-500/30 bg-white p-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-emerald-600 text-white">
+                      <span aria-hidden="true">&#x1F6AA;</span>
+                      {lang === 'en' ? 'Start here' : 'Commencez ici'}
+                    </span>
+                  </div>
+                  <h3 className="text-[22px] font-extrabold text-gray-900 mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    {startingPoint.title}
+                  </h3>
+                  {startingPoint.subtitle && (
+                    <p className="text-[14px] text-gray-500 leading-[1.65] mb-1">{startingPoint.subtitle}</p>
+                  )}
+                  <p className="text-[13px] text-gray-400 mb-6">
+                    {lang === 'en'
+                      ? 'The orientation that frames the whole programme. Best done before your first week.'
+                      : "L'orientation qui cadre tout le programme. À faire avant votre première semaine."}
+                    {startingPoint.minutes ? ` · ${startingPoint.minutes} min` : ''}
+                  </p>
+                  <button
+                    onClick={() => router.push(`/lessons/${startingPoint.id}`)}
+                    className="flex items-center gap-2 px-5 py-3 rounded-xl border-none cursor-pointer text-[13px] font-bold text-white bg-emerald-600 transition-all hover:-translate-y-px"
+                    style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: '0 4px 16px rgba(5,150,105,0.25)' }}
+                  >
+                    {lang === 'en' ? 'Begin' : 'Commencer'} &rarr;
+                  </button>
+                </div>
+              )}
+
               {/* Weekly Focus */}
               {weekPlan && (
-                <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                <div className={`bg-white rounded-2xl border border-gray-200 p-6 ${startingPoint && !startingPointDone ? 'opacity-60' : ''}`}>
+                  {startingPoint && !startingPointDone && (
+                    <p className="mb-3 text-[12px] font-semibold text-gray-400">
+                      {lang === 'en' ? 'Unlocks after your Starting Point' : 'Se débloque après votre Point de départ'}
+                    </p>
+                  )}
                   <div className="flex items-center gap-2 mb-4">
                     <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider" style={{ background: `${trackColor}10`, color: trackColor }}>{lang === 'en' ? `Week ${currentWeek}` : `Semaine ${currentWeek}`}</span>
                   </div>

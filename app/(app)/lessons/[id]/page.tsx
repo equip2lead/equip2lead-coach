@@ -30,7 +30,7 @@ export default async function LessonEntryPage({ params }: { params: { id: string
 
   const { data: mod } = await supabase
     .from('lesson_modules')
-    .select('id, title_en, title_fr, subtitle_en, subtitle_fr, module_number, difficulty, estimated_duration_minutes, cover_image_url, cover_image_alt, body_blocks, is_published, pillar_id, pillars(name_en, name_fr)')
+    .select('id, title_en, title_fr, subtitle_en, subtitle_fr, module_number, is_starting_point, difficulty, estimated_duration_minutes, cover_image_url, cover_image_alt, body_blocks, is_published, pillar_id, pillars(name_en, name_fr)')
     .eq('id', params.id)
     .maybeSingle();
 
@@ -71,11 +71,19 @@ export default async function LessonEntryPage({ params }: { params: { id: string
           </Link>
 
           <div className="mt-5 flex flex-wrap items-center gap-2">
-            {mod.module_number != null && (
-              <span className="rounded-full bg-[#F9250E] px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wider text-white">
-                {lang === 'en' ? `Module ${mod.module_number}` : `Module ${mod.module_number}`}
+            {/* The starting point precedes the numbered curriculum rather
+                than opening it, so it is labelled by what it is instead of by
+                a number that would file it as the first of the series. */}
+            {mod.is_starting_point ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wider text-white">
+                <span aria-hidden="true">🚪</span>
+                {lang === 'en' ? 'Starting Point' : 'Point de départ'}
               </span>
-            )}
+            ) : mod.module_number != null ? (
+              <span className="rounded-full bg-[#F9250E] px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wider text-white">
+                {`Module ${mod.module_number}`}
+              </span>
+            ) : null}
             {pillar && (
               <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wider text-gray-600">
                 {lang === 'en' ? pillar.name_en : pillar.name_fr}
