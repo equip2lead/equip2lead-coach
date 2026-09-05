@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
 import { switchLanguage } from '@/lib/language';
+import { parseBlocks } from '@/lib/lesson-blocks';
+import { splitBlocksBySection } from '@/lib/lessons/split-sections';
 
 const pillarColors = ['#2563EB', '#7C3AED', '#059669', '#DC2626', '#D97706'];
 const difficultyLabels: Record<string, { en: string; fr: string; color: string }> = {
@@ -62,6 +64,17 @@ function getPillarContext(score: number, lang: 'en' | 'fr'): { text: string; col
   };
 }
 
+type ModuleCard = {
+  id: string;
+  title: string;
+  subtitle: string | null;
+  module_number: number | null;
+  difficulty: string;
+  minutes: number;
+  sectionCount: number;
+  completedCount: number;
+};
+
 export default function LessonsPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
@@ -71,6 +84,7 @@ export default function LessonsPage() {
   const [error, setError] = useState<string | null>(null);
   const [trackName, setTrackName] = useState('');
   const [pillarGroups, setPillarGroups] = useState<PillarGroup[]>([]);
+  const [modules, setModules] = useState<ModuleCard[]>([]);
   const [expandedPillar, setExpandedPillar] = useState<string | null>(null);
 
   useEffect(() => {
@@ -123,7 +137,7 @@ export default function LessonsPage() {
 
         const [rpcRes, progressRes] = await Promise.all([
           supabase.rpc('get_personalized_lessons', { p_journey_id: journey.id }),
-          supabase.from('lesson_progress').select('document_id, status').eq('journey_id', journey.id),
+          supabase.from('lesson_progress').select('document_id, lesson_module_id, status, metadata').eq('journey_id', journey.id),
         ]);
 
         console.log('[lessons] STEP 6 RPC error:', rpcRes.error);
@@ -137,6 +151,40 @@ export default function LessonsPage() {
         (progressRes.data || []).forEach((p: any) => {
           if (p.status) progressMap.set(p.document_id, p.status);
         });
+
+        // Authored modules for this track, newest curriculum first. Sections
+        // are derived from the blocks rather than stored, so the count stays
+        // correct when content is edited without a migration to keep in step.
+        const { data: modRows } = await supabase
+          .from('lesson_modules')
+          .select('id, title_en, title_fr, subtitle_en, subtitle_fr, module_number, difficulty, estimated_duration_minutes, body_blocks')
+          .eq('track_id', journey.track_id)
+          .eq('is_published', true)
+          .order('module_number', { ascending: true, nullsFirst: false })
+          .order('sort_order', { ascending: true });
+
+        const moduleProgress = new Map<string, number[]>();
+        (progressRes.data || []).forEach((row: any) => {
+          if (!row.lesson_module_id) return;
+          const done = row.metadata?.sections_completed;
+          moduleProgress.set(row.lesson_module_id, Array.isArray(done) ? done : []);
+        });
+
+        setModules(
+          (modRows || []).map((m: any) => {
+            const { sections } = splitBlocksBySection(parseBlocks(m.body_blocks));
+            return {
+              id: m.id,
+              title: (userLang === 'fr' ? m.title_fr : m.title_en) || m.title_en,
+              subtitle: (userLang === 'fr' ? m.subtitle_fr : m.subtitle_en) || m.subtitle_en,
+              module_number: m.module_number,
+              difficulty: m.difficulty,
+              minutes: m.estimated_duration_minutes ?? sections.reduce((n, x) => n + x.readingMinutes, 0),
+              sectionCount: sections.length,
+              completedCount: (moduleProgress.get(m.id) || []).filter((n) => n >= 1 && n <= sections.length).length,
+            };
+          })
+        );
 
         const lessons: LessonRow[] = rpcRes.data || [];
         const groupMap = new Map<string, PillarGroup>();
@@ -233,6 +281,55 @@ export default function LessonsPage() {
 
       {/* Content */}
       <div className="max-w-[800px] mx-auto px-6 max-md:px-4 py-8">
+        {/* Authored modules first: the premium curriculum, not one lesson
+            among many. Clicking opens the module overview rather than
+            dropping the reader into 489 blocks of content. */}
+        {modules.length > 0 && (
+          <div className="mb-10">
+            <h2 className="mb-3 text-[12px] font-bold uppercase tracking-wider text-gray-500" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              {lang === 'en' ? 'Your curriculum' : 'Votre programme'}
+            </h2>
+            <div className="flex flex-col gap-3">
+              {modules.map((m) => {
+                const pct = m.sectionCount > 0 ? Math.round((m.completedCount / m.sectionCount) * 100) : 0;
+                const started = m.completedCount > 0;
+                const finished = m.sectionCount > 0 && m.completedCount >= m.sectionCount;
+                return (
+                  <button
+                    key={m.id}
+                    onClick={() => router.push(`/lessons/${m.id}`)}
+                    className="w-full cursor-pointer rounded-2xl border-2 border-[#F9250E]/15 bg-white p-5 text-left transition-all hover:-translate-y-px hover:border-[#F9250E]/35 hover:shadow-md max-md:p-4"
+                    style={{ fontFamily: 'inherit' }}
+                  >
+                    <div className="flex items-start gap-4">
+                      <span aria-hidden="true" className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[15px] font-bold ${finished ? 'bg-emerald-50 text-emerald-600' : 'bg-[#F9250E]/10 text-[#F9250E]'}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        {finished ? '✓' : m.module_number ?? '•'}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[16px] font-bold leading-snug text-gray-900" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                          {m.module_number != null && `${lang === 'en' ? 'Module' : 'Module'} ${m.module_number}: `}{m.title}
+                        </p>
+                        <p className="mt-1 text-[12.5px] text-gray-500">
+                          {m.sectionCount} {lang === 'en' ? 'sections' : 'sections'} · {m.completedCount}/{m.sectionCount} {lang === 'en' ? 'complete' : 'terminées'} · {m.minutes} min
+                        </p>
+                        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-gray-100">
+                          <div className="h-full rounded-full bg-[#F9250E] transition-all duration-500" style={{ width: `${pct}%` }} />
+                        </div>
+                      </div>
+                      <span className="shrink-0 self-center text-[12px] font-bold text-[#F9250E]">
+                        {finished ? (lang === 'en' ? 'Review' : 'Revoir') : started ? (lang === 'en' ? 'Continue' : 'Continuer') : (lang === 'en' ? 'Start' : 'Commencer')} →
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+            <h2 className="mb-3 mt-10 text-[12px] font-bold uppercase tracking-wider text-gray-500" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              {lang === 'en' ? 'Library' : 'Bibliothèque'}
+            </h2>
+          </div>
+        )}
+
         {pillarGroups.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-[15px] text-gray-400">
