@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { SideRail } from './SideRail';
-import { RightRail } from './RightRail';
 import { MenuIcon } from './icons';
 
 export type ShellData = {
@@ -51,10 +50,14 @@ export function AppShell({ data, children }: { data: ShellData; children: React.
       {/* The rail is fixed, so the content column is offset rather than
           flowed beside it. Pages keep their own full-bleed layouts; the shell
           deliberately imposes no max-width here — the 900px reading column is
-          a lesson-page concern and ships with the renderer in 5.2. */}
+          a lesson-page concern and ships with the renderer in 5.2.
+
+          components/shell/RightRail.tsx is deliberately NOT mounted. Reserved
+          but empty, it read as 320px of unexplained whitespace on every page.
+          Phase 5.5 mounts it here once the AI Coach panel gives it content;
+          the flex row is kept so that is a one-line change. */}
       <div className="shell:ml-[260px] flex min-h-screen">
         <main className="flex-1 min-w-0">{children}</main>
-        <RightRail />
       </div>
 
       {/* Fixed rather than living inside a page's header, so it works over
