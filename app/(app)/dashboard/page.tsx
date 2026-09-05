@@ -57,7 +57,6 @@ export default function DashboardPage() {
   const { user, loading: authLoading, signOut } = useAuth();
   const supabase = createClient();
   const [lang, setLang] = useState<'en' | 'fr'>('en');
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [tab, setTab] = useState<'overview' | 'plan' | 'lens' | 'coach'>('overview');
   const [loading, setLoading] = useState(true);
 
@@ -84,7 +83,6 @@ export default function DashboardPage() {
   }, []);
 
   const handleSwitchTrack = () => {
-    setSidebarOpen(false);
     if (!journey || journey.status === 'completed') {
       router.push('/track-selection');
     } else {
@@ -164,52 +162,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex" style={{ fontFamily: "'Outfit', sans-serif" }}>
-      {/* ── Sidebar ── */}
-      <aside className={`fixed inset-y-0 left-0 z-40 w-[260px] bg-[#0B0B0C] flex flex-col transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="px-6 pt-7 pb-4">
-          <Link href="/" className="no-underline inline-block">
-            <Logo size="sm" onDark />
-          </Link>
-        </div>
-        {journey && (
-          <div className="mx-4 mb-4 px-4 py-3 rounded-xl" style={{ background: `${trackColor}15`, border: `1px solid ${trackColor}25` }}>
-            <div className="flex items-center gap-2.5">
-              <span className="text-[18px]">{trackIcon}</span>
-              <div className="flex-1 min-w-0">
-                <div className="text-[12px] font-bold text-white truncate">{trackName}</div>
-                <div className="text-[10px] text-gray-500">{scoredCount}/{totalPillars} pillars</div>
-              </div>
-            </div>
-          </div>
-        )}
-        <nav className="flex-1 px-4 flex flex-col gap-1">
-          {[
-            { icon: <HomeIcon />, label: lang === 'en' ? 'Dashboard' : 'Tableau de bord', href: '/dashboard', active: true },
-            { icon: <PlayIcon />, label: lang === 'en' ? 'My Track' : 'Mon Parcours', href: '/my-track', active: false },
-            { icon: <BookIcon />, label: lang === 'en' ? 'Lessons' : 'Leçons', href: '/lessons', active: false },
-            { icon: <ChatIcon />, label: lang === 'en' ? 'AI Coach' : 'Coach IA', href: '/ai-coach', active: false },
-            { icon: <CalIcon />, label: lang === 'en' ? 'Check-in' : 'Bilan', href: '/weekly-checkin', active: false },
-            { icon: <BarIcon />, label: lang === 'en' ? 'Results' : 'R\u00e9sultats', href: `/results?track=${trackSlug}`, active: false },
-            ...(isAdmin ? [{ icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>, label: 'Admin', href: '/admin', active: false }] : []),
-            { icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>, label: lang === 'en' ? 'Settings' : 'Param\u00e8tres', href: '/settings', active: false },
-          ].map((item, i) => (
-            <Link key={i} href={item.href} onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium no-underline transition-colors ${item.active ? 'bg-white/10 text-white' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}`}>
-              {item.icon}{item.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="px-4 pb-6 mt-auto flex flex-col gap-1">
-          <button onClick={handleSwitchTrack} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer w-full text-left" style={{ fontFamily: 'inherit' }}><SwitchIcon />{lang === 'en' ? 'Switch Track' : 'Changer'}</button>
-          <button onClick={() => switchLanguage(lang === 'en' ? 'fr' : 'en', user!.id, supabase, setLang)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium text-gray-500 hover:text-gray-300 hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer w-full text-left" style={{ fontFamily: 'inherit' }}>🌐 {lang === 'en' ? 'FR' : 'EN'}</button>
-          <button onClick={signOut} className="flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium text-gray-500 hover:text-red-400 hover:bg-white/5 transition-colors bg-transparent border-none cursor-pointer w-full text-left" style={{ fontFamily: 'inherit' }}><LogOutIcon />{lang === 'en' ? 'Log out' : 'D\u00e9connexion'}</button>
-        </div>
-      </aside>
-      {sidebarOpen && <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />}
-
-      {/* ── Main ── */}
-      <main className="flex-1 lg:ml-[260px]">
+    <>
         {activeTrackFlash && (
           <div className="bg-amber-50 border-b border-amber-200 px-6 py-3 text-[13px] text-amber-900 flex items-center justify-between gap-3">
             <span>
@@ -247,9 +200,6 @@ export default function DashboardPage() {
           <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(0,0,0,0.15), transparent 60%)' }} />
           <div className="relative z-[2] px-8 max-md:px-5 pt-6 pb-8">
             <div className="flex items-center justify-between mb-6">
-              <button onClick={() => setSidebarOpen(true)} className="lg:hidden bg-transparent border-none cursor-pointer text-white/80 p-1">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-              </button>
               <div className="flex items-center gap-3 ml-auto">
                 <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-[13px] font-bold text-white cursor-pointer" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{initials}</div>
               </div>
@@ -505,7 +455,7 @@ export default function DashboardPage() {
           </div>
         )}
         </>)}
-      </main>
+      {/* (rail + scrim now live in app/(app)/layout.tsx) */}
 
       {/* Switch Track Warning Modal */}
       {showSwitchWarn && (
@@ -539,6 +489,6 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

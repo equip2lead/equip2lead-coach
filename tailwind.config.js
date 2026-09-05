@@ -7,6 +7,14 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        // The app shell collapses its left rail to an overlay below this.
+        // Named rather than an arbitrary value so page bodies can keep using
+        // Tailwind's own lg/md without the two sets of numbers drifting.
+        shell: '900px',
+        // The contextual right rail only appears when 260 + 900 + 320 fits.
+        rail: '1440px',
+      },
       colors: {
         bg: { DEFAULT: '#0A0A0F', 2: '#111118', 3: '#1A1A24', 4: '#22222E' },
         g: { 100: '#F0F0F5', 200: '#CFCFD2', 300: '#9A9AA0', 400: '#6B6B73', 500: '#44444C' },
