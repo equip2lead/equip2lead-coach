@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { TimeOfDay } from './TimeOfDay';
 import { greetingFor, greetingState } from '@/lib/dashboard/greetings';
 import type { DashboardData } from '@/lib/dashboard/data';
@@ -12,7 +11,7 @@ function daysSince(iso: string | null): number | null {
 }
 
 export function Greeting({ data }: { data: DashboardData }) {
-  const { lang, firstName, modules, nextStep } = data;
+  const { lang, firstName, modules } = data;
 
   const startingPoint = modules.find((m) => m.isStartingPoint);
   const state = greetingState({
@@ -26,11 +25,6 @@ export function Greeting({ data }: { data: DashboardData }) {
   const copy = greetingFor(state, lang);
   const days = daysSince(data.lastActivityAt);
 
-  const href = nextStep.kind === 'module' ? `/lessons/${nextStep.module.id}` : '/lessons';
-  const cta =
-    state === 'oriented' && nextStep.kind === 'module'
-      ? `${copy.cta} ${nextStep.module.title}`
-      : copy.cta;
 
   return (
     <section className="px-8 pt-14 pb-10 max-md:px-5 max-md:pt-10">
@@ -71,13 +65,6 @@ export function Greeting({ data }: { data: DashboardData }) {
           ))}
         </div>
 
-        <Link
-          href={href}
-          className="mt-8 inline-block rounded-xl bg-[#F9250E] px-7 py-3.5 text-[15px] font-bold text-white no-underline transition-transform hover:-translate-y-px"
-          style={{ fontFamily: DISPLAY, boxShadow: '0 4px 16px rgba(249,37,14,0.25)' }}
-        >
-          {cta} →
-        </Link>
       </div>
     </section>
   );

@@ -16,8 +16,10 @@ export type GreetingState =
 export type GreetingCopy = {
   /** Rendered above the body. The time-of-day word is filled in client-side. */
   salutation: 'welcome' | 'welcome_back' | 'time_of_day';
+  /** The last line hands off to the next-step card below. There is no button
+      here: two scarlet primaries pointing at the same URL, a screen apart,
+      compete rather than guide. The sentence does the routing. */
   lines: string[];
-  cta: string;
 };
 
 /** Deterministic per day, so the same day reads the same. */
@@ -57,52 +59,52 @@ const BANK: Bank = {
   },
   recent: {
     en: [
-      ['Writing it down is what makes it yours.', 'Take a breath before the next module — the slow-cooker rewards patience.'],
-      ['That answer will read differently to you in three months. Keep it.', 'Take a breath before the next module — the slow-cooker rewards patience.'],
-      ['Honest work on the page tends to become honest work in the room.', 'Take a breath before the next module — the slow-cooker rewards patience.'],
-      ['You did the part most people skip.', 'Take a breath before the next module — the slow-cooker rewards patience.'],
+      ['Writing it down is what makes it yours.', 'Take a breath before the next module — the slow-cooker rewards patience. It’s waiting below.'],
+      ['That answer will read differently to you in three months. Keep it.', 'The next module is below when you’re ready — the slow-cooker rewards patience.'],
+      ['Honest work on the page tends to become honest work in the room.', 'Your next step is below. There’s no hurry to it.'],
+      ['You did the part most people skip.', 'Here’s what comes next, whenever you want it.'],
     ],
     fr: [
-      ['L’écrire, c’est ce qui vous l’approprie.', 'Respirez avant le module suivant — la cuisson lente récompense la patience.'],
-      ['Cette réponse vous parlera autrement dans trois mois. Gardez-la.', 'Respirez avant le module suivant — la cuisson lente récompense la patience.'],
-      ['Un travail honnête sur la page devient un travail honnête dans la salle.', 'Respirez avant le module suivant — la cuisson lente récompense la patience.'],
-      ['Vous avez fait la partie que la plupart évitent.', 'Respirez avant le module suivant — la cuisson lente récompense la patience.'],
+      ['L’écrire, c’est ce qui vous l’approprie.', 'Respirez avant le module suivant — il vous attend ci-dessous.'],
+      ['Cette réponse vous parlera autrement dans trois mois. Gardez-la.', 'Le module suivant est ci-dessous, quand vous serez prêt.'],
+      ['Un travail honnête sur la page devient un travail honnête dans la salle.', 'Votre prochaine étape est ci-dessous. Rien ne presse.'],
+      ['Vous avez fait la partie que la plupart évitent.', 'Voici la suite, quand vous le voudrez.'],
     ],
   },
   returning: {
     en: [
-      ['Leadership isn’t lost in the gap. It’s found in the return.'],
-      ['The gap is not the failure. Not returning would be.'],
-      ['Formation survives interruption. It does not survive abandonment.'],
+      ['Leadership isn’t lost in the gap. It’s found in the return.', 'Here’s where you were.'],
+      ['The gap is not the failure. Not returning would be.', 'Your next step is below, unchanged.'],
+      ['Formation survives interruption. It does not survive abandonment.', 'Let’s pick it up here.'],
     ],
     fr: [
-      ['Le leadership ne se perd pas dans l’interruption. Il se trouve dans le retour.'],
-      ['L’interruption n’est pas l’échec. Ne pas revenir le serait.'],
-      ['La formation survit à l’interruption. Elle ne survit pas à l’abandon.'],
+      ['Le leadership ne se perd pas dans l’interruption. Il se trouve dans le retour.', 'Voici où vous en étiez.'],
+      ['L’interruption n’est pas l’échec. Ne pas revenir le serait.', 'Votre prochaine étape vous attend ci-dessous.'],
+      ['La formation survit à l’interruption. Elle ne survit pas à l’abandon.', 'Reprenons ici.'],
     ],
   },
   long_absence: {
     en: [
-      ['The doors haven’t closed. Your work is still here waiting.'],
-      ['Nothing has been lost. Everything you wrote is where you left it.'],
-      ['However long it has been, the next step is the same size as it always was.'],
+      ['The doors haven’t closed. Your work is still here waiting.', 'Start again from here.'],
+      ['Nothing has been lost. Everything you wrote is where you left it.', 'This is where you stopped.'],
+      ['However long it has been, the next step is the same size as it always was.', 'It’s below.'],
     ],
     fr: [
-      ['Les portes ne se sont pas fermées. Votre travail vous attend toujours.'],
-      ['Rien n’a été perdu. Tout ce que vous avez écrit est là où vous l’avez laissé.'],
-      ['Quel qu’ait été le délai, la prochaine étape est de la même taille qu’avant.'],
+      ['Les portes ne se sont pas fermées. Votre travail vous attend toujours.', 'Reprenez ici.'],
+      ['Rien n’a été perdu. Tout ce que vous avez écrit est là où vous l’avez laissé.', 'C’est ici que vous vous êtes arrêté.'],
+      ['Quel qu’ait été le délai, la prochaine étape est de la même taille qu’avant.', 'Elle est ci-dessous.'],
     ],
   },
   active: {
     en: [
-      ['You’re in the middle of it. That is where most of the forming happens.'],
-      ['Steady is the whole method. Keep going.'],
-      ['The reading matters less than the returning. You’ve returned.'],
+      ['You’re in the middle of it. That is where most of the forming happens.', 'Here’s where you left off.'],
+      ['Steady is the whole method. Keep going.', 'Your next step is below.'],
+      ['The reading matters less than the returning. You’ve returned.', 'Pick it up here.'],
     ],
     fr: [
-      ['Vous êtes en plein dedans. C’est là que la formation se fait.'],
-      ['La régularité est toute la méthode. Continuez.'],
-      ['La lecture compte moins que le retour. Vous êtes revenu.'],
+      ['Vous êtes en plein dedans. C’est là que la formation se fait.', 'Voici où vous vous êtes arrêté.'],
+      ['La régularité est toute la méthode. Continuez.', 'Votre prochaine étape est ci-dessous.'],
+      ['La lecture compte moins que le retour. Vous êtes revenu.', 'Reprenez ici.'],
     ],
   },
 };
@@ -116,20 +118,10 @@ const SALUTATION: Record<GreetingState, GreetingCopy['salutation']> = {
   active: 'time_of_day',
 };
 
-const CTA: Record<GreetingState, { en: string; fr: string }> = {
-  new:          { en: 'Begin Starting Point',      fr: 'Commencer le Point de départ' },
-  oriented:     { en: 'Begin',                     fr: 'Commencer' },
-  recent:       { en: 'Continue where you left off', fr: 'Reprendre où vous en étiez' },
-  returning:    { en: 'Pick up where you paused',  fr: 'Reprendre où vous vous êtes arrêté' },
-  long_absence: { en: 'Return to your journey',    fr: 'Revenir à votre parcours' },
-  active:       { en: 'Continue where you left off', fr: 'Reprendre où vous en étiez' },
-};
-
 export function greetingFor(state: GreetingState, lang: 'en' | 'fr', date = new Date()): GreetingCopy {
   return {
     salutation: SALUTATION[state],
     lines: pickVariant(BANK[state][lang], date),
-    cta: CTA[state][lang],
   };
 }
 

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { NextStepModeToggle } from './NextStepMode';
+import { SectionsIcon, ClockIcon, TargetIcon } from '@/components/shell/icons';
 import type { DashboardData } from '@/lib/dashboard/data';
 
 const DISPLAY = "'Plus Jakarta Sans', sans-serif";
@@ -53,10 +54,10 @@ export function NextStep({ data }: { data: DashboardData }) {
             {nextStep.reason}
           </p>
 
-          <p className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-gray-500">
-            <span>📖 {m.sectionCount} {lang === 'en' ? 'sections' : 'sections'}</span>
-            <span>⏱ {m.minutes} min</span>
-            {pillarLabel && <span>🎯 {pillarLabel}</span>}
+          <p className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[13px] text-gray-500">
+            <span className="inline-flex items-center gap-1.5"><SectionsIcon />{m.sectionCount} {lang === 'en' ? 'sections' : 'sections'}</span>
+            <span className="inline-flex items-center gap-1.5"><ClockIcon />{m.minutes} min</span>
+            {pillarLabel && <span className="inline-flex items-center gap-1.5"><TargetIcon />{pillarLabel}</span>}
           </p>
 
           <Link
