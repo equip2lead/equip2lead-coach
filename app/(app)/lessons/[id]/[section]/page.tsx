@@ -44,6 +44,27 @@ export default async function SectionPage({ params }: { params: { id: string; se
   const progress = await getModuleProgress(journey?.id ?? null, mod.id);
   const title = (lang === 'en' ? mod.title_en : mod.title_fr) || mod.title_en;
 
+  // Whether this section asks for work the reader has not handed in. The
+  // footer uses it to ask once before moving on, rather than letting an
+  // unanswered assignment slip past unnoticed.
+  let assignmentPending = false;
+  if (section.hasAssignment) {
+    const keys = section.blocks
+      .filter((b) => b.type === 'assignment_prompt')
+      .map((b) => (b as { assignment_key?: string }).assignment_key)
+      .filter((k): k is string => !!k);
+    if (keys.length > 0) {
+      const { count } = await supabase
+        .from('lesson_assignment_submissions')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('lesson_module_id', mod.id)
+        .in('assignment_key', keys)
+        .neq('status', 'draft');
+      assignmentPending = (count ?? 0) < keys.length;
+    }
+  }
+
   return (
     <div className="flex min-h-screen bg-white max-shell:flex-col">
       <CurriculumSidebar
@@ -69,6 +90,8 @@ export default async function SectionPage({ params }: { params: { id: string; se
             moduleId={mod.id}
             journeyId={journey?.id ?? null}
             lang={lang}
+            sectionNumber={section.number}
+            totalSections={sections.length}
           />
         </article>
 
@@ -77,6 +100,7 @@ export default async function SectionPage({ params }: { params: { id: string; se
           current={section.number}
           total={sections.length}
           alreadyComplete={progress.completed.includes(section.number)}
+          assignmentPending={assignmentPending}
           lang={lang}
         />
       </div>

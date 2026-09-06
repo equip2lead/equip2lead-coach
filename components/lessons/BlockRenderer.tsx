@@ -1,4 +1,5 @@
 import { Scorecard } from './Scorecard';
+import { AssignmentForm } from './AssignmentForm';
 import {
   isKnownBlock, normaliseCalloutVariant,
   type CalloutVariant, type LessonBlock, type UnknownBlock,
@@ -44,29 +45,38 @@ const CALLOUT: Record<CalloutVariant, { bar: string; bg: string; fg: string; ico
 };
 
 export function BlockRenderer({
-  blocks, moduleId, journeyId, lang = 'en',
+  blocks, moduleId, journeyId, lang = 'en', sectionNumber, totalSections,
 }: {
   blocks: Array<LessonBlock | UnknownBlock>;
   moduleId: string;
   journeyId: string | null;
   lang?: 'en' | 'fr';
+  /** Present on a section page. Absent on the overview, where an assignment
+      is shown as a prompt rather than offered for answering. */
+  sectionNumber?: number;
+  totalSections?: number;
 }) {
   return (
     <div className="lesson-body">
       {blocks.map((block) => (
-        <Block key={block.id} block={block} moduleId={moduleId} journeyId={journeyId} lang={lang} />
+        <Block
+          key={block.id} block={block} moduleId={moduleId} journeyId={journeyId}
+          lang={lang} sectionNumber={sectionNumber} totalSections={totalSections}
+        />
       ))}
     </div>
   );
 }
 
 function Block({
-  block, moduleId, journeyId, lang,
+  block, moduleId, journeyId, lang, sectionNumber, totalSections,
 }: {
   block: LessonBlock | UnknownBlock;
   moduleId: string;
   journeyId: string | null;
   lang: 'en' | 'fr';
+  sectionNumber?: number;
+  totalSections?: number;
 }) {
   // A block type this build has never heard of must not blank the page. In
   // production it is skipped; while authoring it is surfaced loudly, because
@@ -264,9 +274,12 @@ function Block({
       );
 
     case 'assignment_prompt':
-      // Prompt UI only. The submission form is 5.2c; until it lands this
-      // renders what is being asked without pretending it can be answered.
+      // The prompt card states what is being asked; the form beneath it is
+      // where it gets answered. On the overview page there is no section to
+      // complete, so the prompt is shown without the form rather than
+      // offering a submission that would have nowhere to land.
       return (
+        <>
         <section className={`${READING_COLUMN} my-12 rounded-2xl border-2 border-[#F9250E]/20 bg-white px-8 py-8 max-md:px-5 max-md:py-6`}>
           <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-[#F9250E]">
             {lang === 'en' ? 'Assignment' : 'Devoir'}
@@ -299,12 +312,19 @@ function Block({
             </p>
           )}
 
-          <p className="mt-4 rounded-lg border border-dashed border-gray-300 px-4 py-3 text-[13px] text-gray-400">
-            {lang === 'en'
-              ? 'The submission form arrives in the next step.'
-              : 'Le formulaire de soumission arrive à la prochaine étape.'}
-          </p>
         </section>
+        {sectionNumber != null && totalSections != null && (
+          <div className={READING_COLUMN}>
+            <AssignmentForm
+              block={block}
+              moduleId={moduleId}
+              sectionNumber={sectionNumber}
+              totalSections={totalSections}
+              lang={lang}
+            />
+          </div>
+        )}
+        </>
       );
   }
 }
