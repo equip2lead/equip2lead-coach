@@ -35,7 +35,7 @@ const trackMeta: Record<string, { color: string; icon: string }> = {
 
 type PillarScore = { pillar_id: string; score: number; sub_domain_scores: Record<string, number> };
 type PillarInfo = { id: string; name_en: string; name_fr: string; sort_order: number };
-type WeekPlan = { week: number; title_en: string; title_fr: string; desc_en: string; desc_fr: string; focus: string; exercises: { type: string; title_en: string; title_fr: string }[] };
+type WeekPlan = { week: number; title_en: string; title_fr: string; desc_en: string; desc_fr: string; focus: string; exercises: { type: string; title_en: string; title_fr: string }[]; module_id?: string };
 type PlanData = { weeks: WeekPlan[]; vision_en: string; vision_fr: string; weakest_pillar_en: string; weakest_pillar_fr: string; strongest_pillar_en: string; strongest_pillar_fr: string; overall_score: number };
 
 function ProgressRing({ score, size = 120, strokeWidth = 8, color }: { score: number; size?: number; strokeWidth?: number; color: string }) {
@@ -348,6 +348,17 @@ export default function DashboardPage() {
                   <h3 className="text-[22px] font-extrabold text-gray-900 mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{lang === 'en' ? weekPlan.title_en : weekPlan.title_fr}</h3>
                   <p className="text-[14px] text-gray-500 leading-[1.65] mb-6">{lang === 'en' ? weekPlan.desc_en : weekPlan.desc_fr}</p>
                   <div className="flex gap-3 flex-wrap">
+                    {/* Into this week's content. A week that has been linked
+                        to a module opens the module; one that has not falls
+                        back to the library, which is where the reader would
+                        otherwise have had to go looking. */}
+                    <button
+                      onClick={() => router.push(weekPlan.module_id ? `/lessons/${weekPlan.module_id}` : '/lessons')}
+                      className="flex items-center gap-2 px-5 py-3 rounded-xl border-none cursor-pointer text-[13px] font-bold text-white transition-all hover:-translate-y-px"
+                      style={{ background: trackColor, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                    >
+                      <BookIcon /> {lang === 'en' ? 'Continue lessons' : 'Continuer les leçons'}
+                    </button>
                     <button onClick={() => router.push('/ai-coach')} className="flex items-center gap-2 px-5 py-3 rounded-xl border-none cursor-pointer text-[13px] font-bold text-white transition-all hover:-translate-y-px" style={{ background: trackColor, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                       <SparkIcon /> {lang === 'en' ? 'Talk to AI Coach' : 'Parler au Coach IA'}
                     </button>
