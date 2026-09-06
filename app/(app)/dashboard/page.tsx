@@ -357,9 +357,9 @@ export default function DashboardPage() {
                       className="flex items-center gap-2 px-5 py-3 rounded-xl border-none cursor-pointer text-[13px] font-bold text-white transition-all hover:-translate-y-px"
                       style={{ background: trackColor, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                     >
-                      <BookIcon /> {lang === 'en' ? 'Continue lessons' : 'Continuer les leçons'}
+                      <BookIcon /> {lang === 'en' ? 'Continue this week' : 'Continuer cette semaine'}
                     </button>
-                    <button onClick={() => router.push('/ai-coach')} className="flex items-center gap-2 px-5 py-3 rounded-xl border-none cursor-pointer text-[13px] font-bold text-white transition-all hover:-translate-y-px" style={{ background: trackColor, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    <button onClick={() => router.push('/ai-coach')} className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 bg-white cursor-pointer text-[13px] font-semibold text-gray-700 transition-all hover:-translate-y-px" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                       <SparkIcon /> {lang === 'en' ? 'Talk to AI Coach' : 'Parler au Coach IA'}
                     </button>
                     <button onClick={() => router.push('/weekly-checkin')} className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 bg-white cursor-pointer text-[13px] font-semibold text-gray-700 transition-all hover:-translate-y-px" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
