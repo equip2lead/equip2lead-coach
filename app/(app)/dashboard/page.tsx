@@ -1,8 +1,10 @@
+import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
 import { getDashboardData } from '@/lib/dashboard/data';
 import { Greeting } from '@/components/dashboard/Greeting';
 import { NextStep } from '@/components/dashboard/NextStep';
 import { WhatYouveWritten } from '@/components/dashboard/WhatYouveWritten';
+import { ModuleGrid } from '@/components/dashboard/ModuleGrid';
 import { YourPillars } from '@/components/dashboard/YourPillars';
 import { ClosingWord } from '@/components/dashboard/ClosingWord';
 
@@ -10,7 +12,6 @@ import { ClosingWord } from '@/components/dashboard/ClosingWord';
 // lightly data-informed at the bottom — a server component throughout, with
 // client islands only where the browser knows something the server does not.
 //
-// Blocks 3-6 land in the following sub-steps.
 
 export const dynamic = 'force-dynamic';
 
@@ -28,7 +29,13 @@ export default async function DashboardPage() {
       <NextStep data={data} />
       {/* Renders nothing until there is something written. */}
       <WhatYouveWritten data={data} />
-      {/* Block 4, the module grid, lands here in the next sub-step. */}
+      <Suspense fallback={null}>
+        <ModuleGrid
+          modules={data.modules}
+          recommendedId={data.nextStep.kind === 'module' ? data.nextStep.module.id : null}
+          lang={data.lang}
+        />
+      </Suspense>
       <YourPillars data={data} />
       <ClosingWord lang={data.lang} />
     </div>
