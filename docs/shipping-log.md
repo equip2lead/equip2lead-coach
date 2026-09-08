@@ -24,3 +24,22 @@ Not yet built:
 - Modules 2-12 (content pending)
 - Video and image assets (Denis to record/curate)
 - French translations (human, not machine)
+
+## 2026-09-07 — Phase 5.3 Coach's Office dashboard
+
+Complete redesign of /dashboard shipped to app.equip2lead.coach.
+
+Six blocks: greeting, next step, what you've written, module grid, pillars, closing quote.
+Denis's voice throughout. No gamification.
+State-aware greeting variants (6 states, 3-4 copy variants each, day-of-year rotation).
+Assessment vs Sequential mode toggle (profiles.next_step_mode column).
+Module grid with pillar and status filters, URL persistence.
+Read/Revise routing via ?view=submission and ?view=edit.
+Draft integrity rules: newer beats submission, older shows banner, none creates from submission.
+
+Fixed: PostgREST zero-row DELETE silent-success. Delete now .select()s and errors explicitly.
+
+Old dashboard archived as _dashboard-legacy.tsx.
+
+Migrations in production:
+- profiles.next_step_mode TEXT DEFAULT 'assessment' CHECK IN ('assessment', 'sequential')
