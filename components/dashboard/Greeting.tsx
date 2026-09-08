@@ -11,7 +11,7 @@ function daysSince(iso: string | null): number | null {
 }
 
 export function Greeting({ data }: { data: DashboardData }) {
-  const { lang, firstName, modules } = data;
+  const { lang, firstName, modules, nextStepMode } = data;
 
   const startingPoint = modules.find((m) => m.isStartingPoint);
   const state = greetingState({
@@ -22,7 +22,7 @@ export function Greeting({ data }: { data: DashboardData }) {
     lastActivityKind: data.lastActivityKind,
   });
 
-  const copy = greetingFor(state, lang);
+  const copy = greetingFor(state, lang, nextStepMode);
   const days = daysSince(data.lastActivityAt);
 
 

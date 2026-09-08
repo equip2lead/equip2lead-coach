@@ -5,6 +5,8 @@
 // day say the same thing, which is what makes the page feel like a place
 // rather than a slot machine. The line changes tomorrow.
 
+import type { NextStepMode } from './data';
+
 export type GreetingState =
   | 'new'            // nothing done yet
   | 'oriented'       // starting point finished, no numbered module begun
@@ -45,16 +47,19 @@ const BANK: Bank = {
       ['Personne n’arrive ici déjà formé. C’est précisément l’intérêt.', 'Votre Point de départ vous attend.'],
     ],
   },
+  // The handoff line is appended by greetingFor, because it is the one
+  // sentence here that explains *why* this module is next — and that reason
+  // changes with the reader's chosen mode. See ORIENTED_HANDOFF.
   oriented: {
     en: [
-      ['You’ve set your intention. Now the work begins.', 'Your first module was chosen from what your assessment revealed.'],
-      ['The intention is written. What follows is the slower part.', 'Your first module was chosen from what your assessment revealed.'],
-      ['You know why you came. That is more than most leaders can say.', 'Your first module was chosen from what your assessment revealed.'],
+      ['You’ve set your intention. Now the work begins.'],
+      ['The intention is written. What follows is the slower part.'],
+      ['You know why you came. That is more than most leaders can say.'],
     ],
     fr: [
-      ['Vous avez posé votre intention. Le travail commence maintenant.', 'Votre premier module a été choisi d’après votre évaluation.'],
-      ['L’intention est écrite. Ce qui suit est la part la plus lente.', 'Votre premier module a été choisi d’après votre évaluation.'],
-      ['Vous savez pourquoi vous êtes venu. C’est plus que la plupart des leaders.', 'Votre premier module a été choisi d’après votre évaluation.'],
+      ['Vous avez posé votre intention. Le travail commence maintenant.'],
+      ['L’intention est écrite. Ce qui suit est la part la plus lente.'],
+      ['Vous savez pourquoi vous êtes venu. C’est plus que la plupart des leaders.'],
     ],
   },
   recent: {
@@ -109,6 +114,21 @@ const BANK: Bank = {
   },
 };
 
+/** The only line in the bank that claims a *reason* the next module is next.
+    In sequential mode the assessment did not choose it — the numbering did —
+    so the sentence has to move with the mode or it becomes a small lie told
+    on the most-read screen in the app. */
+const ORIENTED_HANDOFF: Record<NextStepMode, { en: string; fr: string }> = {
+  assessment: {
+    en: 'Your first module was chosen from what your assessment revealed.',
+    fr: 'Votre premier module a été choisi d’après votre évaluation.',
+  },
+  sequential: {
+    en: 'You’re walking the arc — Module 1 is where it begins.',
+    fr: 'Vous suivez l’arc — le Module 1 en est le commencement.',
+  },
+};
+
 const SALUTATION: Record<GreetingState, GreetingCopy['salutation']> = {
   new: 'welcome',
   oriented: 'time_of_day',
@@ -118,10 +138,16 @@ const SALUTATION: Record<GreetingState, GreetingCopy['salutation']> = {
   active: 'time_of_day',
 };
 
-export function greetingFor(state: GreetingState, lang: 'en' | 'fr', date = new Date()): GreetingCopy {
+export function greetingFor(
+  state: GreetingState,
+  lang: 'en' | 'fr',
+  mode: NextStepMode = 'assessment',
+  date = new Date(),
+): GreetingCopy {
+  const lines = pickVariant(BANK[state][lang], date);
   return {
     salutation: SALUTATION[state],
-    lines: pickVariant(BANK[state][lang], date),
+    lines: state === 'oriented' ? [...lines, ORIENTED_HANDOFF[mode][lang]] : lines,
   };
 }
 
