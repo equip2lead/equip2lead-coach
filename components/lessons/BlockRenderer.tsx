@@ -1,5 +1,5 @@
 import { Scorecard } from './Scorecard';
-import { AssignmentForm } from './AssignmentForm';
+import { AssignmentForm, type AssignmentView } from './AssignmentForm';
 import {
   isKnownBlock, normaliseCalloutVariant,
   type CalloutVariant, type LessonBlock, type UnknownBlock,
@@ -45,7 +45,7 @@ const CALLOUT: Record<CalloutVariant, { bar: string; bg: string; fg: string; ico
 };
 
 export function BlockRenderer({
-  blocks, moduleId, journeyId, lang = 'en', sectionNumber, totalSections,
+  blocks, moduleId, journeyId, lang = 'en', sectionNumber, totalSections, view = null,
 }: {
   blocks: Array<LessonBlock | UnknownBlock>;
   moduleId: string;
@@ -55,6 +55,9 @@ export function BlockRenderer({
       is shown as a prompt rather than offered for answering. */
   sectionNumber?: number;
   totalSections?: number;
+  /** From ?view= on the section URL. Decides which face of the assignment the
+      reader lands on, so a link's label and its effect are the same thing. */
+  view?: AssignmentView;
 }) {
   return (
     <div className="lesson-body">
@@ -62,6 +65,7 @@ export function BlockRenderer({
         <Block
           key={block.id} block={block} moduleId={moduleId} journeyId={journeyId}
           lang={lang} sectionNumber={sectionNumber} totalSections={totalSections}
+          view={view}
         />
       ))}
     </div>
@@ -69,7 +73,7 @@ export function BlockRenderer({
 }
 
 function Block({
-  block, moduleId, journeyId, lang, sectionNumber, totalSections,
+  block, moduleId, journeyId, lang, sectionNumber, totalSections, view,
 }: {
   block: LessonBlock | UnknownBlock;
   moduleId: string;
@@ -77,6 +81,7 @@ function Block({
   lang: 'en' | 'fr';
   sectionNumber?: number;
   totalSections?: number;
+  view: AssignmentView;
 }) {
   // A block type this build has never heard of must not blank the page. In
   // production it is skipped; while authoring it is surfaced loudly, because
@@ -321,6 +326,7 @@ function Block({
               sectionNumber={sectionNumber}
               totalSections={totalSections}
               lang={lang}
+              view={view}
             />
           </div>
         )}

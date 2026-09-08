@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import {
-  saveAssignmentDraft, submitAssignment, startAssignmentRevision,
+  saveAssignmentDraft, submitAssignment, startAssignmentRevision, restartAssignmentRevision,
 } from '@/app/(app)/lessons/[id]/actions';
 import type { AssignmentPromptBlock } from '@/lib/lesson-blocks';
 
@@ -14,8 +14,13 @@ const SERIF = "Georgia, 'Libre Baskerville', serif";
 
 type Row = {
   id: string; version: number; status: string;
-  body: string; word_count: number; submitted_at: string | null;
+  body: string; word_count: number; submitted_at: string | null; updated_at: string;
 };
+
+/** Which face of the assignment a link asked for. `null` is the default:
+    the open draft if there is one, else the last submission, else a blank
+    form. See the `?view=` handling in the section page. */
+export type AssignmentView = 'submission' | 'edit' | null;
 
 /** Markdown, not HTML: it is what the rest of the app already renders, it
     survives being read back as plain text, and it costs no editor bundle. */
@@ -70,13 +75,14 @@ function formatDate(iso: string, lang: 'en' | 'fr') {
 }
 
 export function AssignmentForm({
-  block, moduleId, sectionNumber, totalSections, lang,
+  block, moduleId, sectionNumber, totalSections, lang, view = null,
 }: {
   block: AssignmentPromptBlock;
   moduleId: string;
   sectionNumber: number;
   totalSections: number;
   lang: 'en' | 'fr';
+  view?: AssignmentView;
 }) {
   const supabase = createClient();
   const router = useRouter();
@@ -91,6 +97,8 @@ export function AssignmentForm({
   const [error, setError] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
   const [viewingVersion, setViewingVersion] = useState<number | null>(null);
+  const [forceReadOnly, setForceReadOnly] = useState(view === 'submission');
+  const [staleDraft, setStaleDraft] = useState(false);
   const [tick, setTick] = useState(0);
 
   const lastSavedBody = useRef('');
@@ -112,7 +120,7 @@ export function AssignmentForm({
     if (!user) { setLoaded(true); return; }
     const { data } = await supabase
       .from('lesson_assignment_submissions')
-      .select('id, version, status, body, word_count, submitted_at')
+      .select('id, version, status, body, word_count, submitted_at, updated_at')
       .eq('user_id', user.id)
       .eq('lesson_module_id', moduleId)
       .eq('assignment_key', block.assignment_key)
@@ -202,7 +210,50 @@ export function AssignmentForm({
     if (!res.ok) { setError(res.error); return; }
     await load();
     setViewingVersion(null);
+    setForceReadOnly(false);
   };
+
+  /** Discard the stale draft and seed a fresh one from the last submission. */
+  const doDiscardDraft = async () => {
+    setBusy(true); setError(null);
+    const res = await restartAssignmentRevision(moduleId, block.assignment_key);
+    setBusy(false);
+    if (!res.ok) { setError(res.error); return; }
+    await load();
+    setStaleDraft(false);
+    setViewingVersion(null);
+    setForceReadOnly(false);
+  };
+
+  /**
+   * Apply `?view=` once the rows are in, exactly once per mount.
+   *
+   * `edit` is a request to be editing, so where there is no draft it opens
+   * one. Where there already is a draft it opens *that* — half-written work is
+   * never silently replaced, even when it predates the last submission. That
+   * older case only says the reader has something in flight they may have
+   * forgotten, so it is flagged rather than resolved on their behalf.
+   */
+  const viewApplied = useRef(false);
+  useEffect(() => {
+    if (!loaded || viewApplied.current) return;
+    viewApplied.current = true;
+    if (view !== 'edit') return;
+
+    const d = rows.find((r) => r.status === 'draft') ?? null;
+    const latest = rows
+      .filter((r) => r.status !== 'draft')
+      .sort((a, b) => b.version - a.version)[0] ?? null;
+
+    if (d) {
+      if (latest?.submitted_at && d.updated_at < latest.submitted_at) setStaleDraft(true);
+      return;
+    }
+    if (latest) doRevise();
+  // doRevise is stable for this purpose and re-running on its identity would
+  // defeat the once-only guard.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded, view, rows]);
 
   const t = {
     words: lang === 'en' ? 'words' : 'mots',
@@ -215,6 +266,11 @@ export function AssignmentForm({
     submittedOn: lang === 'en' ? 'Submitted on' : 'Soumis le',
     edit: lang === 'en' ? 'Edit and resubmit' : 'Modifier et resoumettre',
     history: lang === 'en' ? 'Version history' : 'Historique des versions',
+    staleDraft: lang === 'en'
+      ? 'You have an unsaved draft older than your last submission.'
+      : 'Vous avez un brouillon non soumis antérieur à votre dernière soumission.',
+    discardDraft: lang === 'en' ? 'Discard draft' : 'Supprimer le brouillon',
+    continueDraft: lang === 'en' ? 'Continue with draft' : 'Continuer avec le brouillon',
     version: lang === 'en' ? 'Version' : 'Version',
     latest: lang === 'en' ? 'latest' : 'dernière',
     placeholder: lang === 'en'
@@ -227,7 +283,9 @@ export function AssignmentForm({
   }
 
   const viewing = viewingVersion != null ? submitted.find((r) => r.version === viewingVersion) ?? null : latestSubmitted;
-  const readOnly = !draft && !!latestSubmitted;
+  // ?view=submission asks for the submitted version specifically, so it wins
+  // over an open draft — the draft is still there, one click away.
+  const readOnly = forceReadOnly ? !!latestSubmitted : (!draft && !!latestSubmitted);
 
   return (
     <section className="my-10 rounded-2xl border-2 border-[#F9250E]/20 bg-white p-8 max-md:p-5">
@@ -252,6 +310,33 @@ export function AssignmentForm({
               </button>
             );
           })}
+        </div>
+      )}
+
+      {/* The reader arrived at ?view=edit and found work already in flight
+          that predates their last submission. Both ways out are one click. */}
+      {staleDraft && !readOnly && (
+        <div className="mb-5 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3">
+          <p className="text-[13.5px] leading-[1.5] text-amber-900">{t.staleDraft}</p>
+          <div className="mt-2.5 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={doDiscardDraft}
+              disabled={busy}
+              className="rounded-lg border border-amber-400 bg-white px-3 py-1.5 text-[12.5px] font-semibold text-amber-900 transition-colors hover:bg-amber-100 disabled:opacity-60"
+              style={{ fontFamily: 'inherit' }}
+            >
+              {busy ? '…' : t.discardDraft}
+            </button>
+            <button
+              type="button"
+              onClick={() => setStaleDraft(false)}
+              className="rounded-lg border border-transparent bg-amber-100 px-3 py-1.5 text-[12.5px] font-semibold text-amber-900 transition-colors hover:bg-amber-200"
+              style={{ fontFamily: 'inherit' }}
+            >
+              {t.continueDraft}
+            </button>
+          </div>
         </div>
       )}
 

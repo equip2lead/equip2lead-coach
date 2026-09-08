@@ -213,3 +213,36 @@ export async function startAssignmentRevision(
   if (error) return { ok: false, error: error.message };
   return { ok: true, id: created.id, version: created.version, status: 'draft' };
 }
+
+/**
+ * Throw away the open draft and seed a fresh one from the latest submission.
+ *
+ * Only reachable from the stale-draft banner, where the reader has been shown
+ * what they are discarding and has chosen to lose it. The delete is guarded by
+ * `las_delete_own_draft`, so the database refuses to remove anything already
+ * submitted even if this function asked it to.
+ */
+export async function restartAssignmentRevision(
+  moduleId: string, assignmentKey: string
+): Promise<AssignmentResult> {
+  const supabase = await createClient();
+  const { user } = await currentUserAndJourney(supabase);
+  if (!user) return { ok: false, error: 'Not signed in' };
+
+  // .select() so the deleted rows come back: a DELETE that matches nothing is
+  // not an error in PostgREST, and without this the next call would hand back
+  // the very draft this was meant to throw away — succeeding while doing
+  // nothing, which is the failure that hides longest.
+  const { data: removed, error: delError } = await supabase
+    .from('lesson_assignment_submissions')
+    .delete()
+    .eq('user_id', user.id).eq('lesson_module_id', moduleId)
+    .eq('assignment_key', assignmentKey).eq('status', 'draft')
+    .select('id');
+  if (delError) return { ok: false, error: delError.message };
+  if (!removed || removed.length === 0) {
+    return { ok: false, error: 'Could not discard the draft. Nothing was changed.' };
+  }
+
+  return startAssignmentRevision(moduleId, assignmentKey);
+}

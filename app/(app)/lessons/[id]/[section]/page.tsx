@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { BlockRenderer } from '@/components/lessons/BlockRenderer';
+import type { AssignmentView } from '@/components/lessons/AssignmentForm';
 import { CurriculumSidebar } from '@/components/lessons/CurriculumSidebar';
 import { LessonFooter } from '@/components/lessons/LessonFooter';
 import { parseBlocks } from '@/lib/lesson-blocks';
@@ -9,7 +10,17 @@ import { getModuleProgress } from '@/lib/lessons/progress';
 
 export const dynamic = 'force-dynamic';
 
-export default async function SectionPage({ params }: { params: { id: string; section: string } }) {
+export default async function SectionPage({
+  params, searchParams,
+}: {
+  params: { id: string; section: string };
+  searchParams: { view?: string };
+}) {
+  // Anything other than the two known values is treated as absent rather than
+  // as an error: a mangled link should still show the reader their assignment.
+  const view: AssignmentView =
+    searchParams.view === 'submission' || searchParams.view === 'edit' ? searchParams.view : null;
+
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -92,6 +103,7 @@ export default async function SectionPage({ params }: { params: { id: string; se
             lang={lang}
             sectionNumber={section.number}
             totalSections={sections.length}
+            view={view}
           />
         </article>
 
