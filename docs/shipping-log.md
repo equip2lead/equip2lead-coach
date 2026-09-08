@@ -84,3 +84,65 @@ Not done, awaiting decision:
   Building" / focus Multiplication & Impact, which does not match a character module.
   Week 8 ("Turning Self-Awareness Into Consistent Leadership Practice", focus Personal
   Leadership) is the better thematic fit. Not written either way.
+
+## 2026-09-08 — Module 3 "Emotional Intelligence: The Leader's Inner Edge"
+
+Live at app.equip2lead.coach. Data-only ship — no code change, no deploy.
+
+lesson_modules id ee5f6ddf-7cc8-4855-9b7b-af4b11600e9c,
+slug emotional-intelligence-the-leader-s-inner-edge.
+115 blocks, 8 sections, module_number 3, sort_order 3, is_starting_point false.
+Pillar: Personal Leadership. Difficulty: beginner. Duration: 80 min.
+
+Blocks: paragraph 41, callout 27, heading 19, divider 11, reflection_questions 7,
+table 5, pull_quote_card 2, video_embed 2, assignment_prompt 1 (assignment_key a1,
+4 prompts, 200-600 words).
+
+Sections: 1 What Is Emotional Intelligence · 2 Self-Awareness · 3 Self-Regulation ·
+4 Motivation · 5 Empathy · 6 Social Skills · 7 The Six Leadership Styles ·
+8 EQ Is Learnable (assignment).
+
+Videos, both verified embeddable and confirmed rendering in production:
+- 1Evwgu369Jw — "Brené Brown on Empathy", RSA Shorts (Section 5)
+- r3wyCxHtGd0 — "Daniel Goleman: Why Aren't We All Good Samaritans?", TED (Section 5)
+
+Verified in production: all 8 sections render with titles matching the authored
+JSON exactly, both video embeds load with real thumbnails, the Section 8 assignment
+form loads with textarea/word counter/toolbar, and the dashboard grid shows Module 3
+alongside Modules 0, 1 and 2.
+
+Ingestion integrity: body_blocks appended in 16 guarded chunks (SQL transport
+rejects payloads above ~3KB), then verified by md5 of the jsonb canonical form
+against the locally transformed file — exact match, 115/115 distinct block ids.
+
+Pending assets, shipped visible as placeholder callouts, not faked:
+- 2 videos pending recording (module intro; Section 3 self-regulation)
+- 4 images pending generation (Sections 1, 3, 5, 8)
+- 1 mood_checkin interactive block, Section 2 — NOT BUILT. Currently a callout
+  placeholder. Spec in MOOD_CHECKIN_SPEC.md. Investigation done (see below);
+  implementation deferred to a follow-up PR.
+
+mood_checkin investigation (per spec's "check before building anything new"):
+The existing Check-in nav item points at /weekly-checkin, backed by the
+weekly_checkins table, which does have a mood column — but it is a different
+kind of check-in. Its enum checkin_mood is a 5-point valence scale
+{struggling, flat, okay, good, on_fire}, keyed one row per (journey_id,
+week_number). The spec's mood_checkin is six qualitative states
+(Steady/Stretched/Frustrated/Numb/Hopeful/Overwhelmed) that do not map onto a
+valence scale, is momentary rather than weekly, and is section-scoped. Reusing
+weekly_checkins would corrupt weekly progress data and flatten the vocabulary.
+Recommendation: keep separate, and per the spec's own guidance store nothing —
+which means no table and no migration, just a client-side component.
+
+Not done, awaiting decision:
+- plan_data week link for Module 3. See the Week 12 question raised separately.
+
+Pre-existing bug found during the mood_checkin investigation, NOT fixed here
+(out of scope, flagged only): app/weekly-checkin/page.tsx:155 sends
+moodLabels = ['struggling','low','stable','growing','on_fire'], but the
+checkin_mood enum is {struggling,flat,okay,good,on_fire}. Three of the five
+options ('low','stable','growing') are not valid enum values, so those upserts
+fail. The result is not checked, and the journey week is incremented immediately
+afterwards regardless — so a user picking any of the middle three moods would
+silently lose their check-in while the week still advances. weekly_checkins is
+currently empty (0 rows), so this has never fired in production yet.
