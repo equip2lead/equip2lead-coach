@@ -7,6 +7,18 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import { switchLanguage } from '@/lib/language';
 
 /* ── Icons ── */
+/**
+ * The five mood options in display order, as the `checkin_mood` enum spells
+ * them. These are database values, not UI copy — the visible labels live in
+ * i18n below and differ per language, while these must not.
+ *
+ * Previously this array read ['struggling','low','stable','growing','on_fire'].
+ * Three of those are not members of the enum, so picking any of the middle
+ * three moods made the upsert fail. Positions are the contract: index i here
+ * corresponds to i18n `moods[i]`.
+ */
+const MOOD_VALUES = ['struggling', 'flat', 'okay', 'good', 'on_fire'] as const;
+
 const BackIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>;
 const CheckIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5"><polyline points="20 6 9 17 4 12"/></svg>;
 const SparkIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
@@ -18,6 +30,8 @@ const i18n = {
     subtitle: '~3 minutes · 5 steps',
     steps: ['Emotional Pulse', 'Goal Review', 'Progress', 'Reflection', 'Commitment'],
     // Step 1: Mood
+    saveFailed: "Your check-in couldn't be saved. Nothing was lost — try again.",
+    saving: 'Saving…',
     moodTitle: 'How are you feeling this week?',
     moodSub: 'Be honest — this helps your AI Coach personalise your plan.',
     moods: [
@@ -68,6 +82,8 @@ const i18n = {
     week: 'Bilan Semaine 2',
     subtitle: '~3 minutes · 5 étapes',
     steps: ['Pulse émotionnel', 'Bilan des objectifs', 'Progrès', 'Réflexion', 'Engagement'],
+    saveFailed: "Votre bilan n'a pas pu être enregistré. Rien n'est perdu — réessayez.",
+    saving: 'Enregistrement…',
     moodTitle: 'Comment vous sentez-vous cette semaine ?',
     moodSub: 'Soyez honnête — cela aide votre Coach IA à personnaliser votre plan.',
     moods: [
@@ -122,6 +138,8 @@ export default function WeeklyCheckinPage() {
   const [commitment, setCommitment] = useState('');
   const [journeyId, setJourneyId] = useState<string | null>(null);
   const [weekNum, setWeekNum] = useState(1);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const t = i18n[lang];
 
   // Load journey
@@ -150,32 +168,52 @@ export default function WeeklyCheckinPage() {
     return false;
   };
 
-  const saveCheckin = async () => {
-    if (!journeyId) return;
-    const moodLabels = ['struggling', 'low', 'stable', 'growing', 'on_fire'];
-    await supabase.from('weekly_checkins').upsert({
+  /**
+   * Write the check-in, then advance the week — in that order, and only if the
+   * write actually landed. The two used to run unconditionally back to back, so
+   * a rejected upsert still moved the reader into the next week and their
+   * answers were lost with no error shown anywhere.
+   */
+  const saveCheckin = async (): Promise<boolean> => {
+    if (!journeyId || mood === null) return false;
+
+    const { error: upsertError } = await supabase.from('weekly_checkins').upsert({
       journey_id: journeyId,
       week_number: weekNum,
-      mood: moodLabels[mood || 0],
+      mood: MOOD_VALUES[mood],
       goals_completed: goals.map((g, i) => g ? i : null).filter(v => v !== null),
       progress_rating: scale,
       reflection,
       commitment,
     }, { onConflict: 'journey_id,week_number' });
 
-    // Increment week
-    await supabase.from('journeys').update({
+    if (upsertError) {
+      setSaveError(upsertError.message);
+      return false;
+    }
+
+    const { error: weekError } = await supabase.from('journeys').update({
       current_week: weekNum + 1,
       updated_at: new Date().toISOString(),
     }).eq('id', journeyId);
+
+    // The check-in itself is saved by this point. A failed week bump is worth
+    // surfacing, but it must not present as "your answers were lost".
+    if (weekError) {
+      setSaveError(weekError.message);
+      return false;
+    }
+    return true;
   };
 
   const handleNext = async () => {
-    if (step < 4) setStep(step + 1);
-    else if (step === 4) {
-      await saveCheckin();
-      setStep(5);
-    }
+    if (step < 4) { setStep(step + 1); return; }
+    if (step !== 4) return;
+    setSaving(true);
+    setSaveError(null);
+    const ok = await saveCheckin();
+    setSaving(false);
+    if (ok) setStep(5);
   };
 
   const progress = step < 5 ? ((step + 1) / 5) * 100 : 100;
@@ -336,16 +374,25 @@ export default function WeeklyCheckinPage() {
             </div>
           )}
 
+          {/* A failed save keeps the reader on this step with their answers
+              intact, rather than showing the done screen over lost work. */}
+          {saveError && step < 5 && (
+            <div className="mt-8 mx-auto max-w-[520px] rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+              <p className="text-[13.5px] font-semibold text-red-800">{t.saveFailed}</p>
+              <p className="mt-1 text-[12px] text-red-700/80 break-words">{saveError}</p>
+            </div>
+          )}
+
           {/* Continue Button */}
           {step < 5 && (
             <div className="flex justify-center mt-10">
               <button
                 onClick={handleNext}
-                disabled={!canContinue()}
-                className={`px-10 py-3.5 rounded-xl border-none cursor-pointer text-[15px] font-bold text-white transition-all ${canContinue() ? 'bg-[#F9250E] hover:bg-[#E0200B] hover:-translate-y-px' : 'bg-gray-300 cursor-not-allowed'}`}
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: canContinue() ? '0 4px 16px rgba(249,37,14,0.25)' : 'none' }}
+                disabled={!canContinue() || saving}
+                className={`px-10 py-3.5 rounded-xl border-none cursor-pointer text-[15px] font-bold text-white transition-all ${canContinue() && !saving ? 'bg-[#F9250E] hover:bg-[#E0200B] hover:-translate-y-px' : 'bg-gray-300 cursor-not-allowed'}`}
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", boxShadow: canContinue() && !saving ? '0 4px 16px rgba(249,37,14,0.25)' : 'none' }}
               >
-                {step === 4 ? t.submit : t.next}
+                {saving ? t.saving : step === 4 ? t.submit : t.next}
               </button>
             </div>
           )}
