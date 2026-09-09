@@ -213,3 +213,43 @@ anywhere. All nine confirmed rendering in production.
 
 Still outstanding after this pass: 21 image placeholders (M0 5, M1 6, M2 6,
 M3 4) and the single mood_checkin interactive block in M3 Section 2.
+
+## 2026-09-09 — Module 1 Section 4 condensed into a doorway to Module 3
+
+Data-only. Module 1's EQ section predated Module 3 and duplicated it: it taught
+all five Goleman domains in full, the Fruit-of-the-Spirit convergence, EQ Is
+Learnable, and carried its own five-domain scorecard. Module 3 now covers every
+one of those in more depth. Section 4 becomes the doorway; Module 3 does the work.
+
+Kept unchanged, idx 224-238: section heading, image placeholder, welcome video,
+the Goleman 67% research, the IQ/EQ pull quote, the "brilliant pastors" passage,
+"What Emotional Intelligence Actually Is", ending on "Goleman identified five
+core domains… Weakness in any one will surface in your leadership".
+
+Replaced idx 239-280 (42 blocks: Domains 1-5, Fruit of the Spirit, EQ Is
+Learnable, the scorecard and reflection questions) with a single tip callout
+pointing at Module 3 and naming what waits there.
+
+Kept unchanged: the divider, and Section 5 onward.
+
+Module 1: 489 -> 448 blocks, 7 sections unchanged, Section 4 now 3 min (was 6).
+
+Regenerated rather than patched, because removing 42 blocks reshuffles every
+index after the edit and block ids are sha256(slug|index|type). Every one of the
+448 ids was then recomputed and verified against that formula in the database:
+448/448 match, 448 distinct, 0 wrong. This replaces the usual md5-against-a-
+fresh-transform check, which is no longer available for Module 1 — production
+has legitimately diverged from any source file since the nine video swaps, so
+there is nothing left to diff against. Verifying the id invariant directly is
+the stronger check anyway: it is exactly what a fresh ingest guarantees.
+
+Scorecards: `goleman_five_domains` (was idx 279) removed, as intended. The other
+two survive untouched — `four_pillars_self_leadership` still at idx 220 in
+Section 3, `eight_areas_character` moved 437 -> 396 with the shift. Assignment
+`a1` moved 475 -> 434. Those keys are independent of block ids, so nothing was
+orphaned, and lesson_scorecard_ratings and lesson_assignment_submissions were
+both empty in any case.
+
+BACKUP, needs cleanup: the pre-change 489-block array is preserved in table
+`_m1_s4_backup_20260909` (md5 e086fd64fc4cc01e088aafc9dd764e19). It is the only
+copy of the 42 removed blocks. Drop it once Denis has reviewed the new Section 4.
