@@ -113,6 +113,23 @@ export default async function LessonEntryPage({ params }: { params: { id: string
             {' · '}{totalMinutes} min
           </p>
 
+          {/* The module's own introduction — its welcome video and framing
+              callouts — now sits above the call to action rather than below
+              it. Measured at the old position the video began 200px past the
+              button and 405px tall, so a reader met a fully rendered "Start
+              Module" before any of the welcome was on screen: the button
+              invited them to skip the thing it was meant to follow. */}
+          {frontMatter.length > 1 && (
+            <div className="mt-8">
+              <BlockRenderer
+                blocks={frontMatter.filter((b) => b.type !== 'heading')}
+                moduleId={mod.id}
+                journeyId={journey?.id ?? null}
+                lang={lang}
+              />
+            </div>
+          )}
+
           {sections.length > 0 && (
             <div className="mt-8">
               <div className="mb-2 flex items-baseline justify-between">
@@ -140,20 +157,6 @@ export default async function LessonEntryPage({ params }: { params: { id: string
           )}
         </div>
       </header>
-
-      {/* ── Front matter: the module's own introduction ── */}
-      {frontMatter.length > 1 && (
-        <section className="border-b border-gray-200 bg-white/60">
-          <div className="mx-auto max-w-[900px] px-8 py-8 max-md:px-5">
-            <BlockRenderer
-              blocks={frontMatter.filter((b) => b.type !== 'heading')}
-              moduleId={mod.id}
-              journeyId={journey?.id ?? null}
-              lang={lang}
-            />
-          </div>
-        </section>
-      )}
 
       {/* ── Curriculum ── */}
       <section className="mx-auto max-w-[900px] px-8 py-12 max-md:px-5 max-md:py-8">
