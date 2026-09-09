@@ -166,3 +166,50 @@ published module to derive section counts. At four modules that is ~196KB per lo
 spinner, and two 45s CDP evaluation timeouts plus one error frame while verifying.
 The note added 2026-09-05 set the trigger at ~5 modules; on this evidence it is
 worth acting at 4. See docs/perf-debt.md.
+
+## 2026-09-09 — Video placeholders filled across Modules 0-3 (TEMPORARY / DEMO)
+
+Data-only. Nine `callout` placeholders replaced with real `video_embed` blocks so
+the application can be reviewed end to end. **None of these are final creative
+decisions.** Two categories, both provisional:
+
+**Personal placeholders (5)** — all point at one existing Denis video as a
+stand-in until per-section recordings exist. Title carries the caveat inline:
+"… — temporary placeholder video, real per-section recordings to follow".
+
+| Module | idx | was | now |
+|---|---|---|---|
+| 0 | 2   | b_6e4bf2200cd4 callout | b_37b2779eaf3d b8B5T7qoovM |
+| 1 | 8   | b_3154fdd1456f callout | b_c700fceaa0ad b8B5T7qoovM |
+| 1 | 226 | b_8e5c710eccef callout | b_22be40f5dc91 b8B5T7qoovM |
+| 2 | 78  | b_98d503c27fbd callout | b_26670d9c5c7b b8B5T7qoovM |
+| 3 | 40  | b_4e487b971e6a callout | b_548f7adcd367 b8B5T7qoovM |
+
+**External embeds (4), Module 1 only** — third-party talks chosen to fill the
+slot, NOT vetted as the final pick for each section. Every one matches an option
+the original placeholder text itself named, so they are plausible stand-ins
+rather than arbitrary:
+
+| idx | was | now | placeholder had asked for |
+|---|---|---|---|
+| 57  | b_9e5ca1afa8f0 | b_78373b42f23f lmyZMtPVodo — Simon Sinek, TED | "Groeschel OR Sinek 'Why Good Leaders Make You Feel Safe'" |
+| 128 | b_8af36deb7d6c | b_f17167aee9d9 b5RlVhaT-DA — Craig Groeschel | "Sinek 'Millennial Question' OR Groeschel on self-leadership" |
+| 284 | b_5e44a0fca156 | b_498cfc91dc0a iCvmsMzlF7o — Brené Brown, TED | "Brené Brown TED 'The Power of Vulnerability'" |
+| 390 | b_24b047c6c3e5 | b_558bbfeabce0 pD0c1PWWgPg — John Maxwell | "morning routines from a respected leader (John Maxwell, …)" |
+
+Block ids change because the id is sha256(slug|index|type) and the type moved
+from callout to video_embed. Hash reproduction was checked against all nine
+live ids before writing: every recomputed old id matched production exactly.
+
+Embeddability verified before going live (oEmbed 200 + youtube-nocookie 200 +
+no restriction markers), with author and title confirmed on each:
+lmyZMtPVodo TED · b5RlVhaT-DA Craig Groeschel · pD0c1PWWgPg Maxwell Leadership.
+iCvmsMzlF7o and b8B5T7qoovM were already verified and live.
+
+Patched, not re-ingested — nine single-block jsonb_set writes, each guarded on
+the old block id. Counts and uniqueness intact afterwards: M0 123/123,
+M1 489/489, M2 181/181, M3 115/115, and zero VIDEO PLACEHOLDER text remaining
+anywhere. All nine confirmed rendering in production.
+
+Still outstanding after this pass: 21 image placeholders (M0 5, M1 6, M2 6,
+M3 4) and the single mood_checkin interactive block in M3 Section 2.
