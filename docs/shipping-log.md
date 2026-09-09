@@ -250,6 +250,24 @@ Section 3, `eight_areas_character` moved 437 -> 396 with the shift. Assignment
 orphaned, and lesson_scorecard_ratings and lesson_assignment_submissions were
 both empty in any case.
 
-BACKUP, needs cleanup: the pre-change 489-block array is preserved in table
-`_m1_s4_backup_20260909` (md5 e086fd64fc4cc01e088aafc9dd764e19). It is the only
-copy of the 42 removed blocks. Drop it once Denis has reviewed the new Section 4.
+Backup: the pre-change 489-block array was held in `_m1_s4_backup_20260909`
+(md5 e086fd64fc4cc01e088aafc9dd764e19) as the only copy of the 42 removed
+blocks. Dropped 2026-09-09 after a visual pass of the rendered section and
+Denis's own independent query check. No backup tables remain in the schema.
+
+Visual confirmation: Section 4 renders as "SECTION 4 OF 7 · 3 MIN", ~2,300px
+tall. The new block renders correctly as a tip callout — green rule, pale green
+fill, lightbulb icon — with its full text untruncated, followed by the divider
+and the section footer. No Domain headings, Fruit-of-the-Spirit passage, EQ Is
+Learnable block or scorecard remain on the page.
+
+**Current baseline for future comparison (2026-09-09):**
+
+| Module | blocks | sections | videos | scorecards | image placeholders |
+|---|---|---|---|---|---|
+| 0 | 123 | 5 | 1 | 0 | 5 |
+| 1 | 448 | 7 | 7 | 2 | 6 |
+| 2 | 181 | 8 | 3 | 0 | 6 |
+| 3 | 115 | 8 | 4 | 0 | 4 |
+
+All ids distinct within each module; zero video placeholders remain anywhere.
