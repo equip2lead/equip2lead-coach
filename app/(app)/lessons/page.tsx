@@ -6,8 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
 import { switchLanguage } from '@/lib/language';
-import { parseBlocks } from '@/lib/lesson-blocks';
-import { splitBlocksBySection } from '@/lib/lessons/split-sections';
+import type { ModuleSummary } from '@/app/api/lesson-modules/summary/route';
 
 const pillarColors = ['#2563EB', '#7C3AED', '#059669', '#DC2626', '#D97706'];
 const difficultyLabels: Record<string, { en: string; fr: string; color: string }> = {
@@ -153,17 +152,13 @@ export default function LessonsPage() {
           if (p.status) progressMap.set(p.document_id, p.status);
         });
 
-        // Authored modules for this track, newest curriculum first. Sections
-        // are derived from the blocks rather than stored, so the count stays
-        // correct when content is edited without a migration to keep in step.
-        const { data: modRows } = await supabase
-          .from('lesson_modules')
-          .select('id, title_en, title_fr, subtitle_en, subtitle_fr, module_number, is_starting_point, difficulty, estimated_duration_minutes, body_blocks')
-          .eq('track_id', journey.track_id)
-          .eq('is_published', true)
-          .order('is_starting_point', { ascending: false })
-          .order('module_number', { ascending: true, nullsFirst: false })
-          .order('sort_order', { ascending: true });
+        // Authored modules for this track. Sections are still derived from the
+        // blocks rather than stored, but the deriving happens server-side —
+        // selecting body_blocks here shipped every module's whole block array
+        // to the browser to produce a section count. See the route.
+        const modRes = await fetch('/api/lesson-modules/summary');
+        if (!modRes.ok) throw new Error(`module summary failed: ${modRes.status}`);
+        const { modules: modRows } = (await modRes.json()) as { modules: ModuleSummary[] };
 
         const moduleProgress = new Map<string, number[]>();
         (progressRes.data || []).forEach((row: any) => {
@@ -173,20 +168,17 @@ export default function LessonsPage() {
         });
 
         setModules(
-          (modRows || []).map((m: any) => {
-            const { sections } = splitBlocksBySection(parseBlocks(m.body_blocks));
-            return {
-              id: m.id,
-              title: (userLang === 'fr' ? m.title_fr : m.title_en) || m.title_en,
-              subtitle: (userLang === 'fr' ? m.subtitle_fr : m.subtitle_en) || m.subtitle_en,
-              module_number: m.module_number,
-              difficulty: m.difficulty,
-              minutes: m.estimated_duration_minutes ?? sections.reduce((n, x) => n + x.readingMinutes, 0),
-              sectionCount: sections.length,
-              completedCount: (moduleProgress.get(m.id) || []).filter((n) => n >= 1 && n <= sections.length).length,
-              isStartingPoint: !!m.is_starting_point,
-            };
-          })
+          (modRows || []).map((m) => ({
+            id: m.id,
+            title: (userLang === 'fr' ? m.title_fr : m.title_en) || m.title_en || '',
+            subtitle: (userLang === 'fr' ? m.subtitle_fr : m.subtitle_en) || m.subtitle_en,
+            module_number: m.module_number,
+            difficulty: m.difficulty,
+            minutes: m.estimated_duration_minutes ?? m.fallbackMinutes,
+            sectionCount: m.sectionCount,
+            completedCount: (moduleProgress.get(m.id) || []).filter((n) => n >= 1 && n <= m.sectionCount).length,
+            isStartingPoint: m.is_starting_point,
+          }))
         );
 
         const lessons: LessonRow[] = rpcRes.data || [];
