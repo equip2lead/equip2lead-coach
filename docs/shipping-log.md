@@ -134,8 +134,21 @@ weekly_checkins would corrupt weekly progress data and flatten the vocabulary.
 Recommendation: keep separate, and per the spec's own guidance store nothing —
 which means no table and no migration, just a client-side component.
 
-Not done, awaiting decision:
-- plan_data week link for Module 3. See the Week 12 question raised separately.
+Shipped deliberately unlinked. Decision 2026-09-09: no plan_data week link for
+Module 3, and Module 2 stays in Week 8. Only weeks 1/8/12 carry the Personal
+Leadership tag in this journey; Week 12 is terminal synthesis (never fresh
+content) and Week 2 renders before Week 8, so Module 3's own "assumes you've
+already done the character work" line would point at content not yet reached.
+Standing rule adopted for all future linking: a week is eligible only if its
+focus tag matches the module's pillar AND it is neither the journey's first nor
+last week; fill eligible weeks in ascending module -> ascending week order; if
+none is eligible, ship unlinked.
+
+Confirmed the same day that unlinked does not mean invisible: the dashboard grid,
+the /lessons list, the module overview and the section page all query
+lesson_modules by track_id + is_published, and none of them read plan_data.
+pickNextStep() likewise works from the modules array alone. A week link only
+drives the weekly "Week N of 12" card.
 
 Pre-existing bug found during the mood_checkin investigation, NOT fixed here
 (out of scope, flagged only): app/weekly-checkin/page.tsx:155 sends
@@ -146,3 +159,10 @@ fail. The result is not checked, and the journey week is incremented immediately
 afterwards regardless — so a user picking any of the middle three moods would
 silently lose their check-in while the week still advances. weekly_checkins is
 currently empty (0 rows), so this has never fired in production yet.
+
+Perf debt now due, not fixed here: /lessons still pulls full body_blocks for every
+published module to derive section counts. At four modules that is ~196KB per load
+(25.3 + 92.0 + 45.6 + 33.5 KB) and the page is visibly degraded — multi-second
+spinner, and two 45s CDP evaluation timeouts plus one error frame while verifying.
+The note added 2026-09-05 set the trigger at ~5 modules; on this evidence it is
+worth acting at 4. See docs/perf-debt.md.
