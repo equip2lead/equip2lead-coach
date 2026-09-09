@@ -24,8 +24,10 @@ const KNOWN_CALLOUT_VARIANTS = new Set(['note', 'info', 'warning', 'tip', 'scrip
 const KNOWN_BLOCK_TYPES = new Set([
   'heading', 'paragraph', 'quote', 'pull_quote_card', 'table',
   'video_embed', 'image', 'reflection_questions', 'scorecard',
-  'callout', 'divider', 'assignment_prompt',
+  'callout', 'divider', 'quiz', 'assignment_prompt',
 ]);
+
+const QUIZ_SCOPES = new Set(['video_check', 'module_review']);
 
 const DIFFICULTY_MAP = { foundation: 'beginner' };
 const ALLOWED_DIFFICULTY = new Set(['beginner', 'intermediate', 'advanced']);
@@ -119,6 +121,41 @@ const out = blocks.map((block, index) => {
       });
     }
     scorecardKeys.push(flat.scorecard_key);
+  }
+
+  if (type === 'quiz') {
+    // The answer key ships to the browser, so nothing downstream ever
+    // re-checks it. A key naming an option that does not exist would grade
+    // every attempt wrong, silently and forever — this is the only place it
+    // can be caught.
+    if (!QUIZ_SCOPES.has(flat.scope)) {
+      problems.push(`block ${index} (quiz): scope '${flat.scope}' is not ${[...QUIZ_SCOPES].join(' or ')}`);
+    }
+    if (!flat.title) problems.push(`block ${index} (quiz): no title`);
+    if (!Array.isArray(flat.questions) || flat.questions.length === 0) {
+      problems.push(`block ${index} (quiz): no questions`);
+    } else {
+      const seenQ = new Set();
+      flat.questions.forEach((q, j) => {
+        if (!q.id) problems.push(`block ${index} quiz question ${j}: no id`);
+        else if (seenQ.has(q.id)) problems.push(`block ${index} quiz question ${j}: duplicate id '${q.id}'`);
+        else seenQ.add(q.id);
+
+        if (!q.prompt) problems.push(`block ${index} quiz question ${j}: no prompt`);
+
+        if (!Array.isArray(q.options) || q.options.length < 2) {
+          problems.push(`block ${index} quiz question ${j}: needs at least 2 options`);
+          return;
+        }
+        const ids = q.options.map((o) => o && o.id);
+        if (ids.some((id) => !id)) problems.push(`block ${index} quiz question ${j}: an option has no id`);
+        if (q.options.some((o) => !o || !o.text)) problems.push(`block ${index} quiz question ${j}: an option has no text`);
+        if (new Set(ids).size !== ids.length) problems.push(`block ${index} quiz question ${j}: duplicate option ids`);
+        if (!ids.includes(q.correct_option_id)) {
+          problems.push(`block ${index} quiz question ${j}: correct_option_id '${q.correct_option_id}' matches no option`);
+        }
+      });
+    }
   }
 
   if (type === 'assignment_prompt') {

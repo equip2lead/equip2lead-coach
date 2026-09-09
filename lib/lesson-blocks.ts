@@ -104,6 +104,36 @@ export interface ScorecardBlock extends BlockBase {
   }>;
 }
 
+/**
+ * A light knowledge check. Never a gate: it grades on the spot, explains each
+ * answer, and lets the reader continue whatever they scored.
+ *
+ * The answer key travels inside the block and therefore reaches the browser.
+ * That is a deliberate trade — grading server-side would buy an integrity this
+ * block does not need and cost a round trip per answer. Nothing is persisted:
+ * a wrong answer here is a prompt to reread, not a record.
+ */
+export interface QuizBlock extends BlockBase {
+  type: 'quiz';
+  /** `video_check` is a short pass straight after a video; `module_review` is a
+      broader one over a whole module. One block type, two weights — the
+      renderer varies emphasis rather than the schema varying shape. */
+  scope: 'video_check' | 'module_review';
+  title: string;
+  questions: Array<{
+    /** Unique within this block; used for React keys and answer state. */
+    id: string;
+    prompt: string;
+    /** Two or more. Order is authored, not shuffled: a stable order is easier
+        to discuss with a mentor than a different one per render. */
+    options: Array<{ id: string; text: string }>;
+    /** Must match one of `options[].id`. */
+    correct_option_id: string;
+    /** Shown once answered, whether right or wrong. */
+    explanation?: string;
+  }>;
+}
+
 export interface CalloutBlock extends BlockBase {
   type: 'callout';
   /** Drives colour and icon only. An unrecognised variant falls back to
@@ -155,6 +185,7 @@ export type LessonBlock =
   | ScorecardBlock
   | CalloutBlock
   | DividerBlock
+  | QuizBlock
   | AssignmentPromptBlock;
 
 export type LessonBlockType = LessonBlock['type'];
@@ -170,7 +201,7 @@ export interface UnknownBlock extends BlockBase {
 export const KNOWN_BLOCK_TYPES: ReadonlySet<string> = new Set<LessonBlockType>([
   'heading', 'paragraph', 'quote', 'pull_quote_card', 'table',
   'video_embed', 'image', 'reflection_questions', 'scorecard',
-  'callout', 'divider', 'assignment_prompt',
+  'callout', 'divider', 'quiz', 'assignment_prompt',
 ]);
 
 export function isKnownBlock(block: LessonBlock | UnknownBlock): block is LessonBlock {

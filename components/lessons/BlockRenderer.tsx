@@ -1,4 +1,5 @@
 import { Scorecard } from './Scorecard';
+import { Quiz } from './Quiz';
 import { AssignmentForm, type AssignmentView } from './AssignmentForm';
 import {
   isKnownBlock, normaliseCalloutVariant,
@@ -246,6 +247,13 @@ function Block({
       return (
         <div className={READING_COLUMN}>
           <Scorecard block={block} moduleId={moduleId} journeyId={journeyId} lang={lang} />
+        </div>
+      );
+
+    case 'quiz':
+      return (
+        <div className={READING_COLUMN}>
+          <Quiz block={block} lang={lang} />
         </div>
       );
 
