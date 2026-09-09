@@ -271,3 +271,55 @@ Learnable block or scorecard remain on the page.
 | 3 | 115 | 8 | 4 | 0 | 4 |
 
 All ids distinct within each module; zero video placeholders remain anywhere.
+
+## 2026-09-09 — Module 3 Five-Domain Self-Audit becomes a real scorecard
+
+Data-only. Module 3's closing self-audit was a `table` block — five domains and
+a diagnostic question each, readable but not answerable. It is now a `scorecard`
+block using the same mechanism as Module 1's two, so the reader rates each
+domain and the answers persist to lesson_scorecard_ratings.
+
+idx 110, `b_6a5b5580dcca` (table) -> `b_61dae82d4ab4` (scorecard).
+title "Where Are You Now?", matching Module 1's heading for this mechanism.
+scorecard_key `module3_eq_domains`, items self_awareness / self_regulation /
+motivation / empathy / social_skills, each out of 10.
+
+Key collision checked before use: only two scorecard keys existed anywhere
+(`four_pillars_self_leadership`, `eight_areas_character`), neither of them this.
+The item key `self_awareness` is reused from Module 1's Section 3 scorecard,
+which is safe because ratings are keyed on (lesson_module_id, scorecard_key,
+item_key) — all three, not item_key alone.
+
+**This took two passes, and the log should say so.** The first pass carried over
+only key/max/label as specified, which silently dropped the five diagnostic
+questions the table had held in its second column. That mattered beyond the loss
+itself: the callout immediately after the block reads "Whichever question made
+you pause the longest just before answering…", and with the questions gone it
+referred to nothing on the page. The second pass restored all five verbatim as
+per-item `helpText`. Each was then compared character-for-character against the
+pre-change copy — five of five identical in text, length and order, matched to
+the correct label. The callout reads correctly again.
+
+Module 3 stays at 115 blocks and 8 sections: one block replaced by one block, so
+no index shifted. Verified by the same exhaustive method used for Module 1 —
+every id recomputed as sha256(slug|index|type) and compared in the database:
+115/115 match, 0 wrong, 115 distinct. Tables in Module 3: 5 -> 4. Section 8 now
+reads 4 min, was 5.
+
+Confirmed live and rendering: five sliders scored /10, each with its question
+beneath it. Loading the page creates no rating rows — the component saves only
+on interaction — so lesson_scorecard_ratings is still empty.
+
+Backup `_m3_scorecard_backup_20260909` (115 blocks, md5
+3ef8dbd005fdce6e958ae9c1bea9080d) held the only copy of the five questions
+between the two passes, and was the source they were restored from. Dropped
+after the visual confirmation. No backup tables remain in the schema.
+
+**Current baseline (2026-09-09, supersedes the table above):**
+
+| Module | blocks | sections | videos | scorecards | tables | image placeholders |
+|---|---|---|---|---|---|---|
+| 0 | 123 | 5 | 1 | 0 | 1 | 5 |
+| 1 | 448 | 7 | 7 | 2 | 1 | 6 |
+| 2 | 181 | 8 | 3 | 0 | 6 | 6 |
+| 3 | 115 | 8 | 4 | 1 | 4 | 4 |
