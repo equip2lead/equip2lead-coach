@@ -588,10 +588,19 @@ regenerated and verified exhaustively: 193/193 match sha256(slug|index|type),
 0 wrong, 193 distinct; the other three modules re-checked in the same pass and
 also 0 stale.
 
-Worth noting for whoever edits this next: the new sentence lists the four in the
-order Maxwell, Covey, Munroe, Army, while the section presents them Maxwell,
-Covey, Army, Munroe. Both readings are defensible — the sentence groups the two
-individuals before the institution — so it was left as written.
+3. Follow-up in the same session, closing the ordering note this entry
+   originally carried: the list was reordered from Maxwell, Covey, Munroe, Army
+   to Maxwell, Covey, Army, Munroe so it tracks the order the section actually
+   presents them, rather than grouping people before institution. Same
+   `replace()` method, tail only. No block was added, removed or retyped, so no
+   index moved and every id stayed valid without a recompute — `b_cc28e94b6734`
+   at idx 21 before and after. Re-verified anyway: 193/193 match, 0 wrong.
+
+   Denis's instruction wrote the new tail with `and` before both the third and
+   fourth items. Shipped with the single serial `and` a four-item list takes —
+   "a bestselling secular researcher, the most rigorously trained institution on
+   earth, and a pastor-turned-leadership-author" — since the reordering, not the
+   double conjunction, was plainly the intent.
 
 **Current baseline (2026-09-10):**
 
