@@ -405,3 +405,80 @@ tables remain in the schema.
 | 1 | 398 | 7 | 7 | 2 | 1 | 6 |
 | 2 | 182 | 8 | 3 | 0 | 6 | 6 |
 | 3 | 115 | 8 | 4 | 1 | 4 | 4 |
+
+## 2026-09-10 — Eleven quiz blocks inserted across Modules 0-3
+
+Data-only, additive. First content for the `quiz` block type shipped earlier
+today (type + `Quiz.tsx` + `KNOWN_BLOCK_TYPES` + ingest validation, commits
+cac9717 and 7562e3c). Seven `video_check` quizzes sit directly under the video
+they ask about; four `module_review` quizzes sit directly above each module's
+assignment. 38 questions total, every one with four options, a
+`correct_option_id` and an explanation.
+
+| Quiz | Module | Landed at | Sits after / before |
+|---|---|---|---|
+| VC1 Sinek | 1 | 58 | video `lmyZMtPVodo` |
+| VC2 Groeschel | 1 | 130 | video `b5RlVhaT-DA` |
+| VC3 Brown | 1 | 246 | video `iCvmsMzlF7o` |
+| VC4 Maxwell | 1 | 303 | video `pD0c1PWWgPg` |
+| MR2 | 1 | 388 | before assignment (389) |
+| VC5 Brown | 2 | 164 | video `iCvmsMzlF7o` |
+| MR3 | 2 | 182 | before assignment (183) |
+| VC6 RSA Brown | 3 | 60 | video `1Evwgu369Jw` |
+| VC7 Goleman | 3 | 69 | video `r3wyCxHtGd0` |
+| MR4 | 3 | 116 | before assignment (117) |
+| MR1 | 0 | 115 | before assignment (116) |
+
+Positions were resolved by content match at insert time, not from the indices
+in the spec — six of the eleven had moved since the spec was written, by as much
+as 91 blocks, because of the Section 4 and Section 5 trims earlier today.
+Inserts ran in descending order within each module so that a pending position
+never shifted under a completed one, and every statement carried a guard on
+both `jsonb_array_length` and the target video's id, making a retry a no-op
+rather than a double insert.
+
+Blocks: 0: 123 -> 124, 1: 398 -> 403, 2: 182 -> 184, 3: 115 -> 118. Section
+counts unchanged everywhere — no level-2 heading was added or removed, and each
+quiz landed inside an existing section. Videos, scorecards, tables and image
+placeholders all unchanged.
+
+Ids: 11 inserts reshuffled 432 of the 829 blocks, so all four modules were
+regenerated and verified exhaustively against
+`'b_'||substr(encode(sha256(convert_to(slug||'|'||index||'|'||type,'UTF8')),'hex'),1,12)`:
+124/124, 403/403, 184/184, 118/118 match, 0 wrong, and every id distinct within
+its module. `assignment_key` (`a1` x4) and the three `scorecard_key` values
+survived intact — the rewrite touched only `{id}`.
+
+Validation, run against the live rows rather than the source files: all 11 have
+a scope in {video_check, module_review}, 0 questions with a `correct_option_id`
+that names no option, 0 with fewer than two options, 0 empty prompts, 0 missing
+explanations, 0 duplicate question ids, 0 duplicate option ids.
+
+**Flagged, not fixed — Video Check 4 (Maxwell).** Denis noted this one had a
+lighter research pass. The video `pD0c1PWWgPg` is 5,037 seconds — about 84
+minutes, not the 5-8 minute talk the original placeholder described — and its
+YouTube description is boilerplate promo with no content summary. I cannot watch
+video, so I could not check the two questions against what is actually said.
+Both are hedged away from specific video claims ("A central theme in Maxwell's
+*teaching*...", "According to *this approach to* morning routines..."), so they
+hold up even against an 84-minute compilation, but they are not verified.
+
+**Flagged, not fixed — quiz text does not count toward reading time.**
+`countWords` in `lib/lessons/split-sections.ts` counts `any.questions` only when
+its entries are strings, which is right for `reflection_questions` and wrong for
+`quiz`, whose questions are objects. A quiz currently contributes only its title.
+Every section carrying a quiz therefore understates its own reading time by
+roughly a minute. Fixing it is a one-line change but moves displayed durations
+across all four modules, so it waits on a decision.
+
+Quiz content is real, not placeholder, but was written against the module text
+rather than reviewed by Denis question by question.
+
+**Current baseline (2026-09-10):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | image placeholders |
+|---|---|---|---|---|---|---|---|
+| 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 |
+| 2 | 184 | 8 | 3 | 0 | 6 | 2 | 6 |
+| 3 | 118 | 8 | 4 | 1 | 4 | 3 | 4 |
