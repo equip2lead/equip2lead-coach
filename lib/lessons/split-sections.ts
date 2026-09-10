@@ -55,7 +55,31 @@ function countWords(blocks: AnyBlock[]): number {
     add(any.text);
     add(any.instructions);
     add(any.title);
-    if (Array.isArray(any.questions)) any.questions.forEach(add);
+    // Two block types carry a `questions` array and they hold different
+    // shapes: reflection_questions holds plain strings, quiz holds objects.
+    // Branching on the entry rather than on the block's type keeps this right
+    // for whichever type reuses the key next. Before this branch existed, a
+    // quiz counted as nothing but its title, so any section holding one
+    // understated its own reading time by about a minute.
+    if (Array.isArray(any.questions)) {
+      any.questions.forEach((q) => {
+        if (typeof q === 'string') {
+          add(q);
+          return;
+        }
+        if (!q || typeof q !== 'object') return;
+        const question = q as Record<string, unknown>;
+        add(question.prompt);
+        // A reader reads every option, not only the right one, and then the
+        // explanation — all of it is time spent in the section.
+        if (Array.isArray(question.options)) {
+          (question.options as unknown[]).forEach((opt) => {
+            if (opt && typeof opt === 'object') add((opt as Record<string, unknown>).text);
+          });
+        }
+        add(question.explanation);
+      });
+    }
     if (Array.isArray(any.rows)) {
       (any.rows as unknown[][]).forEach((row) => Array.isArray(row) && row.forEach(add));
     }
