@@ -610,3 +610,40 @@ also 0 stale.
 | 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 |
 | 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 |
 | 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 |
+
+## 2026-09-10 — Video Check 4 video swapped
+
+Data-only, field-level. Module 1 idx 302's `video_embed` moves from
+`pD0c1PWWgPg` ("My Morning Routine for Mindfulness & Growth") to `nKpQOc-9urs`
+("Success is Inevitable When You Spend Your Day Doing These 5 Things Everyday! |
+John Maxwell"), title updated to match. Denis confirmed length and content on
+his end; this closes the flag raised when the quiz content shipped, where the
+old pick turned out to be an 84-minute compilation rather than the 5-8 minute
+talk the placeholder described.
+
+The Video Check 4 quiz at idx 303 is unchanged. Both its questions were written
+hedged to generic Maxwell themes rather than to specific moments, which is what
+makes them survive the swap — the hedging was a mitigation for an unverifiable
+video and turns out to have been the right call for a different reason.
+
+Embeddability: YouTube oEmbed returns 200 with title and author
+("Maxwell Leadership") matching, so the video is public and embeddable. Runtime
+could NOT be re-derived — the nocookie embed page no longer inlines the player
+config that yielded `lengthSeconds` for the old pick earlier today, so length
+rests on Denis's confirmation rather than on a check of mine.
+
+Two `jsonb_set` calls on `{302,youtubeId}` and `{302,title}`, guarded on array
+length, the old video id and the quiz sitting at 303. No block added, removed or
+retyped, so no index moved and no id recompute was needed — idx 302 stays
+`b_a86b77df72db`. Verified with the exhaustive check anyway: 403/403 match
+sha256(slug|index|type), 0 wrong, 403 distinct, and the other three modules 0
+stale in the same pass. `pD0c1PWWgPg` now appears nowhere in any module.
+
+**Current baseline (2026-09-10):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | image placeholders |
+|---|---|---|---|---|---|---|---|
+| 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 |
