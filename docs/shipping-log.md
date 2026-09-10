@@ -463,13 +463,24 @@ Both are hedged away from specific video claims ("A central theme in Maxwell's
 *teaching*...", "According to *this approach to* morning routines..."), so they
 hold up even against an 84-minute compilation, but they are not verified.
 
-**Flagged, not fixed — quiz text does not count toward reading time.**
-`countWords` in `lib/lessons/split-sections.ts` counts `any.questions` only when
-its entries are strings, which is right for `reflection_questions` and wrong for
-`quiz`, whose questions are objects. A quiz currently contributes only its title.
-Every section carrying a quiz therefore understates its own reading time by
-roughly a minute. Fixing it is a one-line change but moves displayed durations
-across all four modules, so it waits on a decision.
+**Fixed in the same pass — quiz text now counts toward reading time**
+(commit `4a33466`). `countWords` in `lib/lessons/split-sections.ts` walked a
+block's `questions` array with a string-only handler. That is right for
+`reflection_questions` and wrong for `quiz`, whose questions are objects, so a
+quiz counted as nothing but its title. It now branches on the entry's shape
+rather than the block's type — so it stays right for whichever block type
+reuses the key next — and counts prompt, every option and the explanation,
+because a reader reads all of it. Malformed entries are ignored rather than
+thrown on.
+
+Verified by running the pre-fix and post-fix functions side by side over the
+four live modules. Ten of the eleven quiz-bearing sections gained a minute or
+two; the eleventh (Module 2 Section 7) was already far enough past a `Math.ceil`
+boundary not to move. **No section without a quiz changed by a single minute**,
+which is the regression proof that the `reflection_questions` string path is
+untouched. Module totals: 0: 17 -> 19, 1: 51 -> 56, 2: 31 -> 33, 3: 24 -> 28
+minutes. Section counts unchanged. These are the fallback estimates, used only
+where a module has no authored `estimated_duration_minutes`.
 
 Quiz content is real, not placeholder, but was written against the module text
 rather than reviewed by Denis question by question.
