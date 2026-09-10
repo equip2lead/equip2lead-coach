@@ -323,3 +323,52 @@ after the visual confirmation. No backup tables remain in the schema.
 | 1 | 448 | 7 | 7 | 2 | 1 | 6 |
 | 2 | 181 | 8 | 3 | 0 | 6 | 6 |
 | 3 | 115 | 8 | 4 | 1 | 4 | 4 |
+
+## 2026-09-10 — Module 1 Section 5 trimmed to a doorway into Module 2
+
+Data-only. Section 5 taught the Enemies of the Heart, GOLD/GIRLS/GLORY and the
+Six Ways to Avoid Moral Failure — all of which Module 2 covers at greater depth.
+idx 294-344 (51 blocks) replaced with one tip callout pointing there.
+
+Kept untouched: idx 241-293 (heading, image placeholder, video, opening framing,
+"Broken Leaders God Used", the Jacob narrative, the Four-Step Process) and
+Section 6 onward. That material is thematically adjacent to Module 2 but is
+different prose, not duplicate text.
+
+Module 1: 448 -> 398 blocks, 7 sections unchanged, Section 5 now 8 min (was 12).
+Verified by exhaustive id recompute: 398/398 match sha256(slug|index|type),
+0 wrong, 398 distinct. Two scorecards, seven videos and the assignment all
+survive; zero references to GOLD or "Enemies of the Heart" remain in the module.
+
+**The duplication claim needed correcting first.** The brief described the range
+as word-for-word identical to Module 2. A text-field comparison put it at 19 of
+51 — but that was measuring wrong, because Module 2 holds the GOLD/GIRLS/GLORY
+warning signs inside a table's `rows`, which no text-to-text comparison can
+match. Comparing text fields and table cells together, with bullet markers
+normalised, gives 30 of 51 covered and 21 genuinely absent from Module 2. Those
+21 were harvested verbatim before deletion rather than lost, for Denis to fold
+into Module 2 where they are stronger than what is there — the pride entry
+naming it "the sin of Lucifer" being the clearest example.
+
+**The reflection block needed trimming too, and this is the third instance of
+the same pattern today.** idx 345 asked six questions, three of which referred
+to material being deleted: the eight Enemies of the Heart, "Gold, Girls, and
+Glory", and the six guardrails. Trimmed to Q1/Q2/Q6 — the three that stand on
+the kept material — by dropping the other three rather than rewording them.
+Same failure mode as the Section 4 callout and the Module 3 scorecard helpText:
+removing a block breaks the thing that referenced it one block later, not at the
+site of the edit.
+
+BACKUP, still in place: `_m1_s5_backup_20260910` (448 blocks, md5
+e851c091e0a409c1dc8b257be985317a) holds the only copy of the 51 removed blocks,
+including the 21 harvested lines. Keep until the harvest has been placed into
+Module 2, then drop.
+
+**Current baseline (2026-09-10, supersedes earlier tables):**
+
+| Module | blocks | sections | videos | scorecards | tables | image placeholders |
+|---|---|---|---|---|---|---|
+| 0 | 123 | 5 | 1 | 0 | 1 | 5 |
+| 1 | 398 | 7 | 7 | 2 | 1 | 6 |
+| 2 | 181 | 8 | 3 | 0 | 6 | 6 |
+| 3 | 115 | 8 | 4 | 1 | 4 | 4 |
