@@ -493,3 +493,81 @@ rather than reviewed by Denis question by question.
 | 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 |
 | 2 | 184 | 8 | 3 | 0 | 6 | 2 | 6 |
 | 3 | 118 | 8 | 4 | 1 | 4 | 3 | 4 |
+
+## 2026-09-10 — Module 2 Section 1 and Module 3 Section 3 deepened
+
+Data-only, from `SECTION1_DEEPENING_PATCH.md`. Six edits: four insertions, two
+replacements. Every target was resolved by matching the current text rather than
+by the spec's index numbers — both modules had shifted repeatedly today. As it
+turned out all six spec indices were still accurate, but that was luck, not
+method: the quiz pass earlier had moved six of eleven targets by up to 91 blocks.
+
+**Module 2, Section 1 — "What You Are in the Dark" (19 -> 27 blocks):**
+
+1. New paragraph after the "Character is what you are in the dark" pull quote —
+   integrity from Latin *integer*, undivided; the opposite of integrity as
+   fragmentation rather than dishonesty.
+2. New paragraph after the straw-house paragraph — the third house, sticks.
+   Half-built character as a slower version of the same ending.
+3. New paragraph after the existing Covey paragraph, which is unchanged — the
+   Four Human Endowments (self-awareness, conscience, imagination, independent
+   will) as what makes the Character Ethic choosable at all.
+4. The one-sentence Army paragraph replaced by five blocks: a rewritten opener
+   that puts the doctrine's ordering in the foreground, an h3, a lead-in line, a
+   five-row table of the components, and a closing tip on ADP 6-22 defining
+   discipline as holding to standard "even in the absence of immediate
+   supervision."
+5. The Munroe callout replaced by two blocks: a tighter callout carrying his
+   actual line ("Let your success be carried by your character") and a new
+   paragraph on the alarm-system image — two doors, and the inward one being the
+   one that gets breached first.
+
+**Module 3, Section 3 — "Self-Regulation" (20 -> 21 blocks):**
+
+6. New paragraph after the existing Marcus Aurelius intro — the nightly practice,
+   *Meditations* as *To Himself*, and the dichotomy-of-control line, framing
+   self-regulation as an audit he ran rather than a trait he had.
+
+Module 2: 184 -> 192 blocks, 8 sections unchanged, Section 1 now 7 min (was 4),
+module total 33 -> 36 min. Tables 6 -> 7. Module 3: 118 -> 119 blocks, 8 sections
+unchanged; Section 3 stays at 4 min — 130 words was not enough to cross a
+`Math.ceil` boundary — and the module total stays 28.
+
+Executed in descending index order within Module 2 so no pending position moved
+under a completed one, each statement guarded on both `jsonb_array_length` and
+the target's own text, and each block built with `jsonb_build_object` rather than
+a JSON string literal, so the embedded double quotes in the Army and Munroe
+copy needed no escaping. Ids for both modules regenerated and verified
+exhaustively: 192/192 and 119/119 match sha256(slug|index|type), 0 wrong, all
+distinct. The other two modules were re-checked in the same pass and are also
+0 stale. Videos, scorecards, quizzes, assignments and image placeholders
+unchanged in both.
+
+**Checked, because this is the failure mode that keeps recurring** — an edit
+breaking the block *after* it, not at the edit site. Three back-references were
+verified to still resolve: "Gifts are given freely" now follows the etymology
+paragraph and starts fresh; the Army opener follows the new Covey paragraph and
+needs nothing from it; and Module 3's "His core insight was the same one this
+section opened with" still refers to Marcus Aurelius across the inserted
+paragraph, which ends on him.
+
+**Flagged, not fixed — two consecutive tip callouts** at Module 2 idx 29 and 30.
+The Army treatment now closes on a tip and the Munroe block opens on one, so two
+identically styled cards stack. Nothing is broken and both earn their place; it
+is a visual rhythm question for whoever reads the section next.
+
+**Flagged, not fixed — the "three sources" sentence.** Module 2 idx 21 says a
+secular researcher, a pastor-turned-leadership-author and "the most rigorously
+trained organization on earth" landed on the same conclusion, then the section
+presents four voices: Maxwell, Covey, the Army and Munroe. This predates the
+patch and the patch adds no new voice, so the count is no more wrong than it
+was. Worth a one-line fix if the section is opened again.
+
+**Current baseline (2026-09-10):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | image placeholders |
+|---|---|---|---|---|---|---|---|
+| 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 |
+| 2 | 192 | 8 | 3 | 0 | 7 | 2 | 6 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 |
