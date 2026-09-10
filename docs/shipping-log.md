@@ -551,17 +551,7 @@ needs nothing from it; and Module 3's "His core insight was the same one this
 section opened with" still refers to Marcus Aurelius across the inserted
 paragraph, which ends on him.
 
-**Flagged, not fixed — two consecutive tip callouts** at Module 2 idx 29 and 30.
-The Army treatment now closes on a tip and the Munroe block opens on one, so two
-identically styled cards stack. Nothing is broken and both earn their place; it
-is a visual rhythm question for whoever reads the section next.
-
-**Flagged, not fixed — the "three sources" sentence.** Module 2 idx 21 says a
-secular researcher, a pastor-turned-leadership-author and "the most rigorously
-trained organization on earth" landed on the same conclusion, then the section
-presents four voices: Maxwell, Covey, the Army and Munroe. This predates the
-patch and the patch adds no new voice, so the count is no more wrong than it
-was. Worth a one-line fix if the section is opened again.
+Both issues this pass raised were fixed immediately after — see the entry below.
 
 **Current baseline (2026-09-10):**
 
@@ -570,4 +560,44 @@ was. Worth a one-line fix if the section is opened again.
 | 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 |
 | 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 |
 | 2 | 192 | 8 | 3 | 0 | 7 | 2 | 6 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 |
+
+## 2026-09-10 — Module 2 Section 1: divider and the "four voices" sentence
+
+Data-only, content-anchored, closing the two issues the deepening pass flagged
+rather than carrying them.
+
+1. A bare `divider` inserted between the Army treatment's closing tip callout
+   and the Munroe callout. Same pattern the module already uses between
+   sub-sections — the back-to-back tip repetition is broken without changing
+   either block's type or a word of either.
+2. Module 2 idx 21: "A bestselling secular researcher, a
+   pastor-turned-leadership-author, and the most rigorously trained organization
+   on earth landed on the exact same conclusion, independently of each other."
+   replaced with a version that counts four and names the fourth — "Four voices
+   from completely different worlds ... a leadership researcher who's already
+   spoken in this section, a bestselling secular researcher, a
+   pastor-turned-leadership-author, and the most rigorously trained institution
+   on earth." The paragraph's opening sentence is untouched; the swap was done
+   with a SQL `replace()` on the old sentence so the rest stayed verbatim rather
+   than being retyped.
+
+Module 2: 192 -> 193 blocks, 8 sections unchanged, Section 1 now 28 blocks
+(was 27), still 7 min — a divider carries no words. Dividers 15 -> 16. Ids
+regenerated and verified exhaustively: 193/193 match sha256(slug|index|type),
+0 wrong, 193 distinct; the other three modules re-checked in the same pass and
+also 0 stale.
+
+Worth noting for whoever edits this next: the new sentence lists the four in the
+order Maxwell, Covey, Munroe, Army, while the section presents them Maxwell,
+Covey, Army, Munroe. Both readings are defensible — the sentence groups the two
+individuals before the institution — so it was left as written.
+
+**Current baseline (2026-09-10):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | image placeholders |
+|---|---|---|---|---|---|---|---|
+| 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 |
 | 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 |
