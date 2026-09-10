@@ -372,3 +372,36 @@ Module 2, then drop.
 | 1 | 398 | 7 | 7 | 2 | 1 | 6 |
 | 2 | 181 | 8 | 3 | 0 | 6 | 6 |
 | 3 | 115 | 8 | 4 | 1 | 4 | 4 |
+
+## 2026-09-10 — One harvested line placed into Module 2 Section 5
+
+Data-only, additive. The closing line from Module 1's deleted Section 5 material
+now sits in Module 2, immediately after item 6 of the Six Ways to Avoid Moral
+Failure and before the divider and reflection questions:
+
+"These are not signs of weakness. They are signs of wisdom. The strongest
+leaders I know have the strictest guardrails — not because they are the most
+tempted, but because they know how much would be lost."
+
+Module 2: 181 -> 182 blocks, 8 sections unchanged, Section 5 now 7 min (was 6).
+Inserting shifts every index after the insertion point, so all ids were
+recomputed and verified: 182/182 match sha256(slug|index|type), 0 wrong, 182
+distinct. Three videos and the assignment untouched. Confirmed live and reading
+in the right place.
+
+No backup was taken for this one, unlike the destructive edits: a pure insert is
+undone by deleting the block it added.
+
+`_m1_s5_backup_20260910` dropped. Of the 21 lines harvested from Module 1's
+Section 5, this is the one Denis chose to keep; the other 20 went with the
+backup, which is the decision recorded rather than an oversight. No backup
+tables remain in the schema.
+
+**Current baseline (2026-09-10):**
+
+| Module | blocks | sections | videos | scorecards | tables | image placeholders |
+|---|---|---|---|---|---|---|
+| 0 | 123 | 5 | 1 | 0 | 1 | 5 |
+| 1 | 398 | 7 | 7 | 2 | 1 | 6 |
+| 2 | 182 | 8 | 3 | 0 | 6 | 6 |
+| 3 | 115 | 8 | 4 | 1 | 4 | 4 |
