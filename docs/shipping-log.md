@@ -915,3 +915,54 @@ appearing in the HTML, so the tag alone proves nothing.
 | 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 |
 | 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 |
 | 4 | 126 | 9 | 2 | 0 | 4 | 0 | 3 | 0 |
+
+## 2026-09-14 — Module 1 images, and the last placeholder on the track
+
+Six `callout` placeholders become six `image` blocks. **This closes image
+placeholders across the whole Leadership track: 0 remain in any of Modules 0-4.**
+
+| Section | Placeholder | File |
+|---|---|---|
+| 2 — Who Am I? | mirror in soft morning light | `mirror-self-reflection.png` |
+| 3 — Four Pillars | four stone pillars | `four-pillars.png` |
+| 4 — EQ doorway | still lake at sunrise | `still-lake-sunrise.png` |
+| 5 — Facing weaknesses | Jacob wrestling the angel, bronze | `jacob-wrestling-angel.png` |
+| 6 — Daily rhythm | morning routine: coffee, Bible, journal | `morning-routine.png` |
+| 7 — Assignment | open leather journal, fountain pen | `leather-journal.png` |
+
+The placeholder at idx 244 offered a choice — "a bronze sculpture of Jacob
+wrestling with the angel, OR a strong tree with visible scars where it has
+healed". The delivered file is the sculpture, so that is what the alt text
+describes; the alternative was not silently carried over.
+
+All six were opened and matched against the placeholder's own wording. Alt text
+records every word visible in the frame, and in this module that is a lot of
+words — the desk scenes carry book spines (KNOW YOURSELF, GROW DAILY, LEAD WITH
+PURPOSE, HOLY BIBLE, GRATITUDE JOURNAL, A BETTER LEADER), mugs (PRAY READ REFLECT
+GROW, GOOD IDEAS BUILD GREAT TOMORROWS), framed cards and full handwritten lists.
+A screen-reader user gets the scene, not a one-line summary of it.
+
+Module 1 stays at 403 blocks and 7 sections — six one-for-one replacements. Ids
+regenerated and verified: 403/403 match sha256(slug|index|type), 0 wrong, 403
+distinct. Assets were pushed and confirmed live (HTTP 200, `image/png`, byte
+counts identical to local) before any block changed, so there was no window where
+the database referenced files that did not exist.
+
+**Track-wide check, run across every block type rather than only callouts:** the
+string "IMAGE PLACEHOLDER" now appears **0 times in all five modules**. 24 real
+images total, none malformed — every one carries both `url` and `alt`. All five
+modules 0 stale ids in the same pass.
+
+**Current baseline (2026-09-14):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | images | image placeholders |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 | 0 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 | 0 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 |
+| 4 | 126 | 9 | 2 | 0 | 4 | 0 | 3 | 0 |
+
+Remaining known content gaps on the track: none for images. Two further "Power of
+Vision" videos for Module 4 Sections 4 and 7 are still pending links, and
+Module 1's seven videos remain temporary/demo picks rather than final.
