@@ -702,12 +702,83 @@ the UI shows whenever it is set.
 two further videos from the same "Power of Vision" series for Sections 4 and 7
 once links are available.
 
+**Published 2026-09-14** after verification, with a slug-scoped, block-count-
+guarded, `is_published = false` idempotent UPDATE returning its row. Verified
+live through the app's own code paths afterwards, reading as an ordinary
+signed-out client rather than through SQL: all 126 blocks compare identical to
+the ingest output block by block, ids 126/126, the splitter gives 9 sections
+with correct titles and headingIds, routes `/1`-`/9` resolve and `/10` does not,
+and every one of the nine block types Module 4 uses has a `case` in
+`BlockRenderer` — the check that matters, since the renderer returns `null` for
+an unhandled type in production rather than erroring.
+
+Dashboard grid, queried with the same filter and ordering `lib/dashboard/data.ts`
+uses, returns five modules with Module 4 last:
+
+| | duration | sections | blocks | pillar |
+|---|---|---|---|---|
+| M0 Starting Point | 45 | 5 | 124 | Personal Leadership |
+| M1 The Leader Within | 120 | 7 | 403 | Personal Leadership |
+| M2 Character in the Dark | 90 | 8 | 193 | Personal Leadership |
+| M3 Emotional Intelligence | 80 | 8 | 119 | Personal Leadership |
+| M4 Vision & Strategic Direction | 85 | 9 | 126 | Directional Leadership |
+
+Module 4 is the first module on a pillar other than Personal Leadership, so it
+is also the first to add a second option to the pillar filter on `/lessons`.
+
+Assignment form inputs present and well-formed: `assignment_key` a1, word range
+200-600, four prompts each carrying number, heading and guidance, the first with
+an example. Welcome video `nxTedtvYfFM` sits in front matter — so it appears on
+the module preview screen and nowhere else, matching Modules 0-3 — and
+`UN4G3ZIkohY` sits inside Section 1.
+
+## 2026-09-14 — Week 8 linked to Module 2, and why it was missing
+
+`coaching_plans` row `2747cf17-9c4c-44e6-9e5e-ba4b4f31059d`, journey
+`900e6eeb-…`, week index 7: `module_id` added, pointing at Module 2
+(`8fb09718-…`). Linked weeks in that plan 1 -> 2.
+
+**The link had never been written.** It looked like a silent revert and was not
+one. Three independent lines of evidence:
+
+1. This log's own Module 2 entry (2026-09-08) lists the week link under "Not
+   done, awaiting decision" — "Week 8 … is the better thematic fit. **Not
+   written either way.**"
+2. `coaching_plans` carries `set_plans_updated_at`, a `BEFORE UPDATE … FOR EACH
+   ROW` trigger running `NEW.updated_at = NOW()` unconditionally, so any
+   successful write bumps the column. Before this edit it read
+   **2026-09-06 07:44:53** — two days *before* the Module 2 ingestion. Nothing
+   had written to the row since.
+3. That timestamp rules out every silent-revert mechanism at once: a plan
+   regeneration, a migration, an RLS reset or a later overwrite would each have
+   been an UPDATE and each would have moved `updated_at`.
+
+The edit itself then bumped `updated_at` to 2026-09-14 07:27:55, confirming the
+trigger behaves as the evidence assumed.
+
+**What made it look linked:** the Module 3 entry the next day reads "Module 2
+stays in Week 8", which describes the *proposal* being left standing while
+Module 3 was refused a link, but reads as though a link existed. That sentence
+is the source of the error, and it propagated for six days.
+
+The write touched one key. `week`, `focus`, `desc_en`, `desc_fr`, `title_en`,
+`title_fr` and all three `exercises` are byte-identical, because `jsonb_set` was
+pointed at `{weeks,7,module_id}` rather than at the object. Guards: row id, 12
+weeks, `weeks->7->>'week' = '8'`, and `not (… ? 'module_id')` so a re-run is a
+no-op instead of a silent overwrite.
+
+Journey state is now mixed by design, not by accident: Week 1 -> Module 1,
+Week 8 -> Module 2, Modules 3 and 4 unlinked because no eligible week exists for
+either. Module 4's case is the cleanest the standing rule has seen — its pillar
+is Directional Leadership and **no week in any plan_data row anywhere carries
+that focus**, so there was nothing to choose between.
+
 **Current baseline (2026-09-14):**
 
-| Module | blocks | sections | videos | scorecards | tables | quizzes | image placeholders |
-|---|---|---|---|---|---|---|---|
-| 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 |
-| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 |
-| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 |
-| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 |
-| 4 | 126 | 9 | 2 | 0 | 4 | 0 | 3 |
+| Module | blocks | sections | videos | scorecards | tables | quizzes | image placeholders | week link |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 | — |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 | Week 1 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | Week 8 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | unlinked |
+| 4 | 126 | 9 | 2 | 0 | 4 | 0 | 3 | unlinked |
