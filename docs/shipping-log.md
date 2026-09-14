@@ -647,3 +647,67 @@ stale in the same pass. `pD0c1PWWgPg` now appears nowhere in any module.
 | 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 |
 | 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 |
 | 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 |
+
+## 2026-09-14 — Module 4 "Vision & Strategic Direction" ingested
+
+126 blocks, 9 sections, 7 blocks of front matter. Row
+`d1471ffe-4966-40dd-b192-a9356ed2d0df`, slug `vision-strategic-direction`,
+module_number 4, sort_order 4, difficulty `beginner`,
+estimated_duration_minutes 85, is_starting_point false, leadership track.
+
+**Input shape differed from Modules 2 and 3.** `module4_leadership.json` nests
+its blocks under `sections[].blocks` rather than one flat `blocks` array, so it
+could not be fed to `scripts/ingest-module.mjs` directly. Rather than loosen the
+ingest script, a scratchpad adapter concatenated the nine sections in order and
+built the `new_row_data` envelope; the real script then ran unmodified and did
+all the validation. Concatenation is lossless here because each section already
+carries its own H2 as its first block. Result: 126 in / 126 out, 126 distinct
+ids, no problems, assignment key `a1`, all 27 callout variants legal.
+
+**Section count verified against the real splitter, not the authored structure.**
+Denis's own simulation said 9 sections; `splitBlocksBySection` agrees, and all
+nine titles match character-for-character. The first group — module title H2,
+byline, welcome video, three info callouts, divider — becomes front matter, the
+same shape Modules 0-3 have. The assignment sits inside "Closing & Assignment"
+rather than splitting off, because that section has its own H2.
+
+**Content verified against the ingest output after loading.** The row was
+created empty and filled with 18 appends, each guarded on
+`jsonb_array_length` so a retry is a no-op. Live vs. ingest output:
+`md5` of every block's type+text is identical (`b7c2c18a…`), as are separate
+hashes of all 17 table rows, all 10 reflection questions and all 4 assignment
+prompts. Ids: 126/126 match sha256(slug|index|type), 0 wrong, 126 distinct.
+2 videos, 4 tables, 3 image placeholders, 1 assignment.
+
+**Videos verified (STEP 2).** Both are Denis's own, sourced from
+denisekobena.com/podcast, and both were still put through the standard check:
+
+| id | oEmbed | author | title returned |
+|---|---|---|---|
+| `nxTedtvYfFM` | 200 | Denis Ekobena | The Power of Vision 1 - Denis Ekobena |
+| `UN4G3ZIkohY` | 200 | Denis Ekobena | The Power of Vision 2 - Denis Ekobena |
+
+`youtube-nocookie.com/embed/<id>` returns 200 for both. A deliberately invalid
+id returns 400 on the same endpoint, so a 200 is a real signal rather than a
+blanket response. YouTube renders the separator as a hyphen where the module
+uses a pipe; the module's own title text is what displays, so no change made.
+
+Reading-time estimate from the splitter is 28 minutes against the authored 85.
+That gap is normal here and not a defect — Modules 1-3 run 56/120, 36/90 and
+28/80 — because `countWords` measures prose only, while the authored figure
+includes reflection and assignment work. `estimated_duration_minutes` is what
+the UI shows whenever it is set.
+
+**Pending, not blocking:** 3 image placeholders (specs in the source file), and
+two further videos from the same "Power of Vision" series for Sections 4 and 7
+once links are available.
+
+**Current baseline (2026-09-14):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | image placeholders |
+|---|---|---|---|---|---|---|---|
+| 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 |
+| 4 | 126 | 9 | 2 | 0 | 4 | 0 | 3 |
