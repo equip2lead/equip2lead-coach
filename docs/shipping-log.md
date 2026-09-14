@@ -782,3 +782,69 @@ that focus**, so there was nothing to choose between.
 | 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | Week 8 |
 | 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | unlinked |
 | 4 | 126 | 9 | 2 | 0 | 4 | 0 | 3 | unlinked |
+
+## 2026-09-14 — Module 0's five image placeholders replaced with real images
+
+Five `callout` placeholders become five `image` blocks. Module 0 is the first
+module with real artwork; Modules 1-4 still carry 6/6/4/3 placeholders between
+them.
+
+**Schema already existed.** `ImageBlock` — `{ type: 'image', url, alt, caption? }`
+— was defined in `lib/lesson-blocks.ts` and handled by `BlockRenderer` (renders a
+`<figure>` with a lazy `<img>` and an optional `<figcaption>`), it had simply
+never been used. The `[IMAGE PLACEHOLDER]` callout was always a stand-in for this
+type, not a convention in its own right, so nothing new was added.
+
+**Assets.** `/public/images/module-0/`, 11MB across five PNGs, served as static
+files. No Supabase Storage bucket exists in this project and a static path under
+`/public` is the plain Next.js answer. Named for what they show
+(`threshold-door`, `tree-roots-fruit`, `five-pillars`, `bread-rising`,
+`journal-morning`) rather than by position, so reordering a section cannot strand
+a file called `M0-3`.
+
+The files arrived in `/public` as `M0-1.png` … `M0-5.png`, not in the
+`images/` folder the brief named. Each was opened and matched against its
+description by content rather than by filename — the order happened to line up,
+but that was confirmed, not assumed.
+
+| Section | Placeholder replaced | File |
+|---|---|---|
+| 1 — Why You're Here | threshold of an open door | `threshold-door.png` |
+| 2 — Know → Be → Do | tree with roots, trunk and fruit | `tree-roots-fruit.png` |
+| 3 — The Five Pillars | five stone pillars supporting a temple | `five-pillars.png` |
+| 4 — The Slow-Cooker Principle | bread rising in a bowl | `bread-rising.png` |
+| 5 — Your First Assignment | open notebook with a pen | `journal-morning.png` |
+
+Matched on placeholder text, not index. Each `alt` describes what is actually in
+the frame, including the words visible in it, rather than repeating the
+placeholder's art direction — a reader on a screen reader should get the image,
+not the brief.
+
+Module 0 stays at 124 blocks and 5 sections: five blocks replaced one for one.
+Changing a block's `type` changes its id, so ids were regenerated and verified
+exhaustively — 124/124 match sha256(slug|index|type), 0 wrong, 124 distinct.
+Callouts 21 -> 16, images 0 -> 5, image placeholders 5 -> 0. The other four
+modules were re-checked in the same pass and are also 0 stale.
+
+Verified live after deploy, not just as files: all five return HTTP 200 with
+`content-type: image/png` and byte counts identical to the local files, and on
+each of the five section pages the `<img>` reports `complete=true` with a decoded
+`naturalWidth` of 1672 inside a `<figure>` — a 404 would decode to 0x0 and still
+report a tag in the HTML.
+
+**Known and accepted, not a defect:** these are photorealistic and bake English
+text into the artwork ("LEARN GROW LEAD MAKE A DIFFERENCE", the carved pillar
+labels, "DISCIPLINE CREATES FREEDOM"), which is not the flat, text-free editorial
+convention Modules 2-4's placeholders specify. Denis chose this deliberately. The
+one real consequence is that baked-in English cannot follow a `lang === 'fr'`
+switch; parked for a French-localization revisit.
+
+**Current baseline (2026-09-14):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | images | image placeholders |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 | 0 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 0 | 6 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 0 | 6 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 0 | 4 |
+| 4 | 126 | 9 | 2 | 0 | 4 | 0 | 0 | 3 |
