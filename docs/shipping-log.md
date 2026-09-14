@@ -848,3 +848,70 @@ switch; parked for a French-localization revisit.
 | 2 | 193 | 8 | 3 | 0 | 7 | 2 | 0 | 6 |
 | 3 | 119 | 8 | 4 | 1 | 4 | 3 | 0 | 4 |
 | 4 | 126 | 9 | 2 | 0 | 4 | 0 | 0 | 3 |
+
+## 2026-09-14 — Modules 2, 3 and 4 image placeholders replaced with real images
+
+Thirteen `callout` placeholders become thirteen `image` blocks: 6 in Module 2,
+4 in Module 3, 3 in Module 4. With Module 0 done earlier today, **only Module 1
+still carries placeholders** (6 of them), and its six files are already sitting
+in `/public` as `M1-1.png` … `M1-6.png`, unclaimed.
+
+**Module 4's images were present after all.** The brief said to check and stop if
+absent; `M4-1..3.png` were in `/public`, matching its three placeholders, so it
+went ahead with the other two.
+
+All thirteen were opened and matched against their placeholder's own `Content:`
+description rather than trusted by filename. They did line up in numeric order,
+but that was confirmed, not assumed — and it is worth noting the placeholders
+specify "flat editorial illustration" while several of the delivered files are
+photorealistic with baked-in English text, the same accepted departure recorded
+for Module 0.
+
+| Module | Placeholder | File |
+|---|---|---|
+| 2 | iceberg, charisma above / character below | `iceberg-charisma-character.png` |
+| 2 | hourglass, crown above / staff below | `hourglass-david-moses.png` |
+| 2 | five figures with mended vessels | `mended-vessels.png` |
+| 2 | three doors GOLD / GIRLS / GLORY | `three-doors.png` |
+| 2 | seven pride icons | `seven-faces-of-pride.png` |
+| 2 | eagle above a stormy sea | `eagle-above-storm.png` |
+| 3 | doorway onto a room, one figure apart | `competence-doorway.png` |
+| 3 | the gap between two clock hands | `the-pause.png` |
+| 3 | interlocking hands in a circle | `ubuntu-circle.png` |
+| 3 | fruit tree with roots below the soil | `fruit-tree-roots.png` |
+| 4 | sculptor's hand against marble | `sculptor-marble.png` |
+| 4 | eight-step staircase, icons only | `eight-step-staircase.png` |
+| 4 | balloon with seven small punctures | `balloon-seven-leaks.png` |
+
+Each `alt` describes what is actually in the frame, including every word visible
+in the artwork — the iceberg's sixteen labelled traits, the GOLD/GIRLS/GLORY door
+signs, "I am because we are", Matthew 7:17. A reader on a screen reader gets the
+image, not the art brief.
+
+**Ordering fixed from the Module 0 pass.** Assets were committed, pushed and
+confirmed live — all thirteen returning HTTP 200, `image/png`, byte counts
+identical to the local files — *before* a single block was changed. Module 0's
+swap went database-first and production briefly served image blocks whose files
+404'd. There was no such window this time.
+
+Block counts unchanged: Module 2 stays 193, Module 3 stays 119, Module 4 stays
+126, each a one-for-one replacement. Section counts unchanged. Changing a block's
+`type` changes its id, so all three were regenerated and verified exhaustively —
+193/193, 119/119 and 126/126 match sha256(slug|index|type), 0 wrong, all distinct.
+Modules 0 and 1 re-checked in the same pass, also 0 stale. Zero malformed image
+blocks (every one has both `url` and `alt`), zero placeholders left in the three.
+
+Live render confirmed per image, not per file: each `<img>` was loaded in the
+browser and reported a decoded `naturalWidth` — 1672x941, 2172x724, 1942x809 or
+2243x701 depending on the source aspect. A 404 decodes to 0x0 while still
+appearing in the HTML, so the tag alone proves nothing.
+
+**Current baseline (2026-09-14):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | images | image placeholders |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 | 0 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 0 | 6 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 |
+| 4 | 126 | 9 | 2 | 0 | 4 | 0 | 3 | 0 |
