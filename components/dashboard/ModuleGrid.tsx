@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { ModuleCard } from '@/lib/dashboard/data';
@@ -33,6 +33,43 @@ export function ModuleGrid({
   const router = useRouter();
   const params = useSearchParams();
   const [pillarOpen, setPillarOpen] = useState(false);
+  const pillarRef = useRef<HTMLDivElement>(null);
+  const pillarButtonRef = useRef<HTMLButtonElement>(null);
+
+  // A panel that only closes by clicking the control that opened it is a trap:
+  // the reader's instinct is to click away, and until this existed that did
+  // nothing at all. Listeners are bound only while the panel is open, so a
+  // closed dropdown costs nothing.
+  //
+  // `mousedown` rather than `click`, so the panel is gone before the press
+  // completes — on `click` the panel would still be under the cursor through
+  // mouseup and could swallow the press it was meant to let through. The
+  // toggle button lives inside the same ref, so its own handler closes the
+  // panel without this one racing it.
+  useEffect(() => {
+    if (!pillarOpen) return;
+
+    const onPointerDown = (e: MouseEvent | TouchEvent) => {
+      const target = e.target as Node | null;
+      if (target && !pillarRef.current?.contains(target)) setPillarOpen(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setPillarOpen(false);
+      // Escape should leave focus where the reader can act again rather than
+      // stranding it on a node that just unmounted.
+      pillarButtonRef.current?.focus();
+    };
+
+    document.addEventListener('mousedown', onPointerDown);
+    document.addEventListener('touchstart', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown);
+      document.removeEventListener('touchstart', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [pillarOpen]);
 
   const activePillars = parseList(params.get('pillar'));
   const activeStatusesRaw = parseList(params.get('status')) as Status[];
@@ -111,11 +148,13 @@ export function ModuleGrid({
                 appears would mean the control arrives unannounced the day
                 Module 2 lands in a different pillar. */}
             {pillars.length > 0 && (
-              <div className="relative">
+              <div className="relative" ref={pillarRef}>
                 <button
                   type="button"
+                  ref={pillarButtonRef}
                   onClick={() => setPillarOpen((o) => !o)}
                   aria-expanded={pillarOpen}
+                  aria-haspopup="true"
                   className="flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-[12px] font-semibold text-gray-600 transition-colors hover:bg-gray-50"
                   style={{ fontFamily: 'inherit' }}
                 >
