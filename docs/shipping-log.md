@@ -1070,3 +1070,88 @@ on the track lacks a `youtubeId`.
 
 Remaining known content gap on the track: Module 1's seven videos are still
 temporary/demo picks rather than final.
+
+## 2026-09-15 — Module 5 "Levels & Laws" ingested
+
+90 blocks, 8 sections, 7 blocks of front matter. Row
+`605512bd-62d3-4b2c-92e0-e87e721c9919`, slug `levels-laws`, module_number 5,
+sort_order 5, difficulty `beginner`, estimated_duration_minutes 80, pillar
+`directional-leadership`, leadership track, published.
+
+**90 blocks, not the 91 the brief specified, and no videos at all.** Worth
+recording plainly, because the source file never changed across three attempts.
+`module5_leadership.json` stayed byte-identical throughout — same mtime
+(2026-09-15 10:07:42), same md5 `dab96996547a54e0564a1a0415a97cf8`, 32528 bytes
+— while successive briefs described a corrected file with the dead video
+removed, a `scorecard_key` added, and a second video inserted. None of those
+edits reached disk; `generate_module5.js` was checked too and also carries only
+the single original `videoEmbed` and no `scorecard_key`.
+
+Two of the three described corrections are unambiguous transcription, so they
+were applied to a scratchpad copy rather than bouncing the ingest a third time:
+
+- the dead `aPwXeg8ThWI` video block removed (91 -> 90)
+- `scorecard_key: "module5_five_levels"` added to the single scorecard
+
+The third could not be: the T.D. Jakes video `uwZdmnlVNbE` is not in the file and
+no brief said which section it belongs to. Module 5 therefore ships with **zero**
+`video_embed` blocks. Adding it later is a net insertion, the same operation used
+for Module 4's Sections 4, 5 and 7.
+
+**Video verification.** `aPwXeg8ThWI` (Maxwell, "5 Levels of Leadership") is
+dead and was re-confirmed dead on the day of ingest: oEmbed 404 on three
+consecutive attempts, watch page reporting
+`playabilityStatus: {"status":"ERROR","reason":"Video unavailable"}`, against a
+known-good control returning 200 and a malformed-id control returning 400. It had
+been sourced by convergent citation across four independent sources, which is a
+reminder that citations propagate each other's errors. `uwZdmnlVNbE` (T.D. Jakes,
+"Stay Steady in Life's Storms") verified clean — oEmbed 200 x3, channel
+"TBN: Full Sermons & Teachings" (@TBNFullSermons), playabilityStatus OK, 2270s
+(~38 min). Its provenance is stronger than the brief assumed; its length is worth
+weighing against sections that run 2-3 minutes each.
+
+**A correction to this log's own earlier entries:** the
+`youtube-nocookie.com/embed/<id>` check reported alongside oEmbed in every prior
+video entry returns **200 for any well-formed id**, including one invented for the
+test. It never carried information. Every earlier verdict was decided by oEmbed
+and stands, but that second line was decorative and should not be relied on.
+
+Section counts verified against the real `splitBlocksBySection`, not the
+authored structure: 8 sections, all eight titles matching character-for-character,
+front matter of 7 blocks (title, byline, video placeholder, three info callouts,
+divider). The scorecard lands in §4 "The Pinnacle", the assignment in §8.
+
+Loaded via 12 guarded appends, each asserting `jsonb_array_length` so a retry is
+a no-op. Live content verified against the ingest output by md5 of every block's
+type and text — `037eab7564046dba6339c264f2abcb85`, identical. Ids: 90/90 match
+sha256(slug|index|type), 0 wrong, 90 distinct. `scorecard_key module5_five_levels`
+and `assignment_key a1` both present.
+
+Verified live after publish: all eight sections render with correct titles and
+"Section N of 8"; the scorecard renders as five working sliders with live values
+and the "saves automatically" note; the assignment form renders with all four
+prompt headings, its rich-text editor and the 200-600 word target; the dashboard
+grid returns six modules with Levels & Laws last.
+
+**Week linking:** pillar `directional-leadership`, and no week in any
+`coaching_plans` row carries that focus, so Module 5 **ships unlinked** — the
+same clean case as Modules 3 and 4, settled in an earlier pass and unchanged.
+
+**Open on this module:** 2 image placeholders (§2 the two-doors illustration,
+§4 the five ascending steps) and 2 **video** placeholders (a 3-4 min intro in
+front matter, a 2-3 min closing in §8) — the video placeholders are worth noting
+because the brief mentioned only the image ones. Section 1 has no video after the
+dead ID was dropped. Section 3 (People Development) has none by design: its real
+depth belongs to the future Module 9 (Coaching & Developing) rather than being
+squeezed in here.
+
+**Current baseline (2026-09-15):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | images | image ph | video ph |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 | 0 | 0 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 | 0 | 0 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 | 0 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 | 0 |
+| 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 | 0 |
+| 5 | 90 | 8 | 0 | 1 | 1 | 0 | 0 | 2 | 2 |
