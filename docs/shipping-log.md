@@ -1023,3 +1023,50 @@ it sits under — independent confirmation the video matches the section.
 
 Remaining known content gap on the track: Module 1's seven videos are still
 temporary/demo picks rather than final. Images and Module 4's videos are done.
+
+## 2026-09-15 — Sinek's "Start with Why" added to Module 4 Section 5
+
+`u4ZoJKF_VuA` — "Start with Why: How Great Leaders Inspire Action | Simon Sinek |
+TEDxPugetSound" — inserted at idx 66, Section 5 "Modeling the Way & Inspiring a
+Shared Vision". Module 4's first third-party video, matching the mix Modules 1
+and 3 already use.
+
+Verified before insert: oEmbed 200, author "TEDx Talks",
+`youtube-nocookie.com/embed/<id>` 200, and an invalid control id returning 400.
+
+**Placement matched the brief exactly**, unlike the Section 7 insert the day
+before. The "Inspiring a Shared Vision" subsection runs h3 (63), paragraph (64)
+and the "great leaders are effective communicators of vision" warning callout
+(65); the Kelleher case study opens at the h3 "What Modeling the Way Actually
+Looks Like" (66). The video went between them, so it closes the subsection on
+communicating vision and hands off to the worked example. Confirmed in the
+rendered DOM rather than only in the block array: the `<figure>`'s previous
+sibling is that warning callout and its next sibling is the Kelleher h3.
+
+Worth noting the talk is a good fit for where it landed — Sinek's argument is
+that people follow the why rather than the what, which is precisely what the
+paragraph above it says about connecting a vision to what people already care
+about.
+
+Not a duplicate: Module 1 carries a different Sinek talk (`lmyZMtPVodo`, "Why
+Good Leaders Make You Feel Safe"). A track-wide check confirms `u4ZoJKF_VuA`
+appears exactly once.
+
+Module 4: 128 -> 129 blocks, 9 sections unchanged, videos 4 -> 5. A net insertion
+shifts every later index, so ids were regenerated and verified exhaustively —
+129/129 match sha256(slug|index|type), 0 wrong, 129 distinct. The other four
+modules re-checked in the same pass, also 0 stale, and no `video_embed` anywhere
+on the track lacks a `youtubeId`.
+
+**Current baseline (2026-09-15):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | images | image placeholders |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 | 0 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 | 0 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 |
+| 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 |
+
+Remaining known content gap on the track: Module 1's seven videos are still
+temporary/demo picks rather than final.
