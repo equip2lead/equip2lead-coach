@@ -966,3 +966,60 @@ modules 0 stale ids in the same pass.
 Remaining known content gaps on the track: none for images. Two further "Power of
 Vision" videos for Module 4 Sections 4 and 7 are still pending links, and
 Module 1's seven videos remain temporary/demo picks rather than final.
+
+## 2026-09-15 — Module 4's last two videos
+
+Two `video_embed` blocks inserted, closing Module 4's video gaps. Both are
+Denis's own, from the same "Power of Vision" series as `nxTedtvYfFM` and
+`UN4G3ZIkohY` already live in this module.
+
+| id | title | Section | Landed at |
+|---|---|---|---|
+| `asktl-pPcUM` | The Power of Vision 6 | 4 — The 8-Step Vision Process | idx 51 |
+| `bKYZw2C1ltw` | The Power of Vision 8 | 7 — Seven Vision Killers | idx 94 |
+
+Verified before insert despite the first-party precedent: oEmbed 200 for both,
+titles and author ("Denis Ekobena") matching, `youtube-nocookie.com/embed/<id>`
+200, and an invalid control id returning 400 so the 200 carries information.
+
+**Placement in Section 4** — after the eighth numbered step *and* after the
+"Steps 1-4 are discernment, steps 5-8 are stewardship" callout that closes the
+list, immediately before the "Four Questions" h3. Splitting the list from its own
+summary callout would have been the obvious mistake; the video now follows the
+complete unit and precedes the next sub-topic.
+
+**Placement in Section 7 — the brief's stated anchor did not exist.** It asked
+for "after the vision-killers table and before the Kodak case study callout", but
+the Kodak case study *opens* the section (h3 at 87, paragraphs 88-89, warning
+callout 90) and the table comes after it at 92. What does sit after the table is
+a Kodak *callback* — "Look back at the first two rows of that table. That's
+Kodak's whole story in two words." Reading the instruction against that block
+makes it satisfiable, so the video went after the table and its pull quote and
+before the Scripture-anchors callout, leaving the Kodak callback further down
+intact. Guards asserted the table, the pull quote and the Scripture callout were
+all where expected before the write.
+
+Module 4: 126 -> 128 blocks, 9 sections unchanged, videos 2 -> 4. These are net
+insertions rather than placeholder swaps, so every index after each one shifted;
+ids regenerated and verified exhaustively — 128/128 match sha256(slug|index|type),
+0 wrong, 128 distinct. The other four modules re-checked in the same pass, also
+0 stale. No `video_embed` anywhere on the track is missing a `youtubeId`.
+
+Both confirmed rendering live, not merely present in the markup: each is a real
+`youtube-nocookie.com/embed/<id>` iframe at 720x405 with the correct caption, and
+both load their actual YouTube thumbnails. The Section 4 thumbnail happens to show
+the slide "PRAY — Ask God to put the pieces...", which is step 1 of the very list
+it sits under — independent confirmation the video matches the section.
+
+**Current baseline (2026-09-15):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | images | image placeholders |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 | 0 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 | 0 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 |
+| 4 | 128 | 9 | 4 | 0 | 4 | 0 | 3 | 0 |
+
+Remaining known content gap on the track: Module 1's seven videos are still
+temporary/demo picks rather than final. Images and Module 4's videos are done.
