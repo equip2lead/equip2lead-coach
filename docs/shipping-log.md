@@ -1145,6 +1145,31 @@ dead ID was dropped. Section 3 (People Development) has none by design: its real
 depth belongs to the future Module 9 (Coaching & Developing) rather than being
 squeezed in here.
 
+### Reconciled the same day — the corrected file arrived
+
+The corrected `module5_leadership.json` landed at 14:54:45 (md5
+`53fcaa5c110d464ac8d80fa7fa27876c`, 32588 bytes, 91 blocks) after Module 5 was
+already published at 90. Rather than drop and re-ingest — which would have
+discarded a live row and its id — the corrected file was diffed against the live
+row. **Exactly one real difference:** the T.D. Jakes `video_embed` at file index
+63. The only other hunk was `assignment_key: "a1"`, which the ingest script
+derives rather than reading from source, so it appears on the live side only.
+Every other block matched byte-for-byte, which confirms the two reconstructed
+corrections had been right.
+
+One guarded `jsonb_insert` at index 63 plus an id recompute brought the row to
+91 blocks. The live row's type+text md5 is now `3ec031a91bae91aee77c9c54a2552c17`
+— **identical to the corrected source file**, so the published module is the
+authored module, not a reconstruction of it. Ids 91/91, 0 wrong, 91 distinct.
+
+Placement is the file's own and reads well: the video sits directly after §5's
+**Fear** subsection, and the sermon is titled "...Conquer Fear That Holds You
+Back". Verified rendering live — a real `youtube-nocookie.com/embed/uwZdmnlVNbE`
+iframe at 720x405 loading its TBN thumbnail, and sections still split 8/8 with
+titles unchanged.
+
+Module 5 is therefore 91 blocks with 1 video, not the 90/0 recorded above.
+
 **Current baseline (2026-09-15):**
 
 | Module | blocks | sections | videos | scorecards | tables | quizzes | images | image ph | video ph |
@@ -1154,4 +1179,4 @@ squeezed in here.
 | 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 | 0 |
 | 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 | 0 |
 | 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 | 0 |
-| 5 | 90 | 8 | 0 | 1 | 1 | 0 | 0 | 2 | 2 |
+| 5 | 91 | 8 | 1 | 1 | 1 | 0 | 0 | 2 | 2 |
