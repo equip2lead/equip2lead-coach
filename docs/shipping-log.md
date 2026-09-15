@@ -1233,3 +1233,80 @@ by design, its depth belonging to the future Module 9.
 | 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 | 0 |
 | 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 | 0 |
 | 5 | 91 | 8 | 1 | 1 | 1 | 0 | 2 | 0 | 2 |
+
+## 2026-09-15 — Module 5 reconciled again: 91 -> 103 blocks
+
+`module5_leadership.json` regenerated at 16:09:41 (md5
+`ce8dcab84e656b44708bad02b2de34c4`, 39690 bytes, 103 blocks). Diffed against the
+live row rather than re-ingested, same reasoning as the previous reconciliation.
+
+**12 new blocks across 7 insertion points**, applied in descending index order so
+no pending position moved under a completed one, each guarded on
+`jsonb_array_length` plus the anchor block's own type and text:
+
+| Live idx | Added | Where it lands |
+|---|---|---|
+| 15 | Drew Dudley video + framing paragraph | §1, after the French & Raven convergence callout |
+| 38 | Ryan Gottfredson video + framing paragraph | §3, after the Level 4 practical-shift paragraph |
+| 50 | Frances Hesselbein paragraph | §4, under The Rule of Five |
+| 54 | 2 paragraphs on dormant capacity | §5 opening |
+| 74 | Ursula Burns paragraph | §6, closing the Law of Process |
+| 76 | Indra Nooyi paragraph | §6, closing the Law of Sacrifice |
+| 83 | 3 paragraphs: a second "two leaders" illustration, Howard Schultz, Brian Chesky | §7 |
+
+The brief predicted 8 named additions; the actual diff carried 12 blocks. Three
+beyond the list: the two dormant-capacity paragraphs opening §5, and a second
+"two leaders" illustration in §7 alongside Schultz and Chesky. The brief had
+flagged that possibility and asked for the real diff to be trusted over the
+estimate, which is what happened.
+
+**One regression refused.** The regenerated file still carries the two
+`[IMAGE PLACEHOLDER]` callouts in §2 and §4 — its generator predates this
+morning's image swap. Applying the file wholesale would have reverted both real
+images to placeholders. The diff was therefore filtered: new blocks applied,
+image placeholders on the file side dropped, and the live `image` blocks kept.
+An assertion in the diff script confirmed nothing else was being discarded from
+the live side. The Hesselbein paragraph, which the file places immediately before
+the §4 image, was inserted ahead of the surviving image rather than replacing it.
+
+**Videos verified before insert**, both previously unchecked here: `uAy6EawKKME`
+oEmbed 200, author TED-Ed, "Everyday leadership - Drew Dudley"; `Rth6apF1mng`
+oEmbed 200, author TEDx Talks, matching title. Malformed-id control returned 400
+in the same run.
+
+`scorecard_key` in the regenerated source is `module5_five_levels` — identical to
+what was patched in on the earlier round, so no conflict and no second fix.
+
+Module 5: 91 -> 103 blocks, 8 sections unchanged, videos 1 -> 3, images 2,
+0 image placeholders, 2 video placeholders. Ids regenerated and verified:
+103/103 match sha256(slug|index|type), 0 wrong, 103 distinct.
+
+**Content equivalence checked against the file, allowing for the deliberate
+divergence.** A raw md5 could not match, because live intentionally holds two
+`image` blocks where the file holds two placeholders. Substituting the live image
+blocks into the file at those two positions gives
+`99021ccf2e92579288697cc0f1f0a862` — identical to live — and a field-by-field
+comparison across all 103 blocks reports zero structural differences.
+
+Verified live: all 8 sections render with correct titles and "Section N of 8";
+both new videos are real `youtube-nocookie` iframes at 720x405 loading their
+TED-Ed and TEDx thumbnails, each in its specified position; both images still
+render; sidebar reading times updated to reflect the new content (§1 and §5 now
+3 min, §7 now 4 min).
+
+**Current baseline (2026-09-15):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | images | image ph | video ph |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 | 0 | 0 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 | 0 | 0 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 | 0 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 | 0 |
+| 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 | 0 |
+| 5 | 103 | 8 | 3 | 1 | 1 | 0 | 2 | 0 | 2 |
+
+**Standing risk worth naming:** `generate_module5.js` does not know about edits
+made directly to the database — the image swap was invisible to it, and would
+have been reverted by a wholesale re-ingest. Any future regeneration needs the
+same diff-and-filter treatment, or the generator needs the image blocks folded
+back into it.
