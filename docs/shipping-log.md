@@ -1180,3 +1180,56 @@ Module 5 is therefore 91 blocks with 1 video, not the 90/0 recorded above.
 | 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 | 0 |
 | 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 | 0 |
 | 5 | 91 | 8 | 1 | 1 | 1 | 0 | 0 | 2 | 2 |
+
+## 2026-09-15 — Module 5's two images, closing image placeholders track-wide
+
+Two `callout` placeholders become two `image` blocks. **With these, every module
+on the Leadership track carries zero image placeholders: 0 in all of 0-5.**
+
+| Section | Placeholder | File |
+|---|---|---|
+| 2 — Position & Permission | two office doors, one closed, one ajar | `position-permission-doors.png` |
+| 4 — The Pinnacle | five ascending stone steps | `ascending-stone-steps.png` |
+
+The brief pointed at `~/Desktop/Equip2lead/images/`, which does not exist — the
+files were in `public/images/` as `M5-1.png` and `M5-2.png`, the same mismatch as
+the Module 0 pass. Both were opened and matched against the placeholder text
+rather than trusted by filename, then renamed for content.
+
+Image 1 carries POSITION and PERMISSION on the door plaques as literal signage.
+That is the track's already-accepted departure from the no-baked-in-text
+convention, first flagged at Module 0 and parked for the French-localization
+pass; it is recorded in the alt text and is not raised again here as a defect.
+
+Module 5 stays at 91 blocks and 8 sections — two one-for-one replacements.
+Changing a block's `type` changes its id, so ids were regenerated and verified
+exhaustively: 91/91 match sha256(slug|index|type), 0 wrong, 91 distinct, 0
+malformed image blocks. The other five modules were re-checked in the same pass
+and are also 0 stale. Assets were pushed and confirmed live (HTTP 200,
+`image/png`, byte counts identical to local) before any block changed, so no
+window existed where the database referenced files that were not yet served.
+
+**A measurement note worth keeping.** The first live check reported
+`naturalWidth 0x0` for the doors image, which looks exactly like a 404. It was
+not: the `<img>` carries `loading="lazy"`, sat about 700px below the fold, and
+the `window.scrollTo` used to bring it into view does not move this layout's
+actual scroll container. Forcing the load returned 1672x941 immediately. The
+lesson for future passes is that `naturalWidth` is only evidence once the image
+is genuinely in view — otherwise a correct lazy-loaded image and a broken one
+report the same number.
+
+**Still open on Module 5:** the 2 video placeholders only — a 3-4 min intro in
+front matter and a 2-3 min closing in §8, both pending Denis's own recordings.
+Section 1 has no video after the dead Maxwell ID was dropped; Section 3 has none
+by design, its depth belonging to the future Module 9.
+
+**Current baseline (2026-09-15):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | images | image ph | video ph |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | 124 | 5 | 1 | 0 | 1 | 1 | 5 | 0 | 0 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 | 0 | 0 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 | 0 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 | 0 |
+| 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 | 0 |
+| 5 | 91 | 8 | 1 | 1 | 1 | 0 | 2 | 0 | 2 |
