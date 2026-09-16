@@ -1354,3 +1354,60 @@ match for production.
 that let it drift out of sync with the database twice in one day. This entry
 records the fix; it does not make the fix durable. Tracking the generators
 alongside the content they produce would.
+
+## 2026-09-16 — All four module generators tracked and reconciled
+
+`generate_module2.js` through `generate_module5.js` now live at
+`scripts/content/`, alongside a README stating the constraint that makes them
+safe to use. Until today all four sat untracked in `~/Downloads`.
+
+**Every one had drifted from production**, because content has repeatedly been
+edited straight into Supabase and the generators never learned about it. Measured
+before any fix, as generated-blocks vs live-blocks:
+
+| Module | Generated | Live | Diff hunks | What had drifted |
+|---|---|---|---|---|
+| 2 | 181 | 193 | 16 | welcome + §5 videos, 6 images, the whole §1 deepening (etymology, stick house, Covey endowments, the five-block Army treatment, Munroe split in two), the "four voices" rewrite, the harvested guardrail line, 2 heading renames, 2 quizzes |
+| 3 | 115 | 119 | 10 | 4 images, §3 video, the Marcus Aurelius nightly-practice paragraph, the table-to-scorecard conversion, 3 quizzes |
+| 4 | 126 | 129 | 6 | 3 images, and the Vision 6 / Sinek / Vision 8 videos |
+| 5 | 103 | 103 | 0 | already reconciled earlier today |
+
+Re-ingesting any of them wholesale would have silently reverted all of it.
+
+**Two generators existed twice.** `~/Downloads` held both
+`generate_module2.js` and `generate_module2 (1).js`, and the same for Module 3.
+Rather than guess from filenames or timestamps, each candidate was run and diffed
+against production: for Module 2 the `(1)` copy came back at 16 hunks against the
+other's 33, and for Module 3 at 10 against 11. The closer copy was taken as
+canonical in both cases. The JSON files on disk had in fact been produced by the
+*older* copies, so filename order would have chosen wrong.
+
+Each generator was then edited until a fresh run reproduced its live row exactly.
+Final state, all verified by regenerating from the tracked path and comparing
+every field of every block — not by reading the edits:
+
+```
+M2  live 193 | generated 193 | zero differences
+M3  live 119 | generated 119 | zero differences
+M4  live 129 | generated 129 | zero differences
+M5  live 103 | generated 103 | zero differences
+```
+
+The `image()` helper was made conditional in all four rather than replaced:
+`image({url, alt})` emits a real image block, `image({type, content, width,
+height})` still emits a placeholder. Art that genuinely has not been produced yet
+keeps working, and folding a finished image in stays a two-line change.
+
+**Three mistakes worth recording, all caught by the diff rather than by review.**
+A regex rewriting image call sites matched its own output and put all three of
+Module 4's images in the first slot. A quiz insertion anchored on a following
+`divider`, which has no text, and landed inside Module 3's `assignmentPrompt(`
+call, shifting its arguments. And Module 2's two video placeholders were mapped
+against all three live videos instead of the two the generator did not already
+emit, so both got the wrong one. In each case block counts or field comparison
+caught it immediately; none reached the database, which was never written to
+during any of this.
+
+**Not covered:** Modules 0 and 1 have no generator — their blocks were authored
+directly as JSON, and only Module 0's is tracked. They cannot drift the same way,
+but they also cannot be regenerated.
