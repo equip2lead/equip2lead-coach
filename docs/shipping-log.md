@@ -1411,3 +1411,65 @@ during any of this.
 **Not covered:** Modules 0 and 1 have no generator — their blocks were authored
 directly as JSON, and only Module 0's is tracked. They cannot drift the same way,
 but they also cannot be regenerated.
+
+## 2026-09-16 — Three content additions from library review
+
+Original writing throughout; no third-party text reproduced. The named
+thinkers are paraphrased or quoted only in short attributed fragments.
+
+**Module 0 — "Other Voices, Landing in the Same Place", 5 blocks at idx 24.**
+Inserted between the "you are already leading" callout and "The Three Ways
+Leadership Is Used", so the definition is corroborated before the taxonomy that
+depends on it. An h3, a framing paragraph, a tip callout gathering Drucker,
+Bennis, Montgomery and Clinton, a pull quote carrying Denis's own definition, and
+a closing paragraph that lands the section on it. The sequence is deliberate: the
+borrowed voices come first, Denis's line last, so the module's own definition is
+the one the reader leaves with.
+
+Module 0: 124 -> 129 blocks, 5 sections unchanged, pull quotes 5 -> 6.
+
+**Module 5 — "Two Lists", 6 blocks at idx 32**, Section 2 "Position &
+Permission". An h3, three short exercise paragraphs, the paragraph that resolves
+them, and a closing tip.
+
+Placement needed a judgment call the brief left open. It asked for "after the
+existing Muswaggon case study, before the section's closing divider", but those
+are not adjacent — Muswaggon ends at idx 27 and the divider is at 32, with the
+whole "Level 2 — Permission" subsection and the two-doors image in between.
+Inserting immediately after Muswaggon would have split that subsection from its
+own lead-in. The exercise went immediately before the divider instead, which
+satisfies the more precise half of the instruction and is where the content
+belongs: "Two Lists" argues that influence is not fame, which is a Level 2 claim,
+so it reads as the section's closing beat rather than an interruption of it.
+
+Module 5: 103 -> 109 blocks, 8 sections unchanged.
+
+Both modules: ids regenerated and verified exhaustively — 129/129 and 109/109
+match sha256(slug|index|type), 0 wrong, all distinct. No section counts moved; no
+level-2 heading was added.
+
+**The generator caught its own drift, which is the point of tracking it.**
+Module 5's edit made `scripts/content/generate_module5.js` stale immediately —
+a re-ingest would have silently deleted "Two Lists". The six blocks were folded
+into the generator in the same pass, and all four generators were then re-run and
+re-diffed: M2 193, M3 119, M4 129, M5 109, **zero differences each**. Module 0 has
+no generator and cannot be kept in step this way.
+
+**Banked, not inserted: `docs/banked/nine-habits.md`.** 435 words of original
+writing on nine self-development habits, received this session and deliberately
+not placed. It is not tied to any built module and belongs with Module 9
+(Coaching & Developing) when that exists, rather than being wedged into a module
+it does not serve. Copied into the repository so it is versioned rather than
+living only in `~/Downloads`, which is the failure mode the generators just
+demonstrated.
+
+**Current baseline (2026-09-16):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | images | image ph | video ph |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | 129 | 5 | 1 | 0 | 1 | 1 | 5 | 0 | 0 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 | 0 | 0 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 | 0 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 | 0 |
+| 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 | 0 |
+| 5 | 109 | 8 | 3 | 1 | 1 | 0 | 2 | 0 | 2 |

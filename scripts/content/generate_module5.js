@@ -94,6 +94,12 @@ const section2 = {
       url: "/images/module-5/position-permission-doors.png",
       alt: "Two wooden office doors side by side in a quiet corridor. The left door is shut, its brass plaque reading POSITION. The right door stands ajar, warm evening light spilling from the meeting room beyond, its plaque reading PERMISSION."
     }),
+    heading(3, "Two Lists"),
+    paragraph("Take sixty seconds. Write down the names of five people widely recognized as successful in your country right now — public figures, known for their achievement."),
+    paragraph("Now take sixty seconds more. Write down five people — no fame required — who personally helped you become who you are. A teacher. A coach. Someone who believed in you before you'd proven anything."),
+    paragraph("Which list came faster? Which names do you actually remember without thinking?"),
+    paragraph("For most people, the second list. Not because the first list's names are unworthy — because influence and fame turn out to be different currencies. The people who actually shaped you were rarely the most decorated people in the room. They were the ones who paid attention to you specifically, for reasons that had nothing to do with your resume."),
+    callout("tip", "That's the whole argument for what leadership actually is. It was never a title. It's what happens between two people when one of them decides the other is worth investing in."),
     divider(),
     reflectionQuestions(
       "Not submitted. Not graded. Just yours.",
