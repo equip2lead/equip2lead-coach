@@ -1310,3 +1310,47 @@ made directly to the database — the image swap was invisible to it, and would
 have been reverted by a wholesale re-ingest. Any future regeneration needs the
 same diff-and-filter treatment, or the generator needs the image blocks folded
 back into it.
+
+## 2026-09-16 — Module 5's images folded back into the generator
+
+`generate_module5.js` was still emitting `[IMAGE PLACEHOLDER]` callouts for the
+two images that went live on 15 September, which is what forced the previous
+reconciliation to be a filtered diff rather than a straight apply. The generator
+now produces the images themselves.
+
+The `image()` helper became conditional rather than being replaced outright:
+
+```js
+const image = (spec) =>
+  spec.url
+    ? { type: "image", data: { url: spec.url, alt: spec.alt } }
+    : imagePlaceholder(`${spec.type}. Content: ${spec.content} Dimensions: …`);
+```
+
+Passing `{ url, alt }` emits a real `image` block; passing the older
+`{ type, content, width, height }` art-direction spec still emits a placeholder
+callout. That matters because other modules' generators use the same shape for
+art that genuinely has not been produced yet — narrowing the helper to images
+only would have broken them.
+
+The two call sites in §2 and §4 now carry the live URLs and the live alt text
+verbatim, including the POSITION and PERMISSION plaque wording.
+
+**Verified by regenerating rather than by reading the edit.** A fresh
+`node generate_module5.js` reports `Pending images: 0` (was 2) and its 103 blocks
+diff against the live row with **zero differences, field for field** — not just
+matching type and text, but every key on every block. Both `type+text` md5s are
+`99021ccf2e92579288697cc0f1f0a862`. The regenerated file contains 2 `image`
+blocks and 0 image placeholders.
+
+No database write was involved: the live row already held the correct content,
+and this only brings the generator into line with it. `module5_leadership.json`
+was regenerated as a side effect, moving to md5
+`b7e1e13b421bd583103e0a7a049da102` — the first time that file has been a complete
+match for production.
+
+**The generator is still not in this repository.** It lives at
+`~/Downloads/generate_module5.js`, untracked, which is precisely the condition
+that let it drift out of sync with the database twice in one day. This entry
+records the fix; it does not make the fix durable. Tracking the generators
+alongside the content they produce would.
