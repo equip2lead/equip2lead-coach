@@ -1537,3 +1537,41 @@ min closing in §8). No videos to verify this pass.
 | 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 | 0 |
 | 5 | 109 | 8 | 3 | 1 | 1 | 0 | 2 | 0 | 2 |
 | 6 | 100 | 8 | 0 | 1 | 2 | 0 | 0 | 1 | 2 |
+
+## 2026-09-17 — Week 9 linked to Module 6
+
+`coaching_plans` row `2747cf17-9c4c-44e6-9e5e-ba4b4f31059d`, week index 8:
+`module_id` added, pointing at Module 6 Building Trust
+(`8b3e1dbe-…`). Linked weeks in that plan 2 -> 3.
+
+**Week 9 rather than Week 3, deliberately.** Four weeks carry the Relational
+Leadership focus — 3, 6, 9 and 11 — and all four are eligible under the standing
+rule: tag match, neither first nor last, none already taken. Ascending order
+points at Week 3. It was refused for the same reason Week 2 was refused for
+Module 3: Module 6's front matter reads "Every leader who completed Modules 1-5",
+and Week 3 renders before Week 8, which holds Module 2. A reader following the
+weeks in order would meet Module 6 before a module it explicitly assumes. Week 9
+is the first relational week that sits after Week 8, so the dependency resolves.
+
+The week's own content makes it a better fit than sequence alone would suggest:
+its focus is servant leadership and its three exercises are about asking what a
+team member needs, noticing when you led for your own comfort, and removing an
+obstacle without taking over. Module 6 ends on exactly that — sharing real
+authority rather than delegating tasks.
+
+The write touched one key. `week`, `focus`, `desc_en`, `desc_fr`, `title_en`,
+`title_fr` and all three `exercises` are byte-identical, because `jsonb_set` was
+pointed at `{weeks,8,module_id}` rather than at the object. Guards: row id, 12
+weeks, `weeks->8->>'week' = '9'`, focus match, and `not (… ? 'module_id')` so a
+re-run is a no-op rather than a silent overwrite.
+
+Journey state now:
+
+| Week | Focus | Module |
+|---|---|---|
+| 1 | Personal Leadership | 1 — The Leader Within |
+| 8 | Personal Leadership | 2 — Character in the Dark |
+| 9 | Relational Leadership | 6 — Building Trust |
+
+Modules 3, 4 and 5 remain unlinked: no week carries Emotional Intelligence's or
+Directional Leadership's focus at all.
