@@ -1473,3 +1473,67 @@ demonstrated.
 | 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 | 0 |
 | 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 | 0 |
 | 5 | 109 | 8 | 3 | 1 | 1 | 0 | 2 | 0 | 2 |
+
+## 2026-09-17 — Module 6 "Building Trust" ingested
+
+100 blocks, 8 sections, 7 blocks of front matter. Row
+`8b3e1dbe-fdf1-45aa-b6bb-95bea5ee7541`, slug `building-trust`, module_number 6,
+sort_order 6, difficulty `beginner`, estimated_duration_minutes 80, pillar
+`relational-leadership`, leadership track, published.
+
+**Pillar determined from the product, not inferred.** The file carried no pillar.
+Module 0's own curriculum map settles it outright — Section 3 lists "Pillar 3 —
+Relational Leadership (Leading People): Trust, communication, influence, empathy,
+conflict resolution. **Modules 6, 7, 8.**" Trust is the first word of the pillar's
+own description and Module 6 is named in its module list. The same passage
+retroactively confirms the earlier calls: Modules 1-3 Personal, Modules 4-5
+Directional.
+
+Validation clean on the first run: 100 in / 100 out, 100 distinct ids, all 14
+callout variants legal, headings levels 2-3 only, `scorecard_key`
+`module6_trust_equation` present with `helpText` on all four items, assignment
+key `a1`. This is the first module to arrive needing no schema corrections at
+all — no missing scorecard_key, no dead video ids, no envelope problems.
+
+Section count verified against the real `splitBlocksBySection`, all eight titles
+matching character-for-character, front matter of 7 blocks. The scorecard lands
+in §7 "The Delegation Test", the assignment in §8.
+
+Loaded via 15 guarded appends. Live content verified against the ingest output by
+md5 of every block's type and text — `80cba03493a550522a2eb3284e203627`,
+identical. Ids 100/100 match sha256(slug|index|type), 0 wrong, 100 distinct.
+
+Verified live after publish: all eight sections render with correct titles and
+"Section N of 8"; the Trust Self-Audit renders as four working sliders **with the
+per-item helpText showing beneath each**, which is the first use of that field in
+production; the assignment form renders all five prompt headings, the worked
+example, and the 200-700 word target; the dashboard grid returns seven modules
+with Building Trust last, and Relational Leadership now appears as a pillar label
+for the first time.
+
+**Generator committed the same day**, per the brief and the lesson from Modules
+2-5: `scripts/content/generate_module6.js`. Verified from its tracked path — a
+fresh run reproduces the live row with zero differences. All five tracked
+generators re-checked in the same pass:
+
+```
+M2 193 | M3 119 | M4 129 | M5 109 | M6 100   — zero differences each
+```
+
+**Week linking: not acted on, awaiting confirmation.** Options below.
+
+**Pending on this module:** 1 image placeholder (§1, the stone arch with TRUST in
+the keystone) and 2 video placeholders (a 3-4 min intro in front matter, a 2-3
+min closing in §8). No videos to verify this pass.
+
+**Current baseline (2026-09-17):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | images | image ph | video ph |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | 129 | 5 | 1 | 0 | 1 | 1 | 5 | 0 | 0 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 | 0 | 0 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 | 0 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 | 0 |
+| 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 | 0 |
+| 5 | 109 | 8 | 3 | 1 | 1 | 0 | 2 | 0 | 2 |
+| 6 | 100 | 8 | 0 | 1 | 2 | 0 | 0 | 1 | 2 |

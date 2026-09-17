@@ -30,8 +30,15 @@ Both shapes are supported on purpose: art that has not been produced yet keeps
 emitting a placeholder, and folding a finished image in is a two-line change at
 the call site rather than a helper rewrite.
 
+## Commit a generator the day its module ships
+
+Module 6's generator was committed in the same pass as its ingest, which is the
+pattern to keep. Modules 2-5 were left in `~/Downloads` for days or weeks and
+every one of them had silently drifted by the time anyone checked.
+
 ## Not covered here
 
 Modules 0 and 1 predate this pattern and have no generator — their blocks were
 authored directly as JSON. `module0_starting_point_blocks.json` is tracked at
-the repository root; Module 1's equivalent is not.
+the repository root; Module 1's equivalent is not. Module 0 has since been
+edited directly in the database and cannot be regenerated at all.
