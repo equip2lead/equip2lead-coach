@@ -1575,3 +1575,77 @@ Journey state now:
 
 Modules 3, 4 and 5 remain unlinked: no week carries Emotional Intelligence's or
 Directional Leadership's focus at all.
+
+## 2026-09-18 — Module 7 "Communication" ingested
+
+98 blocks, 7 sections, 7 blocks of front matter. Row
+`caae197a-488f-4de5-9a8d-7ad7a97da3ad`, slug `communication`, module_number 7,
+sort_order 7, difficulty `beginner`, estimated_duration_minutes 80, pillar
+`relational-leadership`, leadership track, published.
+
+Pillar carried over from Module 0's curriculum map without rediscovery, as the
+brief specified — Pillar 3 covers Modules 6, 7 and 8 by that map's own listing.
+
+Validation clean on the first run, as with Module 6: 98 in / 98 out, 98 distinct
+ids, all 19 callout variants legal, `scorecard_key` `module7_seven_principles`
+with `helpText` on all four items, assignment key `a1`. Real splitter confirms
+7 sections, all titles matching character-for-character, front matter of 7
+blocks. Scorecard lands in §3, assignment in §7.
+
+Loaded via 15 guarded appends. Live content verified against the ingest output by
+md5 of every block's type and text — `92edd5259e560c0ac742fe598d73cd16`,
+identical. Ids 98/98 match sha256(slug|index|type), 0 wrong, 98 distinct.
+
+**One correction to the brief: the module has 3 tables, not 2.** They sit in §1
+(what was sent vs what arrived), §3 (the seven principles) and §6 (actually
+listening vs waiting to talk). All three render. Worth noting only so the count
+in the next reference table isn't carried forward wrong.
+
+Verified live after publish: all seven sections render with correct titles and
+"Section N of 7"; the Communication Self-Audit renders as four working sliders
+with all four helpText lines visible; the assignment form renders all five prompt
+headings, the rich-text editor and the 200-700 word target; the closing pull
+quote renders; the dashboard grid returns eight modules with Communication last.
+
+**Generator committed the same day**: `scripts/content/generate_module7.js`.
+All six tracked generators re-verified against production in the same pass:
+
+```
+M2 193 | M3 119 | M4 129 | M5 109 | M6 100 | M7 98   — zero differences each
+```
+
+**Week linking: not acted on, awaiting confirmation.** The dependency check the
+brief asked for changes the answer. Four weeks carry Relational Leadership —
+3, 6, 9 and 11. Week 9 is taken by Module 6. Weeks 3 and 6 match the tag but
+render *before* Week 9, and Module 7's front matter requires Modules 1-6, so a
+reader working in week order would meet Module 7 before Module 6 — the same
+inversion that sent Module 6 to Week 9 rather than Week 3. That leaves exactly
+one option:
+
+| Week | Focus | Verdict |
+|---|---|---|
+| 3 | Relational Leadership | tag match, renders before Week 9 — dependency-unsafe |
+| 6 | Relational Leadership | tag match, renders before Week 9 — dependency-unsafe |
+| 9 | Relational Leadership | taken by Module 6 |
+| **11** | **Relational Leadership** | **eligible and dependency-safe** |
+
+Week 11 is also the last relational week available. Module 8 shares this pillar
+and will have no eligible week left once Module 7 takes it — worth deciding
+deliberately rather than discovering later.
+
+**Pending on this module:** 2 image placeholders (§1 the distorting speech
+bubble, §2 the radio set) and 2 video placeholders (3-4 min intro in front
+matter, 2-3 min closing in §7). No videos to verify this pass.
+
+**Current baseline (2026-09-18):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | images | image ph | video ph |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | 129 | 5 | 1 | 0 | 1 | 1 | 5 | 0 | 0 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 | 0 | 0 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 | 0 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 | 0 |
+| 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 | 0 |
+| 5 | 109 | 8 | 3 | 1 | 1 | 0 | 2 | 0 | 2 |
+| 6 | 100 | 8 | 0 | 1 | 2 | 0 | 0 | 1 | 2 |
+| 7 | 98 | 7 | 0 | 1 | 3 | 0 | 0 | 2 | 2 |
