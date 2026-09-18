@@ -1614,7 +1614,7 @@ All six tracked generators re-verified against production in the same pass:
 M2 193 | M3 119 | M4 129 | M5 109 | M6 100 | M7 98   — zero differences each
 ```
 
-**Week linking: not acted on, awaiting confirmation.** The dependency check the
+**Week linking: ships unlinked. Decided 2026-09-18.** The dependency check the
 brief asked for changes the answer. Four weeks carry Relational Leadership —
 3, 6, 9 and 11. Week 9 is taken by Module 6. Weeks 3 and 6 match the tag but
 render *before* Week 9, and Module 7's front matter requires Modules 1-6, so a
@@ -1629,9 +1629,15 @@ one option:
 | 9 | Relational Leadership | taken by Module 6 |
 | **11** | **Relational Leadership** | **eligible and dependency-safe** |
 
-Week 11 is also the last relational week available. Module 8 shares this pillar
-and will have no eligible week left once Module 7 takes it — worth deciding
-deliberately rather than discovering later.
+Week 11 is also the last relational week available, and Module 8 shares this
+pillar. Denis's decision: **hold Week 9's precedent and leave Module 7
+unlinked** rather than spend the last relational week on it. The standing rule
+already says to ship unlinked rather than force a fit; this extends it one step
+further — a week that is technically eligible can still be the wrong one to
+spend, when a later module in the same pillar has no alternative.
+
+Module 7 therefore joins Modules 3, 4 and 5 as deliberately unlinked. Journey
+state is unchanged: Week 1 -> Module 1, Week 8 -> Module 2, Week 9 -> Module 6.
 
 **Pending on this module:** 2 image placeholders (§1 the distorting speech
 bubble, §2 the radio set) and 2 video placeholders (3-4 min intro in front
