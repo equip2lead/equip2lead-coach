@@ -1752,3 +1752,75 @@ Recommendation: **Week 11 -> Module 8.** Not executed.
 | 6 | 100 | 8 | 0 | 1 | 2 | 0 | 0 | 1 | 2 |
 | 7 | 98 | 7 | 0 | 1 | 3 | 0 | 0 | 2 | 2 |
 | 8 | 100 | 7 | 0 | 1 | 5 | 0 | 0 | 2 | 2 |
+
+## 2026-09-21 — Module 8 authoring-order fixes reconciled, Week 11 linked
+
+**1. The two prose bugs are fixed in production.** Both were reported at
+ingest and are now corrected from the authoritative generator rather than
+patched in the database by hand — same reconciliation method as Modules 5, 6
+and 7.
+
+The corrected file arrived as `~/Downloads/generate_module8 (1).js`. Worth
+noting for next time: `generate_module8.js` in the same folder was byte-identical
+(md5 `cb486b231752bf28cab631c825442b41`) to the copy already committed on
+2026-09-21, so the plain filename was the stale one. Verified by md5 before
+touching anything, the same check that caught three no-op Module 5 briefs.
+
+Diff against the live row: **exactly 8 blocks differ, indices 11-18.** Still 100
+blocks, still 7 sections, nothing added or removed. Comparing blocks by content
+alone (ignoring ids) shows 99 of 100 identical and one changed — the lacrosse
+paragraph gaining "— Coach Bru —" and "The coach met" becoming "Coach Bru met".
+Everything else at 11-18 is pure reordering.
+
+Section 1 before -> after:
+
+```
+10  paragraph  Every model this track has covered...      10  paragraph  Every model this track has covered...
+11  heading3   A Seventeen-Year-Old's Decision            11  paragraph  The management writer Robert Greenleaf...
+12  paragraph  A college lacrosse coach inherited...      12  callout    This test is uncomfortable...
+13  paragraph  All through the following fall...          13  heading3   A Seventeen-Year-Old's Decision
+14  callout    Notice what this wasn't...                 14  paragraph  A college lacrosse coach - Coach Bru -...
+15  paragraph  Greenleaf himself drew a sharp line...     15  paragraph  All through the following fall...
+16  paragraph  There's a practical marker...              16  callout    Notice what this wasn't...
+17  paragraph  The management writer Robert Greenleaf...  17  paragraph  Greenleaf himself drew a sharp line...
+18  callout    This test is uncomfortable...              18  paragraph  There's a practical marker...
+```
+
+Greenleaf is now introduced at idx 11, ahead of both references to him — the tip
+at 16 ("the exact inversion Greenleaf's test is built to detect") and the
+paragraph at 17 ("Greenleaf himself drew a sharp line"). Coach Bru is named at
+idx 14, on first mention, so the second reference in §6 now resolves.
+
+Applied as **8 separately guarded `jsonb_set` calls**, one per index, each
+guarded on the full old text at that index plus `jsonb_array_length = 100`.
+Retrying any of them is a no-op. Ids were recomputed by the ingest script
+because 7 of the 8 indices changed type; no user data keys on block ids, so the
+re-id is safe — ratings key on `(scorecard_key, item_key)` and submissions on
+`assignment_key`, both untouched.
+
+Re-verified after the writes: 100 blocks, 100 distinct ids, 0 stale against
+sha256(slug|index|type), content md5 `a520351706b73db565cfb8731eb77bfe` —
+identical to the corrected generator's ingest output.
+
+All seven tracked generators re-run against a freshly fetched live snapshot
+after this landed:
+
+```
+M2 193 | M3 119 | M4 129 | M5 109 | M6 100 | M7 98 | M8 100 — zero differences each
+```
+
+**2. Week 11 -> Module 8. Written 2026-09-21.** The slot deliberately held open
+on 2026-09-18 when Module 7 was refused it now goes to the pillar-3 module that
+needed it. Guarded on week 11, focus Relational Leadership, no existing
+`module_id`, and 12 weeks — so a re-run is a no-op.
+
+```
+BEFORE  week 11  Relational Leadership  "Leading Others Before Leading Yourself Last"  module_id: absent   (3 links)
+AFTER   week 11  Relational Leadership  "Leading Others Before Leading Yourself Last"  module_id: 40dd8e0c (4 links)
+```
+
+Journey `2747cf17` now reads: Week 1 -> Module 1, Week 8 -> Module 2,
+Week 9 -> Module 6, Week 11 -> Module 8. **The Relational Leadership pillar is
+complete end to end: 6 -> Week 9, 7 -> deliberately unlinked, 8 -> Week 11.**
+
+Still pending on Module 8: 2 image placeholders and 2 video placeholders.
