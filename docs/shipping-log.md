@@ -1655,3 +1655,100 @@ matter, 2-3 min closing in §7). No videos to verify this pass.
 | 5 | 109 | 8 | 3 | 1 | 1 | 0 | 2 | 0 | 2 |
 | 6 | 100 | 8 | 0 | 1 | 2 | 0 | 0 | 1 | 2 |
 | 7 | 98 | 7 | 0 | 1 | 3 | 0 | 0 | 2 | 2 |
+
+## 2026-09-21 — Module 8 "Servant Leadership" ingested
+
+100 blocks, 7 sections, 9 blocks of front matter. Row
+`40dd8e0c-979a-4ec2-a8cb-74bc7f615127`, slug `servant-leadership`,
+module_number 8, sort_order 8, difficulty `beginner`,
+estimated_duration_minutes 80, pillar `relational-leadership`, leadership
+track, published. Subtitle "What All of It Was Actually For".
+
+Pillar carried over from Module 0's curriculum map without rediscovery, as the
+brief specified — Pillar 3 covers Modules 6, 7 and 8 by that map's own listing.
+**With Module 8 live, the Relational Leadership pillar is complete.**
+
+Validation clean on the first run, as with Modules 6 and 7: 100 in / 100 out,
+100 distinct ids, all 24 callout variants legal, `scorecard_key`
+`module8_servant_leadership` with `helpText` on all four items, assignment key
+`a1`. Real splitter confirms 7 sections, all titles matching
+character-for-character, front matter of 9 blocks — six callouts, more than any
+prior module. The level-2 heading at idx 0 is the module title and stays in
+front matter; the seven section headings are "The Inversion", "Ten
+Characteristics", "A Different Kind of Fifth Level", "What Leaders Are to
+People", "Nine Lenses on One Leader", "The Cost of Serving" and "Closing &
+Assignment".
+
+Loaded via 18 guarded appends. Live content verified against the ingest output
+by md5 of every block's type and text — `dc52e725fe2f57c9f1e052116d9f31d4`,
+identical. Ids 100/100 match sha256(slug|index|type), 0 wrong, 100 distinct.
+
+**One correction to the brief: the module has 5 tables, not 2.** Same class of
+miscount as Module 7's (3, not 2). All five render.
+
+The Collins clarification the brief flagged reads correctly. The warning callout
+distinguishing Collins's "Level 5 Leadership" from Module 5's "Five Levels" sits
+directly under the §3 heading, before the first Collins paragraph, so the reader
+meets the disambiguation before the ambiguous term. No edit needed.
+
+**Two content-ordering issues found during load, reported but not fixed** (both
+are authoring order, not ingest defects, and fixing either means editing prose):
+
+1. **Greenleaf is introduced after he is cited.** Block ~14 refers to
+   "Greenleaf's test" and block 15 opens "Greenleaf himself drew a sharp
+   line…", but the block that actually introduces him — "The management writer
+   Robert Greenleaf coined the term…" — is block 17. The reader meets the test
+   and the man two blocks before either is identified.
+2. **"Coach Bru" is named only on second reference.** Block ~82 says "Coach
+   Bru's recruit didn't perform a single dramatic act…", but §1 introduces him
+   only as "A college lacrosse coach" and never gives the name.
+
+Verified live after publish: all seven sections render with correct titles and
+"Section N of 7"; the scorecard renders as four working sliders with all four
+helpText lines visible; the assignment form renders all five prompt headings and
+the 200-800 word target; the closing pull quote renders; the dashboard grid
+returns nine modules with Servant Leadership last.
+
+**Generator committed the same day**: `scripts/content/generate_module8.js` —
+not left in Downloads, same drift-prevention as every module since 5. All seven
+tracked generators re-verified against production in the same pass (the
+scratchpad diff helper had been cleared between sessions and was rebuilt for
+this):
+
+```
+M2 193 | M3 119 | M4 129 | M5 109 | M6 100 | M7 98 | M8 100 — zero differences each
+```
+
+**Pending on this module:** 2 image placeholders and 2 video placeholders (3-4
+min intro in front matter, closing in §7). No videos to verify this pass.
+
+**Week linking: options presented, nothing written. Awaiting confirmation.**
+Four weeks carry the Relational Leadership focus — 3, 6, 9 and 11. Week 9 is
+taken by Module 6, leaving 3, 6 and 11 eligible under the standing rule (focus
+matches pillar; neither first nor last week). All three descriptions name the
+same servant-leadership gap (3.3/5), so topical fit does not separate them.
+
+The dependency check does. Module 8's front matter says "Every leader who
+completed Modules 1-7", and a further callout names Modules 3, 5, 6 and 7 as
+reappearing. By Week 3 the journey has surfaced one module (Week 1 -> Module 1);
+by Week 6, still one. Only Week 11 sits behind every module the plan currently
+links — Week 1 -> Module 1, Week 8 -> Module 2, Week 9 -> Module 6 — which is
+the closest the plan can come to the stated prerequisite. Week 11 is also the
+week deliberately held open when Module 7 was refused it on 2026-09-18,
+specifically reserved for whichever pillar-3 module needed it most.
+
+Recommendation: **Week 11 -> Module 8.** Not executed.
+
+**Current baseline (2026-09-21):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | images | image ph | video ph |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | 129 | 5 | 1 | 0 | 1 | 1 | 5 | 0 | 0 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 | 0 | 0 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 | 0 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 | 0 |
+| 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 | 0 |
+| 5 | 109 | 8 | 3 | 1 | 1 | 0 | 2 | 0 | 2 |
+| 6 | 100 | 8 | 0 | 1 | 2 | 0 | 0 | 1 | 2 |
+| 7 | 98 | 7 | 0 | 1 | 3 | 0 | 0 | 2 | 2 |
+| 8 | 100 | 7 | 0 | 1 | 5 | 0 | 0 | 2 | 2 |
