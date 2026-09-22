@@ -1930,3 +1930,64 @@ Denis's call, nothing changed either way.
 | 7 | 98 | 7 | 0 | 1 | 3 | 0 | 0 | 2 | 2 |
 | 8 | 100 | 7 | 0 | 1 | 5 | 0 | 0 | 2 | 2 |
 | 9 | 100 | 7 | 0 | 1 | 3 | 0 | 0 | 1 | 2 |
+
+## 2026-09-22 — Module 9 §5 expanded with the banked Nine Habits piece
+
+100 -> 110 blocks. `docs/banked/nine-habits.md`, banked on 2026-09-16 and
+flagged as an open question at ingest, is now folded in as genuine additional
+content. The table stays as the compact overview; the fuller prose sits
+underneath it.
+
+The banked file was read fresh before use rather than trusted to the earlier
+log summary. Two things that check turned up, both of which changed the work:
+
+1. The file's closing line — "None of these nine require a title. All nine
+   require the same thing: doing them on a day nobody's checking." — was
+   **already live verbatim** as the tip callout directly under the table. It was
+   not duplicated. Because the expansion goes in above that callout, the callout
+   now closes the habit list instead of the table, which is the position it
+   holds in the banked file itself. No block was moved to achieve this.
+2. The file opens with framing not present anywhere in the module — leadership
+   as physical conditioning rather than a trait. That became the bridging
+   paragraph at idx 73, so the nine numbered paragraphs don't dangle off the
+   bottom of a table.
+
+Ten blocks inserted at idx 73: one bridge plus nine habit paragraphs, numbered
+"1." through "9." to match the form §4 already uses for its five questions. The
+existing "Pick one, not all nine at once" and "Notice the connection to
+everything else in this module" paragraphs stay, now after the expanded list, as
+the brief specified.
+
+Diff against the live row before applying: **a pure insertion.** Blocks 0-72
+byte-identical, blocks 73-82 new, and all 27 remaining blocks content-identical
+shifted by exactly 10 — zero incidental edits anywhere.
+
+Applied as 10 guarded `jsonb_insert` calls, each guarded on the running array
+length (100, 101, … 109), so a retry at any point is a no-op. Ids were then
+recomputed for the whole array in a single statement from
+sha256(slug|index|type) — a no-op for blocks 0-72 and the fix for the 27
+shifted ones. That statement is itself idempotent, since it derives ids rather
+than assigning them. Nothing keys on block ids; the scorecard and assignment
+keys are untouched.
+
+Re-verified after the writes: 110 blocks, 110 distinct ids, 0 stale, content md5
+`1109e34c04dd20b02ac0571f67c62538` — identical to the expanded generator's
+ingest output. Still 3 tables, 1 scorecard, 1 assignment, 1 image placeholder,
+2 video placeholders.
+
+Splitter unchanged in shape: 7 sections, same titles, front matter still 7
+blocks. §5 grows 10 -> 20 blocks and 3 -> 5 minutes; the module total goes
+80 min by the row's stored estimate, which was not changed.
+
+Verified live: §5 renders the table, then the bridge, then all nine numbered
+paragraphs in order, then the callout, then the existing closing paragraphs —
+"SECTION 5 OF 7 · 5 MIN".
+
+All eight tracked generators re-verified against production after this landed:
+
+```
+M2 193 | M3 119 | M4 129 | M5 109 | M6 100 | M7 98 | M8 100 | M9 110 — zero differences each
+```
+
+`docs/banked/nine-habits.md` is left in place as the source record. Module 9's
+row in the baseline table above should now read 110 blocks.
