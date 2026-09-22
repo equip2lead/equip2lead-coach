@@ -1824,3 +1824,109 @@ Week 9 -> Module 6, Week 11 -> Module 8. **The Relational Leadership pillar is
 complete end to end: 6 -> Week 9, 7 -> deliberately unlinked, 8 -> Week 11.**
 
 Still pending on Module 8: 2 image placeholders and 2 video placeholders.
+
+## 2026-09-22 — Module 9 "Coaching & Developing People" ingested
+
+100 blocks, 7 sections, 7 blocks of front matter. Row
+`db7d180f-c63a-4021-ac7a-0874d1f2e5da`, slug `coaching-developing-people`,
+module_number 9, sort_order 9, difficulty `beginner`,
+estimated_duration_minutes 80, pillar `performance-leadership`, leadership
+track, published. Subtitle "The Mechanics of Multiplication".
+
+**This opens the Performance Leadership pillar** — the fourth of the five in
+Module 0's curriculum map, previously holding zero modules. Pillar assignment
+confirmed against that map on 2026-09-21: Pillar 4 "Executing With Excellence"
+covers Modules 9 and 10 only; Modules 11 and 12 belong to Pillar 5,
+Multiplication & Impact. Worth recording because the assumption going in was
+that 9-12 formed a single pillar; the map says otherwise, in both its prose
+("Delegation, coaching, feedback, managing performance, developing others.
+Modules 9, 10.") and its at-a-glance table.
+
+Validation clean on the first run, as with Modules 6, 7 and 8: 100 in / 100
+out, 100 distinct ids, all 24 callout variants legal, `scorecard_key`
+`module9_coaching_developing` with `helpText` on all four items, assignment key
+`a1`. The supplied `module9_leadership.json` is byte-identical to what
+`generate_module9.js` produces (md5 `7f585509fbafb087dce2cc2707f52207`),
+checked before anything was loaded.
+
+Real splitter confirms 7 sections with titles matching character-for-character:
+The Real Multiplier, The Five-Step Process, Three Foundational Skills, A
+Conversation You Can Actually Have, Nine Habits That Actually Build Leadership,
+Paul and Timothy, Closing & Assignment. Front matter of 7 blocks. Scorecard and
+assignment both land in §7.
+
+Loaded via 16 guarded appends. **One append (chunk 7) returned a closed-socket
+error mid-run**; the row was still at 43 blocks, so the write had not landed and
+the same statement was re-sent and succeeded. This is exactly what the
+`jsonb_array_length` guard exists for — a retry after an ambiguous transport
+failure is either a no-op or the intended write, never a double-append.
+
+Live content verified against the ingest output by md5 of every block's type and
+text — `3f0c7917fbcde8c2b1fc47bde669078c`, identical. Ids 100/100 match
+sha256(slug|index|type), 0 wrong, 100 distinct.
+
+**One correction to the brief: the module has 3 tables, not 2.** They sit in §2
+(the five stages), §4 (managing vs coaching responses) and §5 (the nine habits).
+All three render. This is the third brief in a row to undercount tables —
+Module 7 said 2 and had 3, Module 8 said 2 and had 5.
+
+Verified live after publish: the module overview carries the new PERFORMANCE
+LEADERSHIP badge and lists all 7 sections with correct reading times; every
+section renders "Section N of 7"; all three tables render, including the
+three-column one in §4 with its quoted strings intact; the scorecard renders as
+four working sliders with all four helpText lines visible; the assignment form
+renders all five prompt headings, the rich-text editor and the 200-800 word
+target; the dashboard grid returns ten modules with Coaching & Developing People
+last, card 09, labelled PERFORMANCE LEADERSHIP.
+
+The dashboard pillar filter picked up a fourth option, "Performance Leadership",
+with no code change — it derives its options from the live modules. Escape
+closed the dropdown and returned focus to the button, so the b364001 fix still
+holds.
+
+**Generator committed the same day**: `scripts/content/generate_module9.js`.
+All eight tracked generators re-verified against production in the same pass:
+
+```
+M2 193 | M3 119 | M4 129 | M5 109 | M6 100 | M7 98 | M8 100 | M9 100 — zero differences each
+```
+
+**Week linking: ships unlinked. Confirmed directly, not assumed.** Every week in
+both plan rows was read. Journey `2747cf17` carries three focus values only —
+Personal Leadership (weeks 1, 8, 12), Relational Leadership (3, 6, 9, 11) and
+Multiplication & Impact (2, 4, 5, 7, 10). **No week carries Performance
+Leadership at all.** The other plan row, `104dac0a`, uses an entirely different
+tagging scheme (`listening-empathy`, `spiritual-value-alignment`,
+`appreciation-affirmation`) with zero links and no pillar names, so it offers
+nothing either. Under the standing rule — a week is eligible only if its focus
+tag matches the module's pillar — there is no eligible week, and the rule says
+ship unlinked rather than force a fit. Module 9 joins Modules 3, 4, 5 and 7.
+
+Journey state unchanged: Week 1 -> Module 1, Week 8 -> Module 2,
+Week 9 -> Module 6, Week 11 -> Module 8.
+
+**Pending on this module:** 1 image placeholder (§1, the candle lighting a
+second candle) and 2 video placeholders (3-4 min intro in front matter, 2-3 min
+closing in §7). No videos to verify this pass.
+
+**Open question, not acted on:** §5 "Nine Habits That Actually Build Leadership"
+covers the same ground as `docs/banked/nine-habits.md`, the 435 words of
+original writing banked on 2026-09-16 specifically for Module 9. The shipped
+section renders the nine as a two-column table rather than prose. The banked
+file is therefore either superseded or still worth folding in as expansion —
+Denis's call, nothing changed either way.
+
+**Current baseline (2026-09-22):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | images | image ph | video ph |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | 129 | 5 | 1 | 0 | 1 | 1 | 5 | 0 | 0 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 | 0 | 0 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 | 0 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 | 0 |
+| 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 | 0 |
+| 5 | 109 | 8 | 3 | 1 | 1 | 0 | 2 | 0 | 2 |
+| 6 | 100 | 8 | 0 | 1 | 2 | 0 | 0 | 1 | 2 |
+| 7 | 98 | 7 | 0 | 1 | 3 | 0 | 0 | 2 | 2 |
+| 8 | 100 | 7 | 0 | 1 | 5 | 0 | 0 | 2 | 2 |
+| 9 | 100 | 7 | 0 | 1 | 3 | 0 | 0 | 1 | 2 |
