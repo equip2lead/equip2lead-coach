@@ -1991,3 +1991,132 @@ M2 193 | M3 119 | M4 129 | M5 109 | M6 100 | M7 98 | M8 100 | M9 110 — zero di
 
 `docs/banked/nine-habits.md` is left in place as the source record. Module 9's
 row in the baseline table above should now read 110 blocks.
+
+## 2026-09-24 — Module 10 "Feedback & Managing Performance" ingested
+
+100 blocks, 6 sections, 9 blocks of front matter. Row
+`3a4d88ef-787f-4cea-a258-fa7b31a96d4d`, slug `feedback-managing-performance`,
+module_number 10, sort_order 10, difficulty `beginner`,
+estimated_duration_minutes 80, pillar `performance-leadership`, leadership
+track, published. Subtitle "The Conversation You've Been Avoiding".
+
+**This closes out the Performance Leadership pillar.** Pillar 4 of Module 0's
+curriculum map covers Modules 9 and 10 only, and both are now live. Four of the
+five pillars are complete: Personal (0-3), Directional (4-5), Relational (6-8),
+Performance (9-10). Only Multiplication & Impact remains, waiting on Modules 11
+and 12.
+
+**Video verified before anything was ingested, as the brief required.** The
+brief flagged `O9hDTLo5rLA` as unconfirmed, with `vmxHUiiHgNk` as an alternate.
+Both resolve — so liveness didn't settle it, attribution did:
+
+| ID | oEmbed title | Channel | Views | playableInEmbed |
+|---|---|---|---|---|
+| `O9hDTLo5rLA` | How to lead with radical candor … **TEDxPortland** | TEDx Talks | 302,917 | true |
+| `vmxHUiiHgNk` | How to Lead With Radical Candor … **TED** | TED | 190,862 | true |
+
+Both are public, non-private, non-unlisted, `playabilityStatus: OK`. The
+authored block title says TEDxPortland, which is the TEDx Talks upload, so
+`O9hDTLo5rLA` is correct as written and was kept unchanged. The two IDs are the
+original TEDxPortland upload and a later TED-channel re-upload of the same talk,
+exactly as the brief guessed.
+
+Validation clean on the first run: 100 in / 100 out, 100 distinct ids, all 31
+callout variants legal, `scorecard_key` `module10_feedback_accountability` with
+`helpText` on all four items, assignment key `a1`. The supplied
+`module10_leadership.json` is byte-identical to what `generate_module10.js`
+produces (md5 `4db570822f8b9ec34bd99b5c82b011db`), checked before loading.
+
+Real splitter confirms 6 sections, titles matching character-for-character: The
+Conversation You've Been Avoiding, A Feedback Model Simple Enough to Actually
+Use, Six Questions That Replace a Performance Review, Building a Culture of
+Accountability, When Coaching Isn't Enough, Closing & Assignment. Front matter
+of 9 blocks. Scorecard and assignment both land in §6.
+
+Loaded via 15 guarded appends, no transport failures this pass. Live content
+verified against the ingest output by md5 of every block's type and text —
+`4f91ac4d8c0bf4ea27cabdc17c9dddd8`, identical. Ids 100/100 match
+sha256(slug|index|type), 0 wrong, 100 distinct.
+
+**Two corrections to the brief:**
+
+1. **5 tables, not 3.** §2 (the 3x3 model), §3 (vague questions and what they
+   get back), §5 (escalation signals), §5 again (coaching vs performance
+   conversation) and §6 (tool summary). All five render. Fourth brief running to
+   undercount tables — M7 said 2 and had 3, M8 said 2 and had 5, M9 said 2 and
+   had 3.
+2. **The two video placeholders are not both in §6.** One is in front matter
+   (idx 2, the 3-4 min intro from Denis), one is in §6 (idx 94, the closing).
+   STEP 6 described a single remaining §6 placeholder; there are two pending in
+   total, same split as Modules 6 through 9. The image placeholder is in §1
+   (idx 19, two chairs facing each other).
+
+Verified live after publish: the module overview carries the PERFORMANCE
+LEADERSHIP badge and lists all 6 sections with correct reading times; every
+section renders "Section N of 6"; all five tables render, including the quoted
+strings in §3; the scorecard renders as four working sliders with all four
+helpText lines visible; the assignment form renders all five prompt headings,
+the rich-text editor, the live word counter and the 200-800 word target; the
+dashboard grid returns eleven modules with Feedback & Managing Performance last,
+card 10, labelled PERFORMANCE LEADERSHIP.
+
+**On "the video actually plays":** the embed loads a real, working YouTube
+player — correct thumbnail, correct title bar, "TEDx Talks" channel line, TED
+badge and a live "Watch on YouTube" control, not an error frame. Playback could
+not be *started* through the automation layer: YouTube's play button needs a
+trusted user gesture, and synthetic clicks from the extension don't qualify.
+Two attempts produced player chrome changes but no playback. Recording this
+plainly rather than claiming playback was observed — every independent signal
+(oEmbed 200, `playabilityStatus: OK`, `playableInEmbed: true`, correct rendered
+metadata) says the video is live and embeddable, but a human click is what would
+actually prove the last inch.
+
+**Generator committed the same day**: `scripts/content/generate_module10.js`.
+All nine tracked generators re-verified against production in the same pass:
+
+```
+M2 193 | M3 119 | M4 129 | M5 109 | M6 100 | M7 98 | M8 100 | M9 110 | M10 100 — zero differences each
+```
+
+**Week linking: ships unlinked. Confirmed directly, not assumed.** All 24 weeks
+across both plan rows were read again rather than trusting Module 9's result.
+Journey `2747cf17` still carries only three focus values — Personal Leadership
+(weeks 1, 8, 12), Relational Leadership (3, 6, 9, 11) and Multiplication &
+Impact (2, 4, 5, 7, 10). **Still no week carrying Performance Leadership.** Plan
+row `104dac0a` is unchanged too: `listening-empathy`,
+`spiritual-value-alignment`, `appreciation-affirmation`, zero links. No eligible
+week exists, so Module 10 joins Modules 3, 4, 5, 7 and 9 as deliberately
+unlinked.
+
+Journey state unchanged: Week 1 -> Module 1, Week 8 -> Module 2,
+Week 9 -> Module 6, Week 11 -> Module 8.
+
+Worth noting for Modules 11 and 12: journey `2747cf17` has **five** unlinked
+Multiplication & Impact weeks (2, 4, 5, 7, 10). That pillar is the one the plan
+actually has room for, so the week-linking question gets interesting again
+rather than defaulting to unlinked.
+
+**Pending on this module:** 1 image placeholder (§1, two chairs) and 2 video
+placeholders (front matter intro, §6 closing).
+
+**One content observation, not acted on:** front matter carries two "Who this is
+for" callouts — idx 3 and idx 7. The second opens "Who this is for, once more,
+plainly", so the repetition is clearly deliberate rather than an authoring slip.
+Flagging only in case the doubling reads as heavier than intended on the
+overview page, where both sit within five lines of each other.
+
+**Current baseline (2026-09-24):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | images | image ph | video ph |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | 129 | 5 | 1 | 0 | 1 | 1 | 5 | 0 | 0 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 | 0 | 0 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 | 0 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 | 0 |
+| 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 | 0 |
+| 5 | 109 | 8 | 3 | 1 | 1 | 0 | 2 | 0 | 2 |
+| 6 | 100 | 8 | 0 | 1 | 2 | 0 | 0 | 1 | 2 |
+| 7 | 98 | 7 | 0 | 1 | 3 | 0 | 0 | 2 | 2 |
+| 8 | 100 | 7 | 0 | 1 | 5 | 0 | 0 | 2 | 2 |
+| 9 | 110 | 7 | 0 | 1 | 3 | 0 | 0 | 1 | 2 |
+| 10 | 100 | 6 | 1 | 1 | 5 | 0 | 0 | 1 | 2 |
