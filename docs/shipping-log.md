@@ -2167,3 +2167,77 @@ Module 10's row in the baseline table above should now read 99 blocks.
 Week linking deliberately not touched this pass. The five unlinked
 Multiplication & Impact weeks in journey `2747cf17` are a real decision for
 Module 11, not something to settle as a side effect of a content fix.
+
+## 2026-09-24 — One verified TED talk added to each of Modules 6, 7, 8 and 9
+
+Four modules that had never had a video search run against them now carry one
+real, independently verified TED talk each. All four insertions were made
+against **live content as the source of truth**, not against a regenerated file,
+then folded back into the tracked generators so nothing drifts.
+
+| Module | Section | Talk | ID | Length | Blocks |
+|---|---|---|---|---|---|
+| 6 | §6 Enabling Others to Act | Ricardo Semler — Radical wisdom for a company, a school, a life | `k4vzhweOefs` | 21:46 | 100 -> 102 |
+| 7 | §6 Listening Is the Other Half | Julian Treasure — How to speak so that people want to listen | `eIho2S0ZahI` | 9:58 | 98 -> 100 |
+| 8 | §1 The Inversion | Simon Sinek — Why good leaders make you feel safe | `lmyZMtPVodo` | 11:59 | 100 -> 102 |
+| 9 | §2 The Five-Step Process | John Wooden — The difference between winning and succeeding | `0MM-psvqiG8` | 17:36 | 110 -> 112 |
+
+Every one is on TED's own channel (`youtube.com/@TED`), `playabilityStatus: OK`,
+`playableInEmbed: true`, public and non-unlisted. oEmbed was run on all of them
+before any block was written, including the three the brief already rated high
+confidence.
+
+**Module 6 needed a correction to the brief's candidate list.** All three IDs
+supplied — `-d0fxkoX0i8`, `tOzwIYQDSbY`, `qLhZerMI7tI` — resolve, so liveness
+alone would have passed any of them. None is TED's upload: they are a personal
+account (7,639 views), a speakers-bureau marketing channel (1,917) and a
+personal account with 83 views. Searching the real talk title surfaced TED's own
+`k4vzhweOefs` (484,804 views), which two of the three mirror at identical 21:46
+runtime. Denis chose that one over both the re-uploads and the placeholder
+fallback.
+
+Each insertion is a pair — one original introductory paragraph, then the embed —
+never a bare drop-in. Placement in each case lets the existing material resolve
+first and uses the talk to extend rather than repeat it:
+
+- **M6** after the Semco case study closes ($4M -> $200M) and before the pull
+  quote. The paragraph points out that Semler spends almost no time on the
+  revenue figure and that the talk carries the same principle outside a company
+  altogether — the test of whether it was a tactic or a belief.
+- **M7** after the four-pairs paragraph, leaving the practical tip as the
+  section's last word. The paragraph is explicit that Treasure's talk is about
+  *speaking* and argues it belongs in a listening section because his whole case
+  runs backwards from the listener.
+- **M8** after both anchor examples resolve, before the transition. Framed as
+  the same measurement from the other side: Greenleaf asks whether the people
+  served grew, Sinek asks what the leader was willing to lose.
+- **M9** after the Wooden run closes, keeping that example contiguous. Ties his
+  effort-not-scoreboard definition of success to what stage five requires.
+
+Each applied as a guarded `jsonb_insert` pair followed by the array-wide id
+recompute from sha256(slug|index|type) — the same idempotent pattern used for
+Module 9's expansion and Module 10's removal.
+
+Verified after all four: section counts and titles unchanged everywhere (M6
+still 8 sections, M7/M8/M9 still 7), 0 stale ids and all ids distinct in every
+module, one `video_embed` each carrying the intended ID. All four render live as
+real TED players with correct thumbnails, titles and channel lines.
+
+**One measurement worth recording:** Module 6's player first screenshotted as a
+black frame with no thumbnail, unlike the other three. That was the iframe still
+loading, not a broken embed — it rendered correctly four seconds later. Same
+class of false alarm as the `loading="lazy"` image measured at 0x0 back in
+September; checked again before reporting rather than after.
+
+All nine tracked generators re-verified against production once all four landed:
+
+```
+M2 193 | M3 119 | M4 129 | M5 109 | M6 102 | M7 100 | M8 102 | M9 112 | M10 99 — zero differences each
+```
+
+Placeholders are unchanged by this pass — these are additional videos, not
+placeholder fills. Still pending: M6 1 image + 2 video, M7 2 image + 2 video,
+M8 2 image + 2 video, M9 1 image + 2 video, M10 1 image + 2 video.
+
+Baseline rows for Modules 6-9 should now read 102 / 100 / 102 / 112 blocks, each
+with 1 video.

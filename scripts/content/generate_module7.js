@@ -224,6 +224,8 @@ const section6 = {
       ]
     ),
     paragraph("None of these four pairs require a personality change. They require noticing, in the moment, which column you're actually operating from — and that noticing alone changes the answer more often than any technique layered on top of it would."),
+    paragraph("Julian Treasure's TED talk comes at this same problem from the opposite end — not how to listen better, but how to speak so that listening is actually worth someone's effort. It belongs in this section rather than an earlier one precisely because his whole argument runs backwards from the listener: the speaking habits he names as worth dropping are the ones that make people quietly stop paying attention, and every vocal choice he recommends is judged by what it does to the person receiving it rather than by how it feels to the speaker."),
+    videoEmbed("eIho2S0ZahI", "How to Speak So That People Want to Listen | Julian Treasure | TED"),
     callout("tip", "One habit worth adopting deliberately: before responding in a difficult conversation, silently restate what the other person just said, in your own head, before saying anything else. If you can't do it accurately, you weren't actually listening yet."),
     divider(),
     reflectionQuestions(
