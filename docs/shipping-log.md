@@ -2120,3 +2120,50 @@ overview page, where both sit within five lines of each other.
 | 8 | 100 | 7 | 0 | 1 | 5 | 0 | 0 | 2 | 2 |
 | 9 | 110 | 7 | 0 | 1 | 3 | 0 | 0 | 1 | 2 |
 | 10 | 100 | 6 | 1 | 1 | 5 | 0 | 0 | 1 | 2 |
+
+## 2026-09-24 — Module 10's duplicate "Who this is for" callout removed
+
+100 -> 99 blocks. The doubling flagged at ingest earlier today is gone: the
+second callout ("Who this is for, once more, plainly: leaders who've already
+built the skill to coach someone growing, and now need the harder skill of
+addressing someone who isn't.") is removed. The first one stays.
+
+Generator diff: a single deleted line, nothing else. The corrected file
+(md5 `3350acf6af4c4f4244c02d1d28b909b5`, 189 bytes smaller) was checked against
+the tracked copy before use rather than assumed to differ.
+
+Diff against the live row: **a pure removal at idx 7.** Blocks 0-6
+byte-identical, the callout gone, and all 92 remaining blocks content-identical
+shifted by one — zero incidental edits.
+
+Applied as a single guarded `body_blocks - 7`, guarded on the array being 100
+long *and* the block at index 7 still being that exact callout by id, type and
+text prefix, so it cannot remove the wrong element and a retry is a no-op. Ids
+were then recomputed array-wide from sha256(slug|index|type), the same
+idempotent statement used for Module 9's expansion.
+
+Re-verified after the writes: **99 blocks**, 99 distinct ids, 0 stale, content
+md5 `2aa615351888e578d9d54dff1c732ad1` — identical to the corrected generator's
+ingest output. Exactly one "Who this is for" callout remains. Still 5 tables,
+1 video embed, 1 scorecard, 1 assignment, 1 image placeholder, 2 video
+placeholders.
+
+Splitter unchanged in shape: 6 sections, same titles, same per-section reading
+times. Front matter drops 9 -> 8 blocks; every section is untouched, since the
+removed block sat in front matter.
+
+Verified live: the overview now shows four info callouts rather than five, in
+the order intro video placeholder, "Who this is for", "Core promise", "Time
+commitment", Radical Candor source note.
+
+All nine tracked generators re-verified against production after this landed:
+
+```
+M2 193 | M3 119 | M4 129 | M5 109 | M6 100 | M7 98 | M8 100 | M9 110 | M10 99 — zero differences each
+```
+
+Module 10's row in the baseline table above should now read 99 blocks.
+
+Week linking deliberately not touched this pass. The five unlinked
+Multiplication & Impact weeks in journey `2747cf17` are a real decision for
+Module 11, not something to settle as a side effect of a content fix.

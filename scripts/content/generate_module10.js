@@ -35,7 +35,6 @@ const section1 = {
     callout("info", "Core promise: By the end of this module, you'll have a real structure for giving feedback that actually lands, and a way to tell the difference between a coaching problem and a performance problem — because they require different responses."),
     callout("info", "Time commitment: Roughly 75-85 minutes of reading and reflection, plus assignment work."),
     callout("info", "This module draws on a real, independently verified source: Kim Scott's Radical Candor framework, developed from her own management experience at Google and Apple."),
-    callout("info", "Who this is for, once more, plainly: leaders who've already built the skill to coach someone growing, and now need the harder skill of addressing someone who isn't."),
     divider(),
     heading(2, "The Conversation You've Been Avoiding"),
     paragraph("Almost every leader can name a specific conversation they've been putting off — a piece of direct feedback, a performance issue that needs to be named plainly, a pattern that's been tolerated for months longer than it should have been. Module 9 covered coaching someone who's genuinely growing. This module covers what happens when growth has stalled, and the leader has to say something harder than a question."),
