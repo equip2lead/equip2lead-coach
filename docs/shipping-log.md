@@ -2241,3 +2241,138 @@ M8 2 image + 2 video, M9 1 image + 2 video, M10 1 image + 2 video.
 
 Baseline rows for Modules 6-9 should now read 102 / 100 / 102 / 112 blocks, each
 with 1 video.
+
+## 2026-09-28 — Module 11 "Challenge and Celebrate" ingested
+
+100 blocks, 5 sections, 7 blocks of front matter. Row
+`fe42d708-c965-4577-9c8a-dcd626e96c93`, slug `challenge-and-celebrate`,
+module_number 11, sort_order 11, difficulty `beginner`,
+estimated_duration_minutes 75, pillar `multiplication-impact`, leadership
+track, published. Subtitle "The Two Practices This Track Hasn't Given You Yet".
+
+**This opens the Multiplication & Impact pillar** — the fifth and last in
+Module 0's curriculum map, previously empty. Pillar 5 covers Modules 11 and 12,
+so only Module 12 remains before every pillar is complete.
+
+### Videos verified before ingest
+
+All three were oEmbed-checked before a single block was written, including the
+one the brief already rated high confidence.
+
+| ID | oEmbed | Channel | Title | Length | Embeddable | Views | Outcome |
+|---|---|---|---|---|---|---|---|
+| `IrGkeGExJfw` | 200 | WeAreNetflix | WeAreNetflix Podcast: Co-CEO Reed Hastings on his new book… | 37:54 | true, OK | 35,323 | kept |
+| `fxbCHn6gE3U` | 200 | TED | The surprising habits of original thinkers \| Adam Grant \| TED | 15:25 | true, OK | 11,928,868 | kept |
+| `GYtW89V5Mhw` | **404** | — | — | — | — | — | does not exist |
+| `c8iswsLT3Jc` | 200 | TED-Ed | What makes us feel good about our work? - Dan Ariely | 20:26 | true, OK | 82,264 | replaced |
+| `5aH2Ppjpcho` | 200 | **TED** | What makes us feel good about our work? \| Dan Ariely | 20:26 | true, OK | 1,148,374 | **used** |
+
+- **(a)** `WeAreNetflix` is Netflix's own culture and careers channel, so the
+  authored ID is the official source. No prose was touched — the surrounding
+  paragraph's reference to "this conversation" still resolves correctly.
+- **(b)** The alternate candidate 404s, so there was never real ambiguity here.
+  The authored ID is already the main-TED upload with the exact "… | Adam Grant
+  | TED" title. No block change.
+- **(c)** A main-channel upload does exist. `5aH2Ppjpcho` is on TED's own
+  channel at identical 20:26 runtime with roughly fourteen times the views of
+  the TED-Ed copy. The block's ID was swapped and its title changed from
+  "… | Dan Ariely | TED-Ed" to "… | Dan Ariely | TED" to match the channel
+  actually used. The swap was made in the generator before ingest, not patched
+  into the database afterward, so the two never diverged.
+
+### Real counts, measured rather than taken from the brief
+
+The brief asked not to trust its own numbers. Measured from the payload and
+confirmed against the live row:
+
+- **100 blocks**, 5 sections, 7 blocks of front matter
+- **9 tables** — the largest count of any module in the track so far
+- **3 video embeds**, **2 image placeholders**, **2 video placeholders**
+- 39 paragraphs, 24 callouts, 12 headings, 6 dividers, 4 reflection blocks,
+  1 pull quote, 1 scorecard, 1 assignment prompt
+
+Real splitter confirms 5 sections with titles matching character-for-character:
+Five Practices Three Already Yours, Challenge the Process, Encourage the Heart,
+All Five Together, Closing & Assignment. Scorecard and assignment both in §5.
+
+Validation clean on the first run: 100 in / 100 out, 100 distinct ids, all 24
+callout variants legal, `scorecard_key` `module11_five_practices` with five
+items and `helpText` on every one, assignment key `a1`. The supplied
+`module11_leadership.json` was byte-identical to the generator's output before
+the Ariely swap (md5 `7e7f20bb61b5c7171b2b5184b9bbc17d`).
+
+Loaded via 19 guarded appends, no transport failures. Live content verified
+against the ingest output by md5 of every block's type and text —
+`4de44ee628d17f494062e80671b64874`, identical. Ids 100/100 match
+sha256(slug|index|type), 0 wrong, 100 distinct.
+
+### Verified live
+
+Module overview carries the MULTIPLICATION & IMPACT badge and lists all 5
+sections with correct reading times; every section renders "Section N of 5"; all
+nine tables render; the scorecard renders as five working sliders with all five
+helpText lines visible; the assignment form renders all five prompt headings,
+the rich-text editor, the live word counter and the 200-800 word target; the
+dashboard grid returns twelve modules with Challenge and Celebrate last, card
+11, labelled MULTIPLICATION & IMPACT.
+
+All three video players load as real embeds with correct thumbnails, titles and
+channel lines — the Ariely thumbnail visibly shows the Rio de la Plata stage,
+which independently confirms it is the TEDxRiodelaPlata talk and not some other
+Ariely video. **Playback start could not be confirmed.** YouTube's play button
+requires a trusted user gesture and the automation layer's synthetic clicks do
+not qualify; this was established on Module 10 and applies identically here.
+Everything short of pressing play checks out — oEmbed 200, `playabilityStatus:
+OK`, `playableInEmbed: true`, correct rendered metadata — but a human click is
+what would prove the last inch.
+
+### Week linking: nothing written
+
+Re-read all 24 weeks across both plan rows as instructed. Journey `2747cf17` is
+unchanged: Week 1 -> Module 1, Week 8 -> Module 2, Week 9 -> Module 6,
+Week 11 -> Module 8. Five Multiplication & Impact weeks remain open — 2, 4, 5, 7
+and 10 — plus Relational weeks 3 and 6 (both dependency-blocked) and Week 12
+(the terminal synthesis week, permanently reserved). Plan row `104dac0a` is
+untouched and still uses its own unrelated tagging scheme with zero links.
+
+Per the decision recorded in this brief, **Module 11 ships unlinked and Week 10
+is held for Module 12** as the last Multiplication & Impact week that passes the
+dependency check. Module 11 joins Modules 3, 4, 5, 7, 9 and 10 as deliberately
+unlinked.
+
+### Generators
+
+`scripts/content/generate_module11.js` committed the same day, carrying the
+Ariely swap. All ten tracked generators re-verified against production:
+
+```
+M2 193 | M3 119 | M4 129 | M5 109 | M6 102 | M7 100 | M8 102 | M9 112 | M10 99 | M11 100 — zero differences each
+```
+
+Worth noting for future passes: the scratchpad diff helper (`cmp.py`) and the
+real-splitter harness have now been cleared and rebuilt three times across
+session boundaries. They are throwaway by design, but rebuilding them is a
+recurring tax on every ingest. Committing both into the repo as a small
+verification tool would remove it — not done here, since it is outside what this
+pass was asked to change.
+
+**Pending on this module:** 2 image placeholders (§1 five dial gauges, §3 the
+handwritten note beside a trophy) and 2 video placeholders (front matter intro,
+§5 closing).
+
+**Current baseline (2026-09-28):**
+
+| Module | blocks | sections | videos | scorecards | tables | quizzes | images | image ph | video ph |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | 129 | 5 | 1 | 0 | 1 | 1 | 5 | 0 | 0 |
+| 1 | 403 | 7 | 7 | 2 | 1 | 5 | 6 | 0 | 0 |
+| 2 | 193 | 8 | 3 | 0 | 7 | 2 | 6 | 0 | 0 |
+| 3 | 119 | 8 | 4 | 1 | 4 | 3 | 4 | 0 | 0 |
+| 4 | 129 | 9 | 5 | 0 | 4 | 0 | 3 | 0 | 0 |
+| 5 | 109 | 8 | 3 | 1 | 1 | 0 | 2 | 0 | 2 |
+| 6 | 102 | 8 | 1 | 1 | 2 | 0 | 0 | 1 | 2 |
+| 7 | 100 | 7 | 1 | 1 | 3 | 0 | 0 | 2 | 2 |
+| 8 | 102 | 7 | 1 | 1 | 5 | 0 | 0 | 2 | 2 |
+| 9 | 112 | 7 | 1 | 1 | 3 | 0 | 0 | 1 | 2 |
+| 10 | 99 | 6 | 1 | 1 | 5 | 0 | 0 | 1 | 2 |
+| 11 | 100 | 5 | 3 | 1 | 9 | 0 | 0 | 2 | 2 |
