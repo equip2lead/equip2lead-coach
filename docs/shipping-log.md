@@ -2376,3 +2376,7 @@ handwritten note beside a trophy) and 2 video placeholders (front matter intro,
 | 9 | 112 | 7 | 1 | 1 | 3 | 0 | 0 | 1 | 2 |
 | 10 | 99 | 6 | 1 | 1 | 5 | 0 | 0 | 1 | 2 |
 | 11 | 100 | 5 | 3 | 1 | 9 | 0 | 0 | 2 | 2 |
+
+## 2026-09-28 — Verification tooling committed to the repo
+
+The diff helper and splitter harness now live at `scripts/verify/` (`compare-live.py`, `split-sections.cjs`, `check-generators.sh`) instead of being rebuilt in the scratchpad each session — verified byte-identical to the ad hoc versions across all ten tracked generators and on a deliberately corrupted input before committing, with one addition: a drift now exits non-zero so the runner fails rather than only printing.

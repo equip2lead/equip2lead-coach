@@ -19,6 +19,10 @@ wholesale. That happened twice with Module 5 on 2026-09-15.
 and reconcile rather than overwrite.** All four generators here were verified
 against production on 2026-09-16 and produce it exactly, block for block.
 
+`scripts/verify/check-generators.sh` does that diff for every generator here, in
+one command, against a snapshot it fetches from the database itself. It exits
+non-zero if any generator has drifted.
+
 ## The `image()` helper
 
 ```js
