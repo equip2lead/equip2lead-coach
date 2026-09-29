@@ -42,7 +42,14 @@ every one of them had silently drifted by the time anyone checked.
 
 ## Not covered here
 
-Modules 0 and 1 predate this pattern and have no generator — their blocks were
-authored directly as JSON. `module0_starting_point_blocks.json` is tracked at
-the repository root; Module 1's equivalent is not. Module 0 has since been
-edited directly in the database and cannot be regenerated at all.
+**Module 1 alone** has no generator. Its blocks were authored directly as JSON;
+`module1_leadership_track_blocks.json` sits untracked at the repository root and
+has not been checked against the live row, so whether it still matches is
+unknown. That is a separate problem from Module 0's and has not been decided.
+
+Module 0 was in the same position until 2026-09-29, when `generate_module0.js`
+was reverse-engineered from the live row and verified byte-for-byte against it.
+It is a real generator, not a dump — but it is a reconstruction of production
+rather than the original source, and three of its shapes (an assignment
+`submit_label`, an optional pull-quote `attribution`, and literal "Section N — "
+heading prefixes) appear in no other module.

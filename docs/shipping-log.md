@@ -2576,3 +2576,59 @@ synthesis week. Plan row `104dac0a` remains untouched with zero links.
 Unlinked modules are still fully reachable: the dashboard, `/lessons`, the module
 overview and the section pages all read `lesson_modules` directly, and none of
 them read `plan_data`. A week link only drives the weekly "Week N of 12" card.
+
+## 2026-09-29 — Module 0's generator reverse-engineered from production
+
+`scripts/content/generate_module0.js` now exists, rebuilt from the live row and
+verified byte-for-byte against it. Module 0 was the last module in the track
+with no way to regenerate it; that gap is closed.
+
+**Verification.** 129 blocks in, 129 out. Compared against live including block
+ids, not just content: **0 blocks differ**. Content md5
+`e946115cc4b4d99cb5caec7820b6b75c` matches, and a full md5 over every key of
+every block — ids included — matches at `ecfe93b8b8525ce018c94053044754b2`.
+`ingest-module.mjs` validates it clean: 129 distinct ids, assignment key `a1`,
+and the slug it derives from the title (`starting-point-welcome-to-your-journey`)
+is the live slug, which is what makes the ids reproduce.
+
+Worth recording because it wasn't obvious going in: **Module 0's ids already
+follow the standard `sha256(slug|index|type)` scheme**, all 129 of them, despite
+predating the convention. Nothing had to be special-cased for them.
+
+**Three shapes don't match the conventions Modules 2-12 settled on.** All three
+are reproduced faithfully rather than normalised, and each is commented in the
+file where it occurs:
+
+1. **`assignment_prompt` carries a `submit_label`** ("Submit and Begin"). No
+   other module has this key. `ingest-module.mjs` passes it through untouched,
+   so it survives a re-ingest.
+2. **`pull_quote_card` has an optional `attribution`** — one of six blocks
+   (the KNOW → BE → DO quote, attributed to Dr. Denis Ekobena) carries it, the
+   other five omit the key entirely. The helper emits it only when supplied;
+   normalising the five to `attribution: null` would not reproduce production.
+3. **Section headings carry a literal "Section N — " prefix.** The splitter's
+   `SECTION_PREFIX` strips it for display, so it renders identically to Modules
+   2-12's bare titles, but the stored text differs. The fifth section opens
+   "Your First Assignment — …" rather than matching `ASSIGNMENT_PREFIX`, and is
+   still correctly detected as the assignment section via its block contents.
+
+Two smaller observations, neither acted on: the row sets `cover_image_alt` while
+`cover_image_url` is null, and the module's single video is still the
+2026-09-09 temporary placeholder pick, carrying that caveat inline in its title.
+
+**Full loop across all twelve tracked generators, Module 0 now included:**
+
+```
+M0 129 | M2 193 | M3 119 | M4 129 | M5 109 | M6 102 | M7 100 | M8 102 | M9 112 | M10 99 | M11 100 | M12 100 — zero differences each
+```
+
+**Module 1 deliberately untouched this pass, and its status for the record:** it
+remains the only module in the track with no generator. Its source,
+`module1_leadership_track_blocks.json` (110KB, shape
+`{material_title_match, create_new_row, new_row_data, language, blocks}`), sits
+**untracked** at the repository root alongside `leadership_lessons.json`, both
+dated 2026-09-05. Whether that file still matches the live 403-block row has
+never been checked — Module 1 has had images swapped in and a 51-block section
+replaced since. That is a different problem from Module 0's (an untracked source
+of unknown currency, versus content that existed only in the database) and needs
+its own decision rather than being folded into this one.
