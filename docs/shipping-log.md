@@ -2544,3 +2544,35 @@ remaining gap in the track's reproducibility, unchanged by this pass.
 - Two behaviour items in `docs/perf-debt.md`, both deliberately deferred.
 
 None of these block the track being complete. They are the finishing pass.
+
+## 2026-09-29 — Week 10 linked to Module 12 — week-linking complete for the track
+
+The slot held open when Module 11 shipped unlinked now goes to Module 12.
+Guarded on week 10, focus Multiplication & Impact, no existing `module_id`, and
+12 weeks — so a re-run is a no-op.
+
+```
+BEFORE  week 10  Multiplication & Impact  "Defining the Leader You Are Becoming"  module_id: absent   (4 links)
+AFTER   week 10  Multiplication & Impact  "Defining the Leader You Are Becoming"  module_id: 45b49821 (5 links)
+```
+
+**Week-linking for the Leadership Track is now final.** Journey `2747cf17`:
+
+| Week | Focus | Module |
+|---|---|---|
+| 1 | Personal Leadership | 1 — The Leader Within |
+| 8 | Personal Leadership | 2 — Character in the Dark |
+| 9 | Relational Leadership | 6 — Building Trust |
+| 10 | Multiplication & Impact | 12 — Leadership Legacy |
+| 11 | Relational Leadership | 8 — Servant Leadership |
+
+**Five linked, seven deliberately unlinked: Modules 3, 4, 5, 7, 9, 10 and 11.**
+Every refusal has a recorded reason — no week carrying the matching pillar focus
+exists at all (9, 10), a dependency inversion that would place a module ahead of
+its prerequisites (3, 7), or a later same-pillar module that would otherwise
+have no week (5, 11). Week 12 stays permanently reserved as the terminal
+synthesis week. Plan row `104dac0a` remains untouched with zero links.
+
+Unlinked modules are still fully reachable: the dashboard, `/lessons`, the module
+overview and the section pages all read `lesson_modules` directly, and none of
+them read `plan_data`. A week link only drives the weekly "Week N of 12" card.
