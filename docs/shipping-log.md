@@ -2380,3 +2380,167 @@ handwritten note beside a trophy) and 2 video placeholders (front matter intro,
 ## 2026-09-28 — Verification tooling committed to the repo
 
 The diff helper and splitter harness now live at `scripts/verify/` (`compare-live.py`, `split-sections.cjs`, `check-generators.sh`) instead of being rebuilt in the scratchpad each session — verified byte-identical to the ad hoc versions across all ten tracked generators and on a deliberately corrupted input before committing, with one addition: a drift now exits non-zero so the runner fails rather than only printing.
+
+## 2026-09-29 — Module 12 "Leadership Legacy" ingested — THE 12-MODULE LEADERSHIP TRACK IS COMPLETE
+
+**All twelve modules of the Leadership Track are now built, ingested and
+published.** Modules 0 through 12 are live — thirteen rows counting the Starting
+Point — and all five pillars of Module 0's curriculum map are filled:
+
+| Pillar | Modules |
+|---|---|
+| Personal Leadership | 1, 2, 3 (plus Module 0, the Starting Point) |
+| Directional Leadership | 4, 5 |
+| Relational Leadership | 6, 7, 8 |
+| Performance Leadership | 9, 10 |
+| Multiplication & Impact | 11, 12 |
+
+100 blocks, 7 sections, 7 blocks of front matter. Row
+`45b49821-765b-4878-a587-53924eab757f`, slug `leadership-legacy`,
+module_number 12, sort_order 12, difficulty `beginner`,
+estimated_duration_minutes 85, pillar `multiplication-impact`, published.
+Subtitle "What Remains When You're No Longer in the Room".
+
+### Video verified before ingest
+
+`aUYSDEYdmzw` resolves on **TED's own main channel** — "What it takes to be a
+great leader | Roselinde Torres | TED", 9:20, `playableInEmbed: true`,
+`playabilityStatus: OK`. Kept as authored.
+
+The brief flagged this ID as unconfirmed and noted TED's own page reports
+roughly 7.7 million plays against the 1,886,875 YouTube views this ID shows.
+That gap is not evidence of a wrong ID: TED's figure counts plays across ted.com
+and every distribution channel, not YouTube alone. A search on the exact talk
+title confirmed `aUYSDEYdmzw` is the **only** upload on TED's channel; every
+other result is a third-party re-upload with 199, 1,865 or 44 views. No
+ambiguity survived the check, so no swap was needed — unlike Semler in Module 6
+and Ariely in Module 11, where the canonical upload genuinely was a different ID.
+
+### Real counts, measured rather than taken from the brief
+
+- **100 blocks**, 7 sections, 7 blocks of front matter
+- **5 tables** — §2 (the three stages), §3 (three sources across three eras),
+  §3 (what each collapse-test answer signals), §6 (the five-part statement),
+  §6 (a wish versus a legacy statement)
+- **25 callouts**: 12 tip, 5 info, 4 warning, 3 note, 1 scripture
+- 43 paragraphs, 9 headings, 8 dividers, 6 reflection blocks, 1 video embed,
+  1 pull quote, 1 scorecard, 1 assignment prompt
+- 1 image placeholder, 2 video placeholders
+
+**One correction to the brief: the scorecard has 4 items, not 5.** STEP 5
+specified five sliders; `module12_legacy` carries four — collapse, developing,
+releasing, named — each with `helpText`. The assignment does have five prompts
+with a 250-900 word target, exactly as stated.
+
+Real splitter confirms 7 sections, titles matching character-for-character:
+What Remains, Achievement Significance Legacy, The Collapse Test, When the
+Founder Leaves, A Decision Made in Advance, Writing Your Legacy Statement,
+Closing & Assignment. Scorecard and assignment both land in §7.
+
+Validation clean on the first run: 100 in / 100 out, 100 distinct ids, all 25
+callout variants legal, assignment key `a1`. The supplied
+`module12_leadership.json` is byte-identical to the generator's output (md5
+`7438069dc504afb70854209a23305a4b`), checked before loading.
+
+Loaded via 17 guarded appends, no transport failures. Live content verified
+against the ingest output by md5 of every block's type and text —
+`a8d899207d02fc625bdb9881264a355a`, identical. Ids 100/100 match
+sha256(slug|index|type), 0 wrong, 100 distinct.
+
+### Verified live
+
+Module overview carries the MULTIPLICATION & IMPACT badge and lists all 7
+sections with correct reading times; every section renders "Section N of 7"; all
+five tables render; the scorecard renders as four working sliders with all four
+helpText lines visible; the assignment form renders all five prompt headings,
+the rich-text editor, the live word counter and the 250-900 word target; the
+dashboard grid returns thirteen cards with Leadership Legacy last, card 12.
+
+The Torres video player loads as a real embed with the correct TED thumbnail,
+title bar and channel line. **Playback start could not be confirmed** — YouTube's
+play button needs a trusted user gesture and the automation layer's synthetic
+clicks don't qualify, the same limit recorded for Modules 10 and 11. Everything
+short of pressing play checks out.
+
+### Week linking — the track-wide picture, decided
+
+Week 10 was re-verified rather than assumed: still **Multiplication & Impact**,
+still **unlinked**, title "Defining the Leader You Are Becoming". It passes the
+dependency check as well as any week in this plan can — by Week 10 the journey
+has surfaced Modules 1, 2 and 6, which is the furthest along any candidate week
+reaches. The reservation made when Module 11 shipped still holds.
+
+Nothing was written this pass. The before/after was shown for confirmation.
+
+**This is the last linking decision in the track**, so the final state is worth
+recording plainly. Four of twelve weeks are linked:
+
+| Week | Focus | Module |
+|---|---|---|
+| 1 | Personal Leadership | Module 1 |
+| 8 | Personal Leadership | Module 2 |
+| 9 | Relational Leadership | Module 6 |
+| 11 | Relational Leadership | Module 8 |
+
+**Seven modules ship deliberately unlinked: 3, 4, 5, 7, 9, 10 and 11.** Each was
+refused for a recorded reason — no eligible week carrying the matching pillar
+focus (Modules 9 and 10, since journey `2747cf17` has no Performance Leadership
+week at all), a dependency inversion that would place a module before its
+prerequisites (Modules 3 and 7), or a later same-pillar module with no
+alternative (Modules 5 and 11). None of this affects reachability: the dashboard,
+`/lessons`, the module overview and the section pages all read `lesson_modules`
+directly and none of them read `plan_data`. A week link only affects the weekly
+"Week N of 12" card.
+
+Week 12 remains permanently reserved as the terminal synthesis week. Plan row
+`104dac0a` is untouched and still carries its own unrelated tagging scheme with
+zero links.
+
+### Generators
+
+`scripts/content/generate_module12.js` committed the same day. The full loop now
+runs from the repo tooling committed yesterday rather than a rebuilt scratchpad
+helper:
+
+```
+M2 193 | M3 119 | M4 129 | M5 109 | M6 102 | M7 100 | M8 102 | M9 112 | M10 99 | M11 100 | M12 100 — zero differences each
+```
+
+Eleven tracked generators, covering Modules 2 through 12. Modules 0 and 1
+predate the generator pattern and have none — Module 0 has since been edited
+directly in the database and cannot be regenerated at all. That is the one
+remaining gap in the track's reproducibility, unchanged by this pass.
+
+### Final track state (2026-09-29)
+
+| Module | Pillar | blocks | sections | videos | tables | scorecards | quizzes | images | image ph | video ph |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 0 | Personal | 129 | 5 | 1 | 1 | 0 | 1 | 5 | 0 | 0 |
+| 1 | Personal | 403 | 7 | 7 | 1 | 2 | 5 | 6 | 0 | 0 |
+| 2 | Personal | 193 | 8 | 3 | 7 | 0 | 2 | 6 | 0 | 0 |
+| 3 | Personal | 119 | 8 | 4 | 4 | 1 | 3 | 4 | 0 | 0 |
+| 4 | Directional | 129 | 9 | 5 | 4 | 0 | 0 | 3 | 0 | 0 |
+| 5 | Directional | 109 | 8 | 3 | 1 | 1 | 0 | 2 | 0 | 2 |
+| 6 | Relational | 102 | 8 | 1 | 2 | 1 | 0 | 0 | 1 | 2 |
+| 7 | Relational | 100 | 7 | 1 | 3 | 1 | 0 | 0 | 2 | 2 |
+| 8 | Relational | 102 | 7 | 1 | 5 | 1 | 0 | 0 | 2 | 2 |
+| 9 | Performance | 112 | 7 | 1 | 3 | 1 | 0 | 0 | 1 | 2 |
+| 10 | Performance | 99 | 6 | 1 | 5 | 1 | 0 | 0 | 1 | 2 |
+| 11 | Multiplication | 100 | 5 | 3 | 9 | 1 | 0 | 0 | 2 | 2 |
+| 12 | Multiplication | 100 | 7 | 1 | 5 | 1 | 0 | 0 | 1 | 2 |
+
+**1,797 blocks across thirteen published rows.** 32 videos, 50 tables,
+11 scorecards, 11 quizzes, 26 real images.
+
+**What remains open across the whole track**, now that content is complete:
+
+- **13 image placeholders** — Modules 6 (1), 7 (2), 8 (2), 9 (1), 10 (1),
+  11 (2), 12 (1), plus none in 0-5.
+- **18 video placeholders** — 2 each in Modules 5 through 12. Every one is a
+  Denis recording (an intro or a closing), not a third-party video to be
+  sourced.
+- **Module 1's seven videos remain temporary/demo picks**, logged since
+  2026-09-09 and still unresolved.
+- Two behaviour items in `docs/perf-debt.md`, both deliberately deferred.
+
+None of these block the track being complete. They are the finishing pass.
