@@ -2632,3 +2632,70 @@ never been checked — Module 1 has had images swapped in and a 51-block section
 replaced since. That is a different problem from Module 0's (an untracked source
 of unknown currency, versus content that existed only in the database) and needs
 its own decision rather than being folded into this one.
+
+## 2026-09-29 — Module 1's generator reverse-engineered — every published row now has one
+
+`scripts/content/generate_module1.js` now exists, rebuilt from the live row and
+verified byte-for-byte against it. **All thirteen published rows, Modules 0
+through 12, now have a generator that reproduces production exactly. No
+exceptions remain.**
+
+**Built from production, not from the old file.** `module1_leadership_track_blocks.json`
+was not used as a source or even as a reference, per the brief. Checking it
+afterward confirms that was right: it holds **489 blocks against production's
+403**, with **106 blocks that are no longer live** and **21 live blocks missing
+from it entirely**. It is not a stale-by-a-little file; it is a different
+document. It remains untracked at the repository root and should not be used.
+
+**Verification.** 403 blocks in, 403 out. Compared against live including block
+ids: **0 blocks differ**. Content md5 `8c5b52dcb0e0db89f17abb4814d9cf40` matches,
+and the full md5 over every key of every block — ids included — matches at
+`f1e3484550de7c54a0bcd3b5f9b72cf0`. `ingest-module.mjs` validates clean: 403
+distinct ids, scorecard keys `four_pillars_self_leadership` and
+`eight_areas_character`, assignment key `a1`. As with Module 0, the slug derived
+from the title (`the-leader-within-self-leadership-and-personal-mastery`) is the
+live slug, which is what makes the ids reproduce — all 403 already follow
+`sha256(slug|index|type)` despite predating the convention.
+
+Real splitter: 7 sections, 7 blocks of front matter, 396 blocks in sections.
+
+**Five shapes differ from the conventions Modules 2-12 settled on.** All are
+reproduced faithfully and commented in the file:
+
+1. **`quote` blocks, a separate type from `pull_quote_card`** — 14 of them,
+   alongside 13 pull quotes. Attribution is optional: 5 carry it (Leading from
+   the Inside Out, James Clear ×2, Proverbs 16:32, Genesis 32:27) and the other
+   9 omit the key entirely rather than setting it null. The 13 pull quotes never
+   carry one. Module 2's generator also emits `quote`, so this is not unique to
+   Module 1, but the optional-attribution split is.
+2. **Scorecard items carry no `helpText`.** Both scorecards — four pillars and
+   eight areas of character — have only `key`, `label`, `max`. Every scorecard
+   from Module 3 onward has helpText on every item. Emitting an empty string
+   here would not reproduce production.
+3. **Assignment prompts carry an `example` field** alongside `guidance`, on all
+   four prompts. Modules 6-12 use only number/heading/guidance.
+4. **`assignment_prompt` carries a `submit_label`** ("Submit Manifesto") — the
+   same quirk as Module 0's ("Submit and Begin"), and present in no other module.
+5. **Section headings carry the literal "Section N — " prefix**, and the final
+   section is titled "Assignment — Write Your Self-Leadership Manifesto". The
+   splitter strips both prefixes for display, so it renders like Modules 2-12's
+   bare titles, but the stored text differs.
+
+Two smaller observations, neither acted on: the row sets `cover_image_alt` with
+`cover_image_url` null (same as Module 0), and it is the only module carrying a
+`source_document_id` (`11a366b0-5453-4317-864c-2e937dc3a4de`).
+
+**Module 1's seven videos remain temporary/demo picks** — unchanged by this pass
+and still the open item logged since 2026-09-09. Worth noting concretely now
+that the content is readable in one file: `b8B5T7qoovM` (the Denis placeholder)
+appears three times under three different titles, and the other four slots hold
+real third-party talks — Sinek `lmyZMtPVodo`, Groeschel `b5RlVhaT-DA`, Brené
+Brown `iCvmsMzlF7o` and `nKpQOc-9urs`. Replacing them is still its own job.
+
+**Full loop across all thirteen generators:**
+
+```
+M0 129 | M1 403 | M2 193 | M3 119 | M4 129 | M5 109 | M6 102 | M7 100 | M8 102 | M9 112 | M10 99 | M11 100 | M12 100 — zero differences each
+```
+
+1,797 blocks across thirteen rows, every one reproducible from the repo.

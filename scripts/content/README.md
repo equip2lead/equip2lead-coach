@@ -40,16 +40,25 @@ Module 6's generator was committed in the same pass as its ingest, which is the
 pattern to keep. Modules 2-5 were left in `~/Downloads` for days or weeks and
 every one of them had silently drifted by the time anyone checked.
 
-## Not covered here
+## Every published module is covered
 
-**Module 1 alone** has no generator. Its blocks were authored directly as JSON;
-`module1_leadership_track_blocks.json` sits untracked at the repository root and
-has not been checked against the live row, so whether it still matches is
-unknown. That is a separate problem from Module 0's and has not been decided.
+As of 2026-09-29 all thirteen published rows — Modules 0 through 12 — have a
+generator here, and `scripts/verify/check-generators.sh` reproduces every one of
+them exactly. There are no exceptions left.
 
-Module 0 was in the same position until 2026-09-29, when `generate_module0.js`
-was reverse-engineered from the live row and verified byte-for-byte against it.
-It is a real generator, not a dump — but it is a reconstruction of production
-rather than the original source, and three of its shapes (an assignment
-`submit_label`, an optional pull-quote `attribution`, and literal "Section N — "
-heading prefixes) appear in no other module.
+Modules 0 and 1 predate the pattern: their blocks were authored directly as JSON
+and then edited in the database. Both generators were reverse-engineered from
+the live rows and verified byte-for-byte against them, ids included. They are
+real generators rather than dumps, but they are reconstructions of production
+rather than the original authoring source.
+
+`module1_leadership_track_blocks.json` at the repository root is **stale and
+should not be used**: 489 blocks against production's 403, 106 of them no longer
+live and 21 live blocks missing entirely. It was deliberately not used as a
+source or a reference when rebuilding Module 1.
+
+A handful of shapes in Modules 0 and 1 appear in no later module and are
+reproduced rather than normalised — `quote` blocks with optional attribution,
+scorecards without `helpText`, assignment `submit_label` and per-prompt
+`example`, and literal "Section N — " heading prefixes. Each is commented where
+it occurs.
