@@ -19,7 +19,13 @@ const assignmentPrompt = (title, instructions, prompts, word_min, word_max) => (
 const numbered = (text, n) => paragraph(`${n}. ${text}`);
 const videoEmbed = (youtubeId, title) => ({ type: "video_embed", data: { youtubeId, title } });
 const videoPlaceholder = (description) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${description}`);
-const image = (spec) => callout("note", `[IMAGE PLACEHOLDER — pending generation] ${spec.type}. Content: ${spec.content} Dimensions: ${spec.width}×${spec.height}.`);
+// Same conditional shape as Modules 2-5: a spec with a url emits a real image
+// block, one without still emits the [IMAGE PLACEHOLDER] callout. Folding a
+// finished image in is a two-line change at the call site.
+const image = (spec) =>
+  spec.url
+    ? { type: "image", data: { url: spec.url, alt: spec.alt } }
+    : callout("note", `[IMAGE PLACEHOLDER — pending generation] ${spec.type}. Content: ${spec.content} Dimensions: ${spec.width}×${spec.height}.`);
 const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: { title, scorecard_key, items } });
 
 // ─── SECTION 1 — The Conversation You've Been Avoiding ─────────────────────
@@ -47,6 +53,8 @@ const section1 = {
     callout("warning", "This reframe is uncomfortable precisely because it's accurate. Checking it honestly requires asking, in the moment of hesitation, who the delay is actually protecting — and sitting with the answer even when it isn't the one that feels better."),
     callout("tip", "This module isn't arguing for harshness as the alternative to avoidance. It's arguing for timeliness. The same feedback, delivered ten months earlier, would have been kind in a way the delayed version never could be — because it would have left Bob time to actually do something with it."),
     image({
+      url: "/images/module-10/M10-1.png",
+      alt: "Two chairs facing each other across a low table in warm evening light, one empty and pulled back, the other occupied by a man waiting.",
       type: "flat editorial illustration, muted navy/gold palette",
       content: "Two chairs facing each other across a small table, one chair empty and slightly pulled back, the other occupied — a conversation that hasn't started yet, but is clearly about to",
       width: 1200,

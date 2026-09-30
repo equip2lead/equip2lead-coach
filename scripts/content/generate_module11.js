@@ -19,7 +19,13 @@ const assignmentPrompt = (title, instructions, prompts, word_min, word_max) => (
 });
 const videoEmbed = (youtubeId, title) => ({ type: "video_embed", data: { youtubeId, title } });
 const videoPlaceholder = (description) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${description}`);
-const image = (spec) => callout("note", `[IMAGE PLACEHOLDER — pending generation] ${spec.type}. Content: ${spec.content} Dimensions: ${spec.width}×${spec.height}.`);
+// Same conditional shape as Modules 2-5: a spec with a url emits a real image
+// block, one without still emits the [IMAGE PLACEHOLDER] callout. Folding a
+// finished image in is a two-line change at the call site.
+const image = (spec) =>
+  spec.url
+    ? { type: "image", data: { url: spec.url, alt: spec.alt } }
+    : callout("note", `[IMAGE PLACEHOLDER — pending generation] ${spec.type}. Content: ${spec.content} Dimensions: ${spec.width}×${spec.height}.`);
 const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: { title, scorecard_key, items } });
 
 // ─── SECTION 1 — Five Practices, Three Already Yours ────────────────────────
@@ -55,6 +61,8 @@ const section1 = {
     callout("tip", "One more honest note before moving on: this track built toward Kouzes and Posner's five practices without setting out to copy them. That two independent efforts — thirty years of academic research and this track's own architecture — landed in nearly the same place is itself a form of evidence that these five things actually matter, not just that one influenced the other."),
     paragraph("With the overlap named plainly and the research grounding established, the rest of this module does its actual work: two practices, two real examples, and then all five brought back together at the end."),
     image({
+      url: "/images/module-11/M11-1.png",
+      alt: "Five dial gauges mounted in a row on a single panel, three turned fully up, two still reading low.",
       type: "flat editorial illustration, muted navy/gold palette",
       content: "Five simple dial gauges mounted in a row on a single panel, three already turned fully up, two still turned low",
       width: 1200,
@@ -179,6 +187,8 @@ const section3 = {
     ),
     callout("warning", "None of these failures come from bad intentions. They come from treating recognition as an occasional event instead of a habit, which is the same gap Gallup's data shows: leaders say they value recognition, and employees still aren't feeling it."),
     image({
+      url: "/images/module-11/M11-2.png",
+      alt: "A handwritten thank-you note pinned to a corkboard beside a small gold trophy in warm light.",
       type: "flat editorial illustration, warm gold and navy palette",
       content: "A single handwritten thank-you note pinned to a corkboard beside a small gold trophy, soft warm light, no faces — recognition at two scales, the personal note and the public award",
       width: 1200,

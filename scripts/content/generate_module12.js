@@ -21,7 +21,13 @@ const assignmentPrompt = (title, instructions, prompts, word_min, word_max) => (
 });
 const videoEmbed = (youtubeId, title) => ({ type: "video_embed", data: { youtubeId, title } });
 const videoPlaceholder = (description) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${description}`);
-const image = (spec) => callout("note", `[IMAGE PLACEHOLDER — pending generation] ${spec.type}. Content: ${spec.content} Dimensions: ${spec.width}×${spec.height}.`);
+// Same conditional shape as Modules 2-5: a spec with a url emits a real image
+// block, one without still emits the [IMAGE PLACEHOLDER] callout. Folding a
+// finished image in is a two-line change at the call site.
+const image = (spec) =>
+  spec.url
+    ? { type: "image", data: { url: spec.url, alt: spec.alt } }
+    : callout("note", `[IMAGE PLACEHOLDER — pending generation] ${spec.type}. Content: ${spec.content} Dimensions: ${spec.width}×${spec.height}.`);
 const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: { title, scorecard_key, items } });
 
 // ─── SECTION 1 — What Remains ───────────────────────────────────────────────
@@ -44,6 +50,8 @@ const section1 = {
     paragraph("This module is built around six ways of approaching that same underlying question, each from a different angle — a framework for the progression, a checkable test, real examples of leaders who took it seriously at very different scales, and a practical tool for actually writing down the answer rather than just thinking about it."),
     callout("tip", "None of what follows is abstract theory. Every section is anchored to something that actually happened — a decision someone genuinely made, at real cost, that either proved or failed this module's central claim."),
     image({
+      url: "/images/module-12/M12-1.png",
+      alt: "A mature tree shown in cross-section at sunset, its root system running underground to four young saplings, all connected by the same roots.",
       type: "flat editorial illustration, muted navy/gold palette",
       content: "A single tree with roots visibly extending underground into several smaller young trees growing nearby, all connected by the same root system",
       width: 1200,

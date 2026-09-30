@@ -9,6 +9,17 @@ Performance costs first, then behaviour we have accepted for now.
 
 - **Dashboard filter URL params flash unfiltered grid for one frame before hydration** — `useSearchParams` inside Suspense behaviour: the server renders the grid unfiltered, the client applies `?pillar=`/`?status=` on hydration. Cosmetic, not functional; the settled state is correct. Fix if it becomes a complaint. (`components/dashboard/ModuleGrid.tsx`, added 2026-09-08.)
 
+- **Module artwork ships as large unoptimised PNGs.** 26 images across Modules
+  0-12, each roughly 1.5-2.7 MB, served straight from `/public` with no
+  `next/image`, no resizing and no WebP/AVIF variant — about 50 MB of PNG in the
+  repo and a multi-megabyte download on any section page carrying one. Accepted
+  deliberately so far: the art is produced at full resolution and swapping the
+  pipeline is a bigger change than the placeholders were worth. The trigger to
+  pay this down is a real complaint about section-page load, or the first
+  mobile-data user report. Fix is `next/image` with a sized `sizes` attribute,
+  or a build-time conversion step. (Added 2026-09-30 when Modules 6-12's ten
+  images landed.)
+
 ## Behaviour
 
 Found 2026-09-14 while exercising the dashboard pillar filter with two real

@@ -18,7 +18,13 @@ const assignmentPrompt = (title, instructions, prompts, word_min, word_max) => (
 });
 const videoEmbed = (youtubeId, title) => ({ type: "video_embed", data: { youtubeId, title } });
 const videoPlaceholder = (description) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${description}`);
-const image = (spec) => callout("note", `[IMAGE PLACEHOLDER — pending generation] ${spec.type}. Content: ${spec.content} Dimensions: ${spec.width}×${spec.height}.`);
+// Same conditional shape as Modules 2-5: a spec with a url emits a real image
+// block, one without still emits the [IMAGE PLACEHOLDER] callout. Folding a
+// finished image in is a two-line change at the call site.
+const image = (spec) =>
+  spec.url
+    ? { type: "image", data: { url: spec.url, alt: spec.alt } }
+    : callout("note", `[IMAGE PLACEHOLDER — pending generation] ${spec.type}. Content: ${spec.content} Dimensions: ${spec.width}×${spec.height}.`);
 const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: { title, scorecard_key, items } });
 
 // ─── SECTION 1 — The Inversion ──────────────────────────────────────────────
@@ -54,6 +60,8 @@ const section1 = {
     videoEmbed("lmyZMtPVodo", "Why Good Leaders Make You Feel Safe | Simon Sinek | TED"),
     paragraph("Every section that follows returns to this same question from a different angle — a different vocabulary, a different tradition, a different named example — but it's the same question each time."),
     image({
+      url: "/images/module-8/M08-1.png",
+      alt: "A gold crown resting upside-down and filled with water, catching the light, a folded servant's towel on the ground beside it.",
       type: "flat editorial illustration, muted navy/gold palette",
       content: "A single crown resting upside-down, now functioning as a simple bowl, water inside it, reflecting light",
       width: 1200,
@@ -167,6 +175,8 @@ const section4 = {
     callout("tip", "A quick way to check which one you're neglecting: ask which of the four you'd be embarrassed to have someone you lead rate you on. That discomfort is usually accurate."),
     paragraph("Scripture's own leadership record follows a consistent pattern worth noticing: almost none of its major leaders started as leaders. Moses served his father-in-law Jethro, tending sheep, before ever leading anyone. Joshua served as Moses's assistant for decades before leading Israel himself. Elisha was known simply as the one who poured water on Elijah's hands before succeeding him as prophet. David served Saul as his armor-bearer before eventually becoming king in his place. In every case, the leadership came after the service, not instead of it — and arguably existed only because the service came first."),
     image({
+      url: "/images/module-8/M08-2.png",
+      alt: "A potter's clay-covered hands shaping a vessel on a wheel, no face visible, the work filling the whole frame.",
       type: "flat editorial illustration, warm gold and muted brown palette",
       content: "A craftsman's worn hands shaping clay on a wheel, unglamorous and unfinished, no face visible — the work itself is the entire frame",
       width: 1200,

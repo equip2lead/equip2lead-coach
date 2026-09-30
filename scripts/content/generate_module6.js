@@ -17,7 +17,13 @@ const assignmentPrompt = (title, instructions, prompts, word_min, word_max) => (
 const numbered = (text, n) => paragraph(`${n}. ${text}`);
 const videoEmbed = (youtubeId, title) => ({ type: "video_embed", data: { youtubeId, title } });
 const videoPlaceholder = (description) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${description}`);
-const image = (spec) => callout("note", `[IMAGE PLACEHOLDER — pending generation] ${spec.type}. Content: ${spec.content} Dimensions: ${spec.width}×${spec.height}.`);
+// Same conditional shape as Modules 2-5: a spec with a url emits a real image
+// block, one without still emits the [IMAGE PLACEHOLDER] callout. Folding a
+// finished image in is a two-line change at the call site.
+const image = (spec) =>
+  spec.url
+    ? { type: "image", data: { url: spec.url, alt: spec.alt } }
+    : callout("note", `[IMAGE PLACEHOLDER — pending generation] ${spec.type}. Content: ${spec.content} Dimensions: ${spec.width}×${spec.height}.`);
 const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: { title, scorecard_key, items } });
 
 // ─── SECTION 1 — Trust Is the Foundation ───────────────────────────────────
@@ -43,6 +49,8 @@ const section1 = {
     paragraph("That's the actual mechanism behind trust's asymmetry. It isn't that betrayal is emotionally worse than steady faithfulness feels good. It's that one confirmed lie doesn't cost you one data point — it makes a leader re-examine everything that came before it too."),
     paragraph("This module walks through six real leaders and organizations, and it's worth naming honestly upfront: some of them got this right, and at least one of them didn't. Both kinds of example teach the same lesson, from opposite directions."),
     image({
+      url: "/images/module-6/M06-1.png",
+      alt: "A stone arch at sunrise with the word TRUST carved into the keystone at its apex, the rest of the structure resting on that single piece.",
       type: "flat editorial illustration, muted navy/gold palette",
       content: "A single stone arch, keystone visible at the top, with the word TRUST subtly worked into the keystone's shape — the rest of the structure clearly depends on this one piece",
       width: 1200,

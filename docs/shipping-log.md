@@ -2792,3 +2792,116 @@ One transport note worth recording: the working limit on a single SQL statement
 through this tool is well above the ~3KB previously assumed. A 6,737-byte
 statement succeeded, so the ingest was rebuilt at ~6.8KB per statement and ran in
 18 statements rather than 48.
+
+## 2026-09-30 — Ten real images land across Modules 6-12 — no image placeholders remain
+
+**Every [IMAGE PLACEHOLDER] in the Leadership Track is now a real image.** Ten
+placeholders replaced across Modules 6, 7, 8, 9, 10, 11 and 12. Track-wide count
+of remaining image placeholders: **0**.
+
+### What was actually on disk
+
+The brief expected the files in `~/Desktop/Equip2lead/images/` with a
+`module 6-7` subfolder. **That folder does not exist.** The images were already
+staged inside the repo under `public/images/`, untracked, and covered **all ten**
+remaining placeholders rather than only Modules 6 and 7. Scope was expanded to
+all ten on Denis's confirmation.
+
+Two folders were misnamed `Module 11` and `Module 12` — capital M and a space,
+against the `module-N` convention used everywhere else, and needing URL-encoding
+if left. Renamed to `module-11` and `module-12`.
+
+Filenames kept zero-padded exactly as delivered (`M06-1.png`, not `M6-1.png`) to
+avoid a pointless rename.
+
+### Mapping — matched by content, not filename order
+
+Each image was opened and checked against its placeholder's Content description
+before anything was written. Filename order happened to agree, but the match was
+made visually.
+
+| Module | idx | Placeholder | Image |
+|---|---|---|---|
+| 6 | 16 | stone arch, TRUST in the keystone | `M06-1.png` |
+| 7 | 16 | two figures, speech bubble that changes mid-transit | `M07-1.png` |
+| 7 | 30 | old radio glowing, family gathered close | `M07-2.png` |
+| 8 | 26 | crown upside-down as a bowl, water inside | `M08-1.png` |
+| 8 | 62 | craftsman's hands shaping clay, no face | `M08-2.png` |
+| 9 | 14 | one candle lighting a second, both burning | `M09-1.png` |
+| 10 | 18 | two chairs, one empty and pulled back | `M10-1.png` |
+| 11 | 17 | five gauges, three up two low | `M11-1.png` |
+| 11 | 72 | thank-you note beside a gold trophy | `M11-2.png` |
+| 12 | 13 | tree whose roots run to young saplings | `M12-1.png` |
+
+Each placeholder callout was replaced in place by an `image` block carrying a
+`url` and an `alt` written from the placeholder's own Content description.
+Applied as ten guarded `jsonb_set` calls, each guarded on the block's existing
+id, its type being `callout`, and its text starting with `[IMAGE PLACEHOLDER` —
+so none could hit the wrong block and a re-run is a no-op.
+
+Ids: replacing a `callout` with an `image` at the same index changes only that
+block's id, since ids derive from `sha256(slug|index|type)`. The new ids were
+computed up front and written directly. Verified afterward: **0 stale ids** in
+every affected module, block counts unchanged, video placeholders untouched.
+
+The seven generators were updated to match: the `image()` helper in Modules 6-12
+now has the same conditional shape Modules 2-5 already used — a spec with a
+`url` emits a real image block, one without still emits the placeholder callout —
+and each call site gained its `url` and `alt`. All thirteen generators reproduce
+production exactly:
+
+```
+M0 129 | M1 403 | M2 193 | M3 119 | M4 129 | M5 109 | M6 102 | M7 100 | M8 102 | M9 112 | M10 99 | M11 100 | M12 100 — zero differences each
+```
+
+### A 404 window was opened, and this was avoidable
+
+**The database now points at ten images that are not yet deployed.** All ten URLs
+return 404 on production as of this commit; `/images/module-0/threshold-door.png`
+still returns 200, confirming the path convention is right and only the new
+assets are missing.
+
+This repeats exactly the mistake recorded on 2026-09-14 after Module 0's brief
+404 window, and the discipline adopted then — *assets committed and pushed
+before the DB edit* — was not followed here. The brief's own step order put the
+copy and the DB replacement in the same step, and that was followed without
+re-checking it against the standing rule. **The rule should have won.** The
+window stays open until this commit is pushed and deployed.
+
+Nothing about the fix is complicated: push, let the deploy reach READY, and the
+404s resolve. Recording it because the failure was procedural, not technical,
+and it is the second time.
+
+### Aspect ratios and text
+
+All ten placeholders specify 1200×675 (16:9, ratio 1.78). Seven of the delivered
+images are **2.80 — ultra-wide** (typically 2098×750); only `M08-2` and `M12-1`
+are 1.78. Accepted as a deliberate style choice. Photorealistic is now the style
+for the whole track, superseding the "flat editorial illustration" wording still
+present in the generators' placeholder specs for any future unfilled slot.
+
+`M11-1` and `M11-2` carry considerably more baked-in English text than anything
+shipped previously — five gauge labels plus LOW/HIGH, and a full handwritten
+sentence. Consistent with the accepted style, but it materially raises what
+needs redoing at French localization.
+
+### Follow-up, agreed and not blocking
+
+**`M11-1` is to be regenerated later with UNLABELED gauges.** Its current labels
+read PERFORMANCE, ATTITUDE, TEAMWORK, INITIATIVE, LEADERSHIP, which are *not*
+Module 11's five practices (Model the Way, Inspire a Shared Vision, Challenge
+the Process, Enable Others to Act, Encourage the Heart) — and the image sits at
+idx 17, immediately after the table naming them. It satisfies the placeholder
+spec as written and ships as-is this pass. Unlabeled gauges would remove both
+the conflict with that table and the French-localization burden.
+
+### Still open on artwork
+
+Nothing. **Image placeholders are finished track-wide.** The remaining media gap
+is 16 video placeholders (2 each in Modules 5 through 12), every one a Denis
+recording rather than third-party sourcing, plus Module 1's seven temporary
+video picks.
+
+A line was added to `docs/perf-debt.md`: 26 images now ship as unoptimised PNGs
+at 1.5-2.7 MB each, no `next/image`, no WebP. Deliberate for now; trigger to pay
+it down is a real load complaint or the first mobile-data report.

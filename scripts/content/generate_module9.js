@@ -17,7 +17,13 @@ const assignmentPrompt = (title, instructions, prompts, word_min, word_max) => (
 const numbered = (text, n) => paragraph(`${n}. ${text}`);
 const videoEmbed = (youtubeId, title) => ({ type: "video_embed", data: { youtubeId, title } });
 const videoPlaceholder = (description) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${description}`);
-const image = (spec) => callout("note", `[IMAGE PLACEHOLDER — pending generation] ${spec.type}. Content: ${spec.content} Dimensions: ${spec.width}×${spec.height}.`);
+// Same conditional shape as Modules 2-5: a spec with a url emits a real image
+// block, one without still emits the [IMAGE PLACEHOLDER] callout. Folding a
+// finished image in is a two-line change at the call site.
+const image = (spec) =>
+  spec.url
+    ? { type: "image", data: { url: spec.url, alt: spec.alt } }
+    : callout("note", `[IMAGE PLACEHOLDER — pending generation] ${spec.type}. Content: ${spec.content} Dimensions: ${spec.width}×${spec.height}.`);
 const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: { title, scorecard_key, items } });
 
 // ─── SECTION 1 — The Real Multiplier ────────────────────────────────────────
@@ -41,6 +47,8 @@ const section1 = {
     callout("info", "This module draws on real, verified examples across two very different worlds — Silicon Valley executive coaching and a decades-long college basketball program — plus a two-thousand-year-old letter that got there first."),
     callout("tip", "None of the three have anything in common professionally. All three converge on the same conclusion this module has been building toward."),
     image({
+      url: "/images/module-9/M09-1.png",
+      alt: "A hand tipping a lit candle to touch a second one, both now burning with an equal flame.",
       type: "flat editorial illustration, muted navy/gold palette",
       content: "A single lit candle touching a second unlit candle, both now burning equally bright — no loss of light in the original flame",
       width: 1200,

@@ -18,7 +18,13 @@ const assignmentPrompt = (title, instructions, prompts, word_min, word_max) => (
 const numbered = (text, n) => paragraph(`${n}. ${text}`);
 const videoEmbed = (youtubeId, title) => ({ type: "video_embed", data: { youtubeId, title } });
 const videoPlaceholder = (description) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${description}`);
-const image = (spec) => callout("note", `[IMAGE PLACEHOLDER — pending generation] ${spec.type}. Content: ${spec.content} Dimensions: ${spec.width}×${spec.height}.`);
+// Same conditional shape as Modules 2-5: a spec with a url emits a real image
+// block, one without still emits the [IMAGE PLACEHOLDER] callout. Folding a
+// finished image in is a two-line change at the call site.
+const image = (spec) =>
+  spec.url
+    ? { type: "image", data: { url: spec.url, alt: spec.alt } }
+    : callout("note", `[IMAGE PLACEHOLDER — pending generation] ${spec.type}. Content: ${spec.content} Dimensions: ${spec.width}×${spec.height}.`);
 const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: { title, scorecard_key, items } });
 
 // ─── SECTION 1 — Why Communication Determines Everything Else ─────────────
@@ -52,6 +58,8 @@ const section1 = {
     ),
     paragraph("Every row in that table shares the same fix: say the specific thing rather than the comfortable, ambiguous version of it. Ambiguity feels safer in the moment because it commits to less. It's actually more costly, because someone else fills in the gap you left, and they rarely fill it in with what you actually meant."),
     image({
+      url: "/images/module-7/M07-1.png",
+      alt: "Two people facing each other across a table, a speech bubble passing between them that changes as it travels — a smooth gold circle where it starts, a jagged dark shape by the time it arrives.",
       type: "flat editorial illustration, muted navy/gold palette",
       content: "Two figures facing each other, a simple speech-bubble shape passing between them, but the shape visibly changes form mid-transit — starting as a clean circle, arriving as a jagged, distorted version of itself",
       width: 1200,
@@ -85,6 +93,8 @@ const section2 = {
     paragraph("A leader speaking to a group of five hundred faces a real choice each time they open their mouth: address the crowd as a category, or address it as five hundred individuals who each happen to be in the same room. The words can be identical. Only one version actually lands as though it was meant for the person hearing it."),
     callout("tip", "One practical marker: connected communication tends to use \"you,\" specifically and often. Merely-communicated messages tend to hide behind \"we,\" \"the organization,\" or \"people\" — technically accurate, and somehow addressed to no one at all."),
     image({
+      url: "/images/module-7/M07-2.png",
+      alt: "A vintage radio glowing warmly in a dim room, a family of four gathered close around it in the lamplight.",
       type: "flat editorial illustration, warm gold and navy palette",
       content: "An old radio set glowing warmly in a dim room, with a single silhouetted family gathered close around it — intimate scale, not a crowd or broadcast tower",
       width: 1200,
