@@ -2880,20 +2880,18 @@ are 1.78. Accepted as a deliberate style choice. Photorealistic is now the style
 for the whole track, superseding the "flat editorial illustration" wording still
 present in the generators' placeholder specs for any future unfilled slot.
 
-`M11-1` and `M11-2` carry considerably more baked-in English text than anything
-shipped previously — five gauge labels plus LOW/HIGH, and a full handwritten
-sentence. Consistent with the accepted style, but it materially raises what
-needs redoing at French localization.
+`M11-1` and `M11-2` carry baked-in English text — five gauge labels plus
+LOW/HIGH, and a full handwritten sentence. **This is an accepted style choice
+for the track and is not an issue.** See the 2026-09-30 decision below.
 
-### Follow-up, agreed and not blocking
+### ~~Follow-up: regenerate M11-1 with unlabeled gauges~~ — CANCELLED 2026-09-30
 
-**`M11-1` is to be regenerated later with UNLABELED gauges.** Its current labels
-read PERFORMANCE, ATTITUDE, TEAMWORK, INITIATIVE, LEADERSHIP, which are *not*
-Module 11's five practices (Model the Way, Inspire a Shared Vision, Challenge
-the Process, Enable Others to Act, Encourage the Heart) — and the image sits at
-idx 17, immediately after the table naming them. It satisfies the placeholder
-spec as written and ships as-is this pass. Unlabeled gauges would remove both
-the conflict with that table and the French-localization burden.
+~~M11-1 to be regenerated later with UNLABELED gauges, because its labels
+(PERFORMANCE, ATTITUDE, TEAMWORK, INITIATIVE, LEADERSHIP) are not Module 11's
+five practices and it sits immediately after the table naming them.~~
+
+**Cancelled by Denis on 2026-09-30. All images stay exactly as delivered,
+M11-1 and M11-2 included. No regeneration is planned.**
 
 ### Still open on artwork
 
@@ -2905,3 +2903,25 @@ video picks.
 A line was added to `docs/perf-debt.md`: 26 images now ship as unoptimised PNGs
 at 1.5-2.7 MB each, no `next/image`, no WebP. Deliberate for now; trigger to pay
 it down is a real load complaint or the first mobile-data report.
+
+## 2026-09-30 — Images final as delivered; baked-in text is an accepted style
+
+**Decision from Denis: all module images stay exactly as delivered, including
+`M11-1` and `M11-2` with their baked-in English text. No regeneration planned.**
+
+This cancels the follow-up recorded earlier today to regenerate `M11-1` with
+unlabeled gauges. That note is struck through in place rather than deleted, so
+the reasoning stays readable and nobody re-opens it from the old text.
+
+It also closes the older thread running back to Module 0: baked-in English in
+artwork had been repeatedly "parked for a French-localization revisit" (see the
+Module 0 image entry and the Module 2 note). **There is no such revisit
+pending.** Baked-in English text in images is a settled style choice for this
+track.
+
+**Standing instruction going forward: do not flag baked-in text in images as an
+issue.** Not as a defect, not as localization debt, not as a caveat in a render
+check. It is accepted.
+
+Nothing in the database or the repo changed for this — the images, blocks and
+generators are untouched. The only edits are to this log.
