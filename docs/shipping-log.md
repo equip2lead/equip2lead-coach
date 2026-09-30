@@ -2699,3 +2699,96 @@ M0 129 | M1 403 | M2 193 | M3 119 | M4 129 | M5 109 | M6 102 | M7 100 | M8 102 |
 ```
 
 1,797 blocks across thirteen rows, every one reproducible from the repo.
+
+## 2026-09-30 — FIRE Bible Institute source file tracked, and its 12 lessons ingested
+
+Two authorized actions on `leadership_lessons.json`, the last untracked file at
+the repository root after Module 1's was superseded.
+
+### 1. Moved and tracked
+
+Now at `docs/source/fire-bible-institute-lessons.json`, with a new
+`docs/source/README.md` explaining what it is: the **FIRE Bible Institute
+"Spiritual Leadership" course, Yaoundé, Cameroon** — Dr. Denis Ekobena's own
+institute curriculum, compiled from Maxwell's *21 Irrefutable Laws*, J. Oswald
+Sanders' *Spiritual Leadership* and Irvine's *The Authentic Leader*. Twelve
+lessons, 82,604 characters of English prose, keyed by `level` 1-5 rather than by
+module. It is **source material, not a generator target** — no block of it has
+ever appeared in `lesson_modules`, so there is no live row to reproduce.
+
+Eleven of its twelve lessons already have thematic coverage in the shipped
+Leadership Track under different framing. **Lesson 36, "Budgets and Financial
+Matters", is the one genuine gap** — no module in the twelve touches budgets or
+financial stewardship.
+
+### 2. Ingested into knowledge_documents
+
+Explicit one-time authorization, overriding the standing do-not-touch rule.
+**12 rows added, 298 -> 310.** `category = 'fbi-spiritual-leadership-en-lessons'`,
+sort_order 320-331, track leadership, language `en`, difficulty `intermediate`,
+`is_active` true. 93,107 characters total.
+
+Each row's length was verified against the source: **all twelve exact**, no
+truncation. Every row carries the attribution in the content itself, not only in
+metadata — an opening header naming the institute, lesson number, course level
+and sequence, Dr. Denis Ekobena as course author, and the three core texts — so
+it reads as institute curriculum rather than generic reference material. Each
+ends with that lesson's English and French assignment prompts (`ASSIGNMENT (EN)`
+/ `DEVOIR (FR)`). `lesson_content_fr` is null in all twelve, so lesson bodies are
+English only, as the brief specified.
+
+Pillar assignment by topic: Lessons 1, 2, 4, 30 -> directional; 6, 11, 25 ->
+relational; 5, 36 -> performance; 26, 34, 37 -> multiplication.
+
+**Decision on the pre-existing FIRE documents: left standing, unmodified.**
+
+The brief offered supersede, leave, or merge. Investigating first changed the
+picture — there are **eight** existing FIRE documents, not the three named:
+two condensed English syllabus summaries (sort 201, 203; 7,477 chars combined)
+and **six French documents** (`fbi-leadership-spirituel-fr-1..6`, sort 205, 206,
+209, 211, 304, 305; 23,050 chars combined) that the earlier investigation missed.
+
+Leaving them standing is the cleanest option for three reasons. The two English
+rows are syllabus overviews — course structure, core texts, the five levels as a
+list — which is a different content shape from lesson prose, not a redundant
+copy; superseding them would lose the compact "what does this course cover"
+answer that short chunks serve well in retrieval. The six French rows are the
+only French coverage of this material and cannot be superseded by anything in
+this file, since its French lesson bodies are null. And merging would mean
+rewriting rows that are already embedded and working. Summary-plus-full-text at
+two granularities is a normal retrieval pattern rather than duplication.
+
+The practical consequence is that **no existing row was touched at all**, which
+is also the easiest thing to verify.
+
+### Verification
+
+- Row count 298 -> 310, exactly 12 added.
+- The md5 over the id set of all non-new rows is
+  `563c1049b0b0061acfbcc72ee7216abc` — **byte-identical to the baseline captured
+  before the first insert**, so nothing pre-existing was added or deleted.
+- Zero pre-existing rows have an `updated_at` within the last three hours, so
+  nothing pre-existing was modified either.
+- All twelve content lengths match the source exactly.
+- Full generator loop re-run as a sanity check; unaffected, as expected:
+
+```
+M0 129 | M1 403 | M2 193 | M3 119 | M4 129 | M5 109 | M6 102 | M7 100 | M8 102 | M9 112 | M10 99 | M11 100 | M12 100 — zero differences each
+```
+
+### Open, and NOT acted on
+
+**The twelve new rows have no embedding.** All 298 pre-existing rows have one;
+these twelve are the only nulls in the table. Retrieval is vector-based, so
+**until embeddings are generated these rows will not surface in AI Coach
+search** — the content is stored and attributed correctly but is not yet
+reachable by the feature that motivated ingesting it. An untracked
+`run-embeddings.sh` existed at the repository root earlier in this project's
+history but is not present now. Generating embeddings was outside this brief and
+would be a further write to `knowledge_documents`, so it was not attempted and
+needs its own explicit request.
+
+One transport note worth recording: the working limit on a single SQL statement
+through this tool is well above the ~3KB previously assumed. A 6,737-byte
+statement succeeded, so the ingest was rebuilt at ~6.8KB per statement and ran in
+18 statements rather than 48.
