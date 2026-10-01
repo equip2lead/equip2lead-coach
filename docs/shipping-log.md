@@ -2925,3 +2925,87 @@ check. It is accepted.
 
 Nothing in the database or the repo changed for this — the images, blocks and
 generators are untouched. The only edits are to this log.
+
+## 2026-10-01 — The 12 FIRE rows are embedded; every knowledge_document now has a vector
+
+After two failed key replacements, a fresh Voyage key worked. **All 12 FIRE
+Bible Institute lesson rows are embedded.** `knowledge_documents` now has zero
+null embeddings across all 310 rows.
+
+### What finally unblocked it
+
+The Edge Function `generate-embeddings` was redeployed unchanged to force a
+fresh isolate that reads the new secret. Worth recording: the deploy came back
+as **version 10, not 9** — something deployed a version 9 outside this session
+between the 2026-09-30 redeploy (7 → 8) and this one. The source deployed here
+is byte-identical to what was read from version 7.
+
+The two earlier failures were both `Voyage 401: Provided API key is invalid.`
+and were *not* a propagation problem — the 2026-09-30 redeploy proved that by
+failing on a demonstrably fresh isolate. The key itself was the fault both times.
+
+### Embedding run
+
+STEP 1 was a single test invocation on sort 320 before anything else, as
+instructed. It returned `ok: true`, 2,080 tokens, and the stored vector verified
+as non-null at **1024 dimensions, matching the existing rows exactly**. Only
+then were the remaining 11 run, one invocation each.
+
+All 12 succeeded on first attempt, 1,528-2,303 tokens each. Queue: **0 pending,
+310 done.** Across the whole table there is now exactly **one distinct embedding
+dimension (1024)**, so the new vectors share the existing index's space.
+
+**The 298 pre-existing rows were not re-embedded.** Their fingerprint is
+`9cc3b8dcde65ae4e556a4d5c9c427ff9` — unchanged from the baseline captured before
+the original content ingest, and unchanged through every attempt since.
+
+### Retrieval check — and an honest limit on it
+
+Production retrieval is `app/api/chat/route.ts`: embed the user message with
+Voyage `voyage-multilingual-2` at `input_type: 'query'`, then
+`match_documents(query_embedding, match_threshold 0.62, match_count 5,
+filter_track_id, filter_language)`.
+
+**The query-embedding half could not be reproduced here.** `VOYAGE_API_KEY` is
+set in Vercel and in Supabase Edge secrets but not in `.env.local`, and handling
+the key directly was out of scope. So a literal text query could not be embedded.
+
+What was run instead: the real `match_documents` function, with the real
+production parameters, probed by the embedding of an existing document on the
+target topic. This proves the new rows are indexed, in the right vector space,
+and returned by the production retrieval function — but it is **not** a test of
+the text-query path.
+
+**Probe A — "five levels of leadership"** (probe: the French FBI 5-Niveaux doc):
+
+| rank | sim | new FIRE row | title |
+|---|---|---|---|
+| 1 | 0.8045 | yes | Lesson 1: Introductory Leadership Concepts |
+| 2 | 0.7992 | no | FIRE Curriculum (21 Laws + Biblical Leadership) |
+| 3 | 0.7832 | no | FIRE Syllabus: Introduction and 5 Levels |
+| 4 | 0.7646 | yes | Lesson 4: Visionary Leadership |
+| 5 | 0.7448 | yes | Lesson 2: Five Levels of Leadership |
+
+**Probe B — "the law of empowerment"** (probe: the French FBI 21-Lois 11-21 doc):
+
+| rank | sim | new FIRE row | title |
+|---|---|---|---|
+| 1 | 0.8050 | no | Maxwell 21 Laws — Biblical Applications (Laws 8-21) |
+| 2 | 0.7667 | no | Maxwell 21 Laws — Laws 11-21: Inner Circle to Legacy |
+| 3 | 0.6926 | yes | Lesson 34: The Law of Legacy |
+| 4 | 0.6864 | no | Maxwell 21 Laws — Biblical Applications (Laws 1-7) |
+| 5 | 0.6754 | yes | Lesson 26: The Law of Reproduction |
+
+New FIRE rows appear in the top 5 on both probes — three of five on A, two of
+five on B — and sit sensibly among the pre-existing material rather than
+displacing it wholesale. The retrieval path works.
+
+A genuine text-query test remains available cheaply: add `VOYAGE_API_KEY` to
+`.env.local` and the same two queries can be embedded at `input_type: 'query'`
+and run through `match_documents` exactly as the chat route does.
+
+### Remaining
+
+Nothing on embeddings. The FIRE material is live and retrievable. Still open
+elsewhere: 16 video placeholders (2 each, Modules 5-12, all Denis recordings)
+and Module 1's seven temporary video picks.
