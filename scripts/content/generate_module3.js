@@ -87,7 +87,6 @@ const section2 = {
   title: "Self-Awareness",
   blocks: [
     heading(2, "Self-Awareness"),
-    callout("note", "[INTERACTIVE PLACEHOLDER — pending Claude Code implementation] mood_checkin block. See MOOD_CHECKIN_SPEC.md for schema. Renders before any section content — reader selects a current mood, sees a one-line reflection tied to the module, then proceeds."),
     paragraph("The first domain, and the one every other domain depends on: knowing your own emotions as they happen — not an hour later, not in hindsight, as they happen."),
     table(
       ["Signs of high self-awareness", "Signs of low self-awareness"],

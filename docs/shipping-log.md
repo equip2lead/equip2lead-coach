@@ -190,6 +190,10 @@ slot, NOT vetted as the final pick for each section. Every one matches an option
 the original placeholder text itself named, so they are plausible stand-ins
 rather than arbitrary:
 
+> **Superseded 2026-10-02 — all four of these are now FINAL picks, not
+> stand-ins.** Denis confirmed them. Do not treat the "NOT vetted" wording above
+> as current. See the 2026-10-02 entry at the end of this log.
+
 | idx | was | now | placeholder had asked for |
 |---|---|---|---|
 | 57  | b_9e5ca1afa8f0 | b_78373b42f23f lmyZMtPVodo — Simon Sinek, TED | "Groeschel OR Sinek 'Why Good Leaders Make You Feel Safe'" |
@@ -2685,12 +2689,18 @@ Two smaller observations, neither acted on: the row sets `cover_image_alt` with
 `cover_image_url` null (same as Module 0), and it is the only module carrying a
 `source_document_id` (`11a366b0-5453-4317-864c-2e937dc3a4de`).
 
-**Module 1's seven videos remain temporary/demo picks** — unchanged by this pass
-and still the open item logged since 2026-09-09. Worth noting concretely now
+~~**Module 1's seven videos remain temporary/demo picks**~~ — unchanged by this
+pass and still the open item logged since 2026-09-09. Worth noting concretely now
 that the content is readable in one file: `b8B5T7qoovM` (the Denis placeholder)
 appears three times under three different titles, and the other four slots hold
 real third-party talks — Sinek `lmyZMtPVodo`, Groeschel `b5RlVhaT-DA`, Brené
-Brown `iCvmsMzlF7o` and `nKpQOc-9urs`. Replacing them is still its own job.
+Brown `iCvmsMzlF7o` and `nKpQOc-9urs`. ~~Replacing them is still its own job.~~
+
+> **Corrected 2026-10-02.** It is no longer seven. The four third-party talks
+> named above — Sinek `lmyZMtPVodo` (idx 57), Groeschel `b5RlVhaT-DA` (idx 129),
+> Brené Brown `iCvmsMzlF7o` (idx 245) and Maxwell `nKpQOc-9urs` (idx 302) — are
+> **FINAL**. Only the three `b8B5T7qoovM` stand-ins (idx 2, 8, 228) remain
+> temporary.
 
 **Full loop across all thirteen generators:**
 
@@ -2897,8 +2907,9 @@ M11-1 and M11-2 included. No regeneration is planned.**
 
 Nothing. **Image placeholders are finished track-wide.** The remaining media gap
 is 16 video placeholders (2 each in Modules 5 through 12), every one a Denis
-recording rather than third-party sourcing, plus Module 1's seven temporary
-video picks.
+recording rather than third-party sourcing, plus Module 1's three `b8B5T7qoovM`
+stand-in slots. (Module 1's four third-party picks became FINAL on 2026-10-02;
+they are no longer an open item.)
 
 A line was added to `docs/perf-debt.md`: 26 images now ship as unoptimised PNGs
 at 1.5-2.7 MB each, no `next/image`, no WebP. Deliberate for now; trigger to pay
@@ -3008,4 +3019,81 @@ and run through `match_documents` exactly as the chat route does.
 
 Nothing on embeddings. The FIRE material is live and retrievable. Still open
 elsewhere: 16 video placeholders (2 each, Modules 5-12, all Denis recordings)
-and Module 1's seven temporary video picks.
+and Module 1's three `b8B5T7qoovM` stand-in slots. (Module 1's four third-party
+picks became FINAL on 2026-10-02.)
+
+## 2026-10-02 — Module 1's third-party videos are final; M3's mood_checkin placeholder removed
+
+Two cleanups from Denis, no video content changed in either.
+
+### 1. Module 1's four third-party videos are FINAL
+
+Status change only, no data touched. These four have been carried as "temporary /
+demo" picks since 2026-09-09 and are now confirmed as the real selections:
+
+| Mod | idx | Video | YouTube |
+|---|---|---|---|
+| 1 | 57  | Why Good Leaders Make You Feel Safe — Simon Sinek, TED | `lmyZMtPVodo` |
+| 1 | 129 | Becoming a Leader People Love to Follow — Craig Groeschel | `b5RlVhaT-DA` |
+| 1 | 245 | The Power of Vulnerability — Brené Brown, TED | `iCvmsMzlF7o` |
+| 1 | 302 | Success is Inevitable… 5 Things Everyday! — John Maxwell | `nKpQOc-9urs` |
+
+Three earlier places in this log called them stand-ins and have been annotated
+rather than rewritten: the 2026-09-09 "External embeds (4)" table now carries a
+superseded note, and the 2026-09-29 "Module 1's seven videos remain
+temporary/demo picks" paragraph is struck through with a correction. The two
+"Remaining" summaries that said *seven* temporary picks now say *three*.
+
+**What is still temporary in Module 1: only the three `b8B5T7qoovM` Denis
+stand-ins at idx 2, 8 and 228.** The seven-item figure is retired.
+
+### 2. Module 3 idx 17 — mood_checkin placeholder removed
+
+Learners were seeing `[INTERACTIVE PLACEHOLDER — pending Claude Code
+implementation] mood_checkin block. See MOOD_CHECKIN_SPEC.md for schema.` in the
+middle of Section 2. It pointed at a spec file that does not exist in the repo,
+and nothing in `app/` or `components/` ever referenced `mood_checkin`. Removed.
+
+`scripts/content/generate_module3.js` lost the one `callout(...)` line; the live
+row was patched to match. Module 3: **119 → 118 blocks**, 8 sections unchanged.
+Section 2 now runs heading → paragraph directly, which reads correctly.
+
+Checked before writing, because removing a mid-array block re-ids everything
+after it:
+
+- all 119 live ids reproduced from `sha256(slug|index|type)` before the edit, so
+  a wholesale recompute was safe
+- no user data is keyed on block ids — `lesson_scorecard_ratings` uses
+  `(lesson_module_id, scorecard_key, item_key)`, `lesson_assignment_submissions`
+  uses `assignment_key`, and `lesson_progress.metadata` holds only
+  `sections_completed: number[]` (section numbers, and the section count did not
+  change, so no learner's progress moved)
+
+The write was one guarded statement — `body_blocks - 17` then an array-wide
+`jsonb_set` id recompute, gated on `jsonb_array_length = 119` and
+`body_blocks->17->>'id' = 'b_3dbe7bc7fa61'`.
+
+After: **0 id mismatches across all 1,796 blocks track-wide**, no duplicate ids,
+and `check-generators.sh` reports ZERO DIFFERENCES on all thirteen generators
+(M3 live 118 / generated 118). Track total 1,797 → 1,796.
+
+### Not a bug — a possible future feature
+
+The mood check-in was never broken; it was never built. Recording it here as an
+idea rather than debt, so nobody hunts for a regression:
+
+> **Possible future feature — module mood check-in.** A short interactive block
+> at the head of a section: the reader picks a current mood from a handful of
+> qualitative states and gets a one-line reflection tied to the module before
+> continuing. The 2026-09-09 investigation found `weekly_checkins` already stores
+> a numeric 1-5 mood keyed by `week_number`, which is a different shape — a
+> qualitative in-module state is not the same thing as a weekly score, so this
+> would need its own storage and its own block type. No spec file survives; the
+> idea would start fresh. Nothing depends on it.
+
+### Still open
+
+Unchanged by this pass: 16 video placeholders (2 each, Modules 5-12, all Denis
+recordings) and Module 1's three `b8B5T7qoovM` stand-in slots — 24 recording
+slots in total. **Placeholders of every other kind are now finished track-wide:
+zero image placeholders, zero interactive placeholders.**
