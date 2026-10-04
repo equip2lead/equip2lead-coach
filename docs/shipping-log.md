@@ -3097,3 +3097,48 @@ Unchanged by this pass: 16 video placeholders (2 each, Modules 5-12, all Denis
 recordings) and Module 1's three `b8B5T7qoovM` stand-in slots — 24 recording
 slots in total. **Placeholders of every other kind are now finished track-wide:
 zero image placeholders, zero interactive placeholders.**
+
+## 2026-10-04 — Recording scripts land in the repo; exports/ ignored
+
+### Video scripts tracked at docs/scripts/
+
+Denis's two script documents are now in the repo. Both were verified page by
+page before committing — the contents were read, not just the filenames trusted.
+
+| File | Pages | Scripts | Covers |
+|---|---|---|---|
+| `module_video_scripts.pdf` | 8 | 16 | Modules 5-12, intro + closing each |
+| `Video_Scripts_Modules_0-3.pdf` | 10 | 8 | the eight `b8B5T7qoovM` stand-in slots |
+
+Together they cover **all 24 outstanding recording slots** — the 16 unfilled
+`[VIDEO PLACEHOLDER]` callouts in Modules 5-12 and the 8 live blocks still
+pointing at the temporary "Raising Standards" clip. Nothing is uncovered.
+
+The 0-3 document names its target slots by index — M0 idx 2, M1 idx 2 / 8 / 228,
+M2 idx 2 / 87, M3 idx 2 / 40 — and all eight match the live rows exactly.
+
+Both are PDFs, including the Modules 5-12 one that was first described as
+markdown. Worth noting for anyone editing later: a PDF commits as an opaque
+binary, so changes to these won't diff. If they start being revised often,
+converting to markdown is the fix.
+
+Every script is complete prose ready to read aloud, with deliberate
+`[YOUR STORY — …]` gaps where a real personal account is required. Those gaps
+are by design, not missing content.
+
+### exports/ is gitignored
+
+`Equip2Lead_Leadership_Track_Full_Content.docx` — the full word-for-word Word
+export of all thirteen modules — is generated from production on demand into
+`exports/`, which sits inside the working tree. It is a build artifact, not
+source, so `exports/` is now ignored rather than left untracked where a stray
+`git add .` could commit 200 KB of generated binary.
+
+The export itself verified clean: 1,796 blocks, all 2,868 content strings present
+verbatim, and word counts reconciling exactly as
+block words + subtitles + export labels (66,121 + 79 + 985 = 67,185).
+
+### Still open
+
+The 24 recording slots are now fully scripted but not yet recorded. That is the
+only outstanding media work on the track.
