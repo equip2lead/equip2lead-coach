@@ -6,3 +6,6 @@ node_modules/
 *.psd
 *.DS_Store
 .vercel
+
+# Generated content exports — never committed (see docs/shipping-log.md)
+exports/
