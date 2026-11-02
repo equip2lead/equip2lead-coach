@@ -24,9 +24,13 @@ export function NextStep({ data }: { data: DashboardData }) {
           </h2>
           <div className="rounded-2xl border border-gray-200 bg-white p-8 max-md:p-6">
             <p className="text-[17px] leading-[1.6] text-gray-700" style={{ fontFamily: SERIF }}>
-              {lang === 'en'
-                ? 'You’ve finished everything currently available. Module 2 is coming soon.'
-                : 'Vous avez terminé tout ce qui est disponible. Le Module 2 arrive bientôt.'}
+              {data.trackSlug === 'leadership'
+                ? (lang === 'en'
+                    ? 'You’ve finished everything currently available. Module 2 is coming soon.'
+                    : 'Vous avez terminé tout ce qui est disponible. Le Module 2 arrive bientôt.')
+                : (lang === 'en'
+                    ? 'You’ve finished everything currently available. Your next module is coming soon.'
+                    : 'Vous avez terminé tout ce qui est disponible. Votre prochain module arrive bientôt.')}
             </p>
           </div>
         </div>

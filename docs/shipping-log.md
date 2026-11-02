@@ -3208,3 +3208,57 @@ modules, so the message goes away with the first one published.
 
 The dashboard no longer tells these users "You've finished everything", "No
 modules match these filters", or "Your Starting Point is ready when you are."
+
+## 2026-11-02 — Marriage Module 0 prepared: "Starting Point — Clarity Before Covenant"
+
+**Status when written: the row is not yet in the database.** The Supabase connector
+was down, and the public key can't write to `lesson_modules`. Everything up to the
+insert is done and verified.
+
+### Generator
+
+`scripts/content/marriage/generate_module0.js` is ported from
+`build_module0_marriage.py` into the helper-based Leadership shape. Against the
+authored JSON: 151 blocks in, 151 out, one difference. The module title is a level 2
+heading rather than level 1, because `ingest-module.mjs` rejects level 1 and the
+renderer has none. The splitter still files it under front matter.
+
+### Checks
+
+`scripts/test-marriage-module0.mjs` runs the real generator, ingest script and
+splitter: 37 of 37. It confirms 10 sections with the right titles, ids by
+`sha256(slug|index|type)`, one each of scorecard, assignment, quiz and video, and 6
+image and 4 video placeholders kept as callouts. 38 browser checks of the real
+content passed against a local stand-in for Supabase.
+
+Video `8KkKuTCFvzI`: oEmbed 200, author TED, title "What Makes a Good Life? Lessons
+from the Longest Study on Happiness | Robert Waldinger | TED"; youtube-nocookie 200.
+
+No week linking. No change to any Leadership row or to `knowledge_documents`.
+
+### Tooling
+
+- `ingest-module.mjs` accepts an authored `slug`. A module without one still derives
+  it from the title.
+- `check-generators.sh` and `compare-live.py` are now track-aware. Both Leadership
+  and Marriage have a Module 0, and matching on the number alone could have compared
+  a generator with the wrong row.
+- `check-generators.sh` can now fail. It read `PIPESTATUS` after an `echo`, so it got
+  the echo's status and exited 0 even when a generator had drifted.
+
+### App wording
+
+Outside Leadership, the dashboard no longer says the Starting Point "sets the
+definition of leadership", or "Module 2 is coming soon" once everything published
+is finished. Leadership's wording is unchanged.
+
+### Still open
+
+- Insert and publish the row, then run `check-generators.sh marriage:0`.
+- `is_published` is the only gate and previews share the production database, so
+  publishing makes the module live for Marriage users at once.
+- The module says "nobody sees this but you" and "read only by you", but admins can
+  read scorecard ratings and assignment submissions.
+- The overview byline is hard-coded to "By Dr. Denis Ekobena"; the module credits
+  Denis & Arit.
+- One `oriented` greeting variant says "more than most leaders can say".

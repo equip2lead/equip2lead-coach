@@ -26,8 +26,11 @@ export function Greeting({ data }: { data: DashboardData }) {
   const days = daysSince(data.lastActivityAt);
 
   // The last line hands off to the next module. With none published it would
-  // promise a Starting Point directly above the coming-soon message.
-  const lines = modules.length === 0 ? copy.lines.slice(0, -1) : copy.lines;
+  // promise a Starting Point directly above the coming-soon message, and a track
+  // whose published modules are all finished has nothing to hand off to.
+  const nothingNext =
+    modules.length === 0 || (data.trackSlug !== 'leadership' && data.nextStep.kind === 'all_done');
+  const lines = nothingNext ? copy.lines.slice(0, -1) : copy.lines;
 
   return (
     <section className="px-8 pt-14 pb-10 max-md:px-5 max-md:pt-10">

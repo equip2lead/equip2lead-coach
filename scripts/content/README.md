@@ -5,8 +5,13 @@ One generator per lesson module. Each builds the module's `body_blocks` as JSON;
 `lesson_modules`.
 
 ```
-node scripts/content/generate_moduleN.js     # writes moduleN_leadership.json to cwd
+node scripts/content/generate_moduleN.js            # writes moduleN_leadership.json to cwd
+node scripts/content/marriage/generate_moduleN.js   # writes moduleN_marriage.json to cwd
 ```
+
+Leadership generators sit directly in this folder. Any other track has a folder of
+its own, and `check-generators.sh` picks those up automatically. Run generators
+from a scratch directory, because they write to the current one.
 
 ## These must stay in step with the database
 

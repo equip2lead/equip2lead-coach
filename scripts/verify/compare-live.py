@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Diff a generator's output against the live row for the same module.
 
-    python3 scripts/verify/compare-live.py <module_number> <generated.json> <live_snapshot.json>
+    python3 scripts/verify/compare-live.py <module_number> <generated.json> <live_snapshot.json> [track]
 
-<generated.json> is what scripts/content/generate_moduleN.js writes.
-<live_snapshot.json> is the array of rows fetched by fetch-live.sh.
+<generated.json> is what a generator under scripts/content/ writes.
+<live_snapshot.json> is the array of rows fetched by check-generators.sh.
+[track] defaults to leadership. Module numbers repeat across tracks.
 
 Block ids and assignment_key are ignored: ids are derived from position and
 type, and assignment_key is assigned at ingest, so neither is authored content.
@@ -12,14 +13,16 @@ Exit status is 0 when the generator reproduces production exactly.
 """
 import json, sys, difflib
 
-if len(sys.argv) != 4:
+if len(sys.argv) not in (4, 5):
     sys.exit(__doc__)
 
 mod, generated_path, live_path = int(sys.argv[1]), sys.argv[2], sys.argv[3]
+track = sys.argv[4] if len(sys.argv) == 5 else 'leadership'
 
-rows = [r for r in json.load(open(live_path)) if r['module_number'] == mod]
+rows = [r for r in json.load(open(live_path))
+        if r['module_number'] == mod and (r.get('tracks') or {}).get('slug') == track]
 if not rows:
-    sys.exit(f'  module {mod} not present in {live_path}')
+    sys.exit(f'  {track} module {mod} not present in {live_path}')
 live = rows[0]['body_blocks']
 
 src = json.load(open(generated_path))

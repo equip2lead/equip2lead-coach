@@ -65,7 +65,13 @@ const blocks = src.blocks;
 if (!Array.isArray(blocks)) die('blocks is not an array');
 if (!meta.title) die('new_row_data.title is missing — slug and title_en depend on it');
 
-const slug = slugify(meta.title);
+// Derived from the title unless the module authors its own. Every module before
+// Marriage's derives it; block ids hash the slug, so an authored one must match
+// what the generator declares.
+if (meta.slug !== undefined && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(meta.slug)) {
+  die(`new_row_data.slug '${meta.slug}' is not a lowercase hyphenated slug`);
+}
+const slug = meta.slug ?? slugify(meta.title);
 
 // ── difficulty ──────────────────────────────────────────────────────────────
 let difficulty = meta.difficulty;
@@ -218,7 +224,7 @@ const PASSTHROUGH = {
   sort_order: 'sort_order',
 };
 // Handled above by a transform of their own, so not "unmapped".
-const TRANSFORMED = new Set(['title', 'track', 'pillar', 'difficulty']);
+const TRANSFORMED = new Set(['title', 'slug', 'track', 'pillar', 'difficulty']);
 
 const row = {
   slug,

@@ -300,7 +300,7 @@ export async function getDashboardData(): Promise<DashboardData | null> {
     submissionCount: allSubmissions.length,
     pillars, assessmentTakenAt,
     lastActivityAt, lastActivityKind,
-    nextStep: pickNextStep(modules, pillars, nextStepMode, lang),
+    nextStep: pickNextStep(modules, pillars, nextStepMode, lang, trackSlug),
   };
 }
 
@@ -316,7 +316,8 @@ export async function getDashboardData(): Promise<DashboardData | null> {
  * next most useful thing". Sequential mode simply walks the numbers.
  */
 export function pickNextStep(
-  modules: ModuleCard[], pillars: PillarScore[], mode: NextStepMode, lang: 'en' | 'fr'
+  modules: ModuleCard[], pillars: PillarScore[], mode: NextStepMode, lang: 'en' | 'fr',
+  trackSlug: string | null = 'leadership'
 ): NextStep {
   const unfinished = modules.filter((m) => m.status !== 'completed');
   if (unfinished.length === 0) return { kind: 'all_done' };
@@ -326,9 +327,13 @@ export function pickNextStep(
     return {
       kind: 'module',
       module: start,
-      reason: lang === 'en'
-        ? 'The orientation the rest of the programme assumes. It sets the definition of leadership everything else builds on.'
-        : "L'orientation que suppose le reste du programme. Elle pose la définition du leadership sur laquelle tout repose.",
+      reason: trackSlug === 'leadership'
+        ? (lang === 'en'
+            ? 'The orientation the rest of the programme assumes. It sets the definition of leadership everything else builds on.'
+            : "L'orientation que suppose le reste du programme. Elle pose la définition du leadership sur laquelle tout repose.")
+        : (lang === 'en'
+            ? 'The orientation the rest of this track builds on. Begin here.'
+            : "L'orientation sur laquelle repose tout le reste de ce parcours. Commencez ici."),
     };
   }
 
