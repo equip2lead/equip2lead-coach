@@ -9,6 +9,10 @@ const SERIF = "Georgia, 'Libre Baskerville', serif";
 export function NextStep({ data }: { data: DashboardData }) {
   const { lang, nextStep, nextStepMode } = data;
 
+  // No modules at all also reaches 'all_done' below, which would congratulate
+  // someone who hasn't started. The grid carries the coming-soon message instead.
+  if (data.modules.length === 0) return null;
+
   const heading = lang === 'en' ? 'Your next step' : 'Votre prochaine étape';
 
   if (nextStep.kind === 'all_done') {

@@ -3142,3 +3142,69 @@ block words + subtitles + export labels (66,121 + 79 + 985 = 67,185).
 
 The 24 recording slots are now fully scripted but not yet recorded. That is the
 only outstanding media work on the track.
+
+## 2026-11-02 — Marriage safety response, retake track, visible save errors
+
+Commit `d64d56d`, live at app.equip2lead.coach. No schema change: the flag lives
+in the existing `journeys.pre_assessment_data` JSON.
+
+### Safety response
+
+"No — I have serious concerns" or "Sometimes — it depends" opens a private
+safety screen with Quick exit, on both `/intake` and `/pre-assessment`.
+
+- `safety_concern` is saved at once and stays set through retakes. People who
+  gave these answers before the flag existed are treated the same way, with no
+  data migration.
+- Flagged journeys get a support card in place of the plan, scores, and lessons.
+  Existing plans are hidden, not deleted. `/api/plan-generate` refuses them with
+  403 `safety_hold`.
+- The AI Coach reads the flag on the server across all the user's journeys, uses
+  a separate safety prompt, and skips the knowledge base.
+- `spouse_invite_blocked` is recorded for any safety concern and for "They don't
+  know yet". Nothing sends spouse invitations today; any future invite feature
+  must check this first.
+- The untrue invitation and shared-plan copy is gone from track selection.
+
+### Other fixes
+
+- `/api/chat` now requires login and only loads coaching memory for the caller's
+  own journey. Before this it had no login check and used the service-role key.
+- The dashboard Retake link carries the current track, so a Marriage user no
+  longer lands in the Leadership questionnaire.
+- Intake and pre-assessment saves are checked, including updates that change zero
+  rows. A failed save shows an error and does not move on.
+
+### Testing
+
+`scripts/test-safety.mjs` (49 checks) ships with the fix. 79 browser checks ran
+against a local stand-in for Supabase, kept outside the repo. Those did not cover
+real AI replies or the live database's security rules.
+
+### Follow-up needed (not now)
+
+**Admin screen to review and clear safety flags.** The flag is deliberately not
+cleared by a later "Yes, always", because a retake could happen under pressure
+from a partner. Until this screen exists, clearing a flag means a manual database
+edit, and removing `safety_concern` alone is not enough: a stored concern answer
+sets it again.
+
+### Still open
+
+- "Retake" rewrites the context answers but does not recalculate pillar scores.
+- The spouse flow itself is not built: no invite, linking, or shared plan. Some
+  copy still implies it ("Separate intakes for couples" on the auth page, "Each
+  spouse completes intake individually" on track selection, and the database
+  track description).
+- `/intake` opens in English until the reader switches, so a French reader who
+  doesn't switch sees the safety screen in English.
+
+## 2026-11-02 — Coming-soon message for tracks with no modules
+
+Marriage, Ministry, Entrepreneur and Personal have no published modules yet. The
+Lessons page and dashboard module grid now show "Your lessons are being prepared
+— coming soon." in English and French. The check reads each track's published
+modules, so the message goes away with the first one published.
+
+The dashboard no longer tells these users "You've finished everything", "No
+modules match these filters", or "Your Starting Point is ready when you are."

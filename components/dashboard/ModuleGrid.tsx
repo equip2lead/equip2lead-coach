@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { ModuleCard } from '@/lib/dashboard/data';
+import { LessonsComingSoon } from '@/components/lessons/LessonsComingSoon';
 
 const DISPLAY = "'Plus Jakarta Sans', sans-serif";
 const SERIF = "Georgia, 'Libre Baskerville', serif";
@@ -133,6 +134,20 @@ export function ModuleGrid({
   const statusLabel: Record<Status, string> = {
     in_progress: t.in_progress, not_started: t.not_started, completed: t.completed,
   };
+
+  // A track with no modules yet has nothing to filter, so no filters either.
+  if (modules.length === 0) {
+    return (
+      <section className="px-8 pb-12 max-md:px-5">
+        <div className="mx-auto max-w-[900px]">
+          <h2 className="mb-5 text-[12px] font-bold uppercase tracking-wider text-gray-500" style={{ fontFamily: DISPLAY }}>
+            {t.heading}
+          </h2>
+          <LessonsComingSoon lang={lang} />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="px-8 pb-12 max-md:px-5">

@@ -25,6 +25,9 @@ export function Greeting({ data }: { data: DashboardData }) {
   const copy = greetingFor(state, lang, nextStepMode);
   const days = daysSince(data.lastActivityAt);
 
+  // The last line hands off to the next module. With none published it would
+  // promise a Starting Point directly above the coming-soon message.
+  const lines = modules.length === 0 ? copy.lines.slice(0, -1) : copy.lines;
 
   return (
     <section className="px-8 pt-14 pb-10 max-md:px-5 max-md:pt-10">
@@ -58,7 +61,7 @@ export function Greeting({ data }: { data: DashboardData }) {
             </p>
           )}
 
-          {copy.lines.map((line, i) => (
+          {lines.map((line, i) => (
             <p key={i} className="text-[18px] max-md:text-[17px] leading-[1.6] text-gray-700" style={{ fontFamily: SERIF }}>
               {line}
             </p>
