@@ -1,12 +1,15 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { Logo } from '@/components/Logo';
+import { SafetyScreen } from '@/components/safety/SafetyScreen';
+import { saveAssessmentData } from '@/lib/assessment-save';
+import { isSafetyConcernAnswer } from '@/lib/safety';
 
 /* ═══ CONTEXT QUESTIONS PER TRACK (Phase 1) ═══ */
 type CtxSelect = { type: 'select'; en: string; fr: string; tag?: string; tagFr?: string; options: string[]; optionsFr: string[] };
@@ -100,7 +103,13 @@ function IntakeContent() {
   const [journeyId, setJourneyId] = useState<string | null>(null);
 
   // Phase: 'context' | 'assessment' | 'vision' | 'complete'
-  const [phase, setPhase] = useState<'context' | 'pillar-intro' | 'assessment' | 'vision' | 'saving' | 'complete'>('context');
+  const [phase, setPhase] = useState<'context' | 'pillar-intro' | 'assessment' | 'vision' | 'safety' | 'saving' | 'complete'>('context');
+  const [saveError, setSaveError] = useState(false);
+  const [safetySaving, setSafetySaving] = useState(false);
+  const [safetySaved, setSafetySaved] = useState(false);
+  const [safetySaveFailed, setSafetySaveFailed] = useState(false);
+  // Likert answers whose save failed, retried before the reader can move on.
+  const failedLikert = useRef(new Map<string, { pi: number; di: number; qi: number; value: number }>());
   const [ctxStep, setCtxStep] = useState(0);
   const [ctxAnswers, setCtxAnswers] = useState<Record<number, any>>({});
   const [visionStep, setVisionStep] = useState(0);
@@ -165,6 +174,8 @@ function IntakeContent() {
           const { data: nj } = await supabase.from('journeys').insert({ user_id: user!.id, track_id: track.id }).select('id, pre_assessment_data').single();
           journey = nj;
         }
+        // Without a journey, nothing the reader answers could be saved.
+        if (!journey) { if (!cancelled) setError(lang === 'en' ? 'We could not start your assessment. Please reload and try again.' : "Impossible de démarrer votre évaluation. Veuillez recharger la page et réessayer."); return; }
         if (journey) {
           setJourneyId(journey.id);
           // Restore existing Likert answers
@@ -189,15 +200,28 @@ function IntakeContent() {
   }, [trackSlug, user?.id]);
 
   // ── Save single Likert answer ──
-  const saveLikert = async (pi: number, di: number, qi: number, value: number) => {
-    if (!journeyId || !pillars[pi]) return;
-    const q = pillars[pi].dims[di].questions[qi];
-    await supabase.from('responses').upsert({ journey_id: journeyId, question_id: q.id, pillar_id: pillars[pi].id, value }, { onConflict: 'journey_id,question_id' });
+  const saveLikert = async (pi: number, di: number, qi: number, value: number): Promise<boolean> => {
+    const key = `${pi}-${di}-${qi}`;
+    let failed = !journeyId || !pillars[pi];
+    if (!failed) {
+      const q = pillars[pi].dims[di].questions[qi];
+      const { error } = await supabase.from('responses').upsert({ journey_id: journeyId, question_id: q.id, pillar_id: pillars[pi].id, value }, { onConflict: 'journey_id,question_id' });
+      failed = !!error;
+    }
+    if (failed) { failedLikert.current.set(key, { pi, di, qi, value }); setSaveError(true); return false; }
+    failedLikert.current.delete(key);
+    if (failedLikert.current.size === 0) setSaveError(false);
+    return true;
+  };
+
+  const retryFailedLikert = async (): Promise<boolean> => {
+    const results = await Promise.all(Array.from(failedLikert.current.values()).map(f => saveLikert(f.pi, f.di, f.qi, f.value)));
+    return results.every(Boolean);
   };
 
   // ── Compute pillar score ──
-  const computePillarScore = async (pi: number) => {
-    if (!journeyId) return;
+  const computePillarScore = async (pi: number): Promise<boolean> => {
+    if (!journeyId) return false;
     const pil = pillars[pi];
     const subScores: Record<string, number> = {};
     let total = 0, count = 0;
@@ -209,16 +233,32 @@ function IntakeContent() {
       total += s; count += c;
     });
     const score = count > 0 ? total / count : 0;
-    await supabase.from('pillar_scores').upsert({ journey_id: journeyId, pillar_id: pil.id, score: parseFloat(score.toFixed(2)), max_score: 5.00, sub_domain_scores: subScores }, { onConflict: 'journey_id,pillar_id' });
+    const { error } = await supabase.from('pillar_scores').upsert({ journey_id: journeyId, pillar_id: pil.id, score: parseFloat(score.toFixed(2)), max_score: 5.00, sub_domain_scores: subScores }, { onConflict: 'journey_id,pillar_id' });
+    return !error;
   };
 
   // ── Save context + vision to journey ──
-  const saveAllData = async () => {
-    if (!journeyId) return;
+  const saveAllData = async (): Promise<boolean> => {
+    if (!journeyId) return false;
     const preData: Record<string, any> = {};
     ctxSteps.forEach((s, i) => { preData[`context_${i}`] = { question: s.en, answer: ctxAnswers[i] }; });
     visSteps.forEach((s, i) => { preData[`vision_${i}`] = { question: s.en, answer: visionAnswers[i] }; });
-    await supabase.from('journeys').update({ pre_assessment_data: preData, updated_at: new Date().toISOString() }).eq('id', journeyId);
+    return saveAssessmentData(supabase, journeyId, preData);
+  };
+
+  // ── Safety: saved as soon as the screen opens, in case the reader exits ──
+  const saveSafetyAnswers = async (): Promise<boolean> => {
+    setSafetySaving(true);
+    setSafetySaveFailed(false);
+    const ok = await saveAllData();
+    setSafetySaving(false);
+    setSafetySaved(ok);
+    setSafetySaveFailed(!ok);
+    return ok;
+  };
+
+  const continueFromSafety = async () => {
+    if (safetySaved || await saveSafetyAnswers()) window.location.replace('/dashboard');
   };
 
   // ── Current sub-domain questions for grouped display ──
@@ -232,11 +272,13 @@ function IntakeContent() {
   // ── Navigation handlers ──
   const nextDim = async () => {
     if (!pil) return;
+    if (!await retryFailedLikert()) return;
     if (currentDim < pil.dims.length - 1) {
       setCurrentDim(currentDim + 1);
     } else {
       // Pillar complete — compute score
-      await computePillarScore(currentPillar);
+      if (!await computePillarScore(currentPillar)) { setSaveError(true); return; }
+      setSaveError(false);
       if (currentPillar < pillars.length - 1) {
         setCurrentPillar(currentPillar + 1);
         setCurrentDim(0);
@@ -408,6 +450,11 @@ function IntakeContent() {
           );
         })()}
 
+        {/* ═══ SAFETY ═══ */}
+        {phase === 'safety' && (
+          <SafetyScreen lang={lang} onContinue={continueFromSafety} saving={safetySaving} saveFailed={safetySaveFailed} />
+        )}
+
         {/* ═══ SAVING ═══ */}
         {phase === 'saving' && (
           <div className="text-center animate-[fadeIn_0.3s_ease]">
@@ -431,8 +478,15 @@ function IntakeContent() {
       </div>
 
       {/* ═══ FOOTER NAV ═══ */}
-      {phase !== 'saving' && phase !== 'complete' && phase !== 'pillar-intro' && (
+      {phase !== 'saving' && phase !== 'complete' && phase !== 'pillar-intro' && phase !== 'safety' && (
         <div className="sticky bottom-0 bg-white border-t border-gray-100 px-6 py-4">
+          {saveError && (
+            <p role="alert" className="max-w-[600px] mx-auto mb-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[14px] text-red-800">
+              {lang === 'en'
+                ? 'We could not save your latest answers. Please check your connection and try again.'
+                : 'Nous n’avons pas pu enregistrer vos dernières réponses. Veuillez vérifier votre connexion et réessayer.'}
+            </p>
+          )}
           <div className="max-w-[600px] mx-auto flex items-center justify-between">
             <button onClick={() => {
               if (phase === 'context' && ctxStep > 0) setCtxStep(ctxStep - 1);
@@ -460,10 +514,20 @@ function IntakeContent() {
                 const a = visionAnswers[visionStep];
                 const valid = s.type === 'select' ? a !== undefined : s.type === 'text' ? a?.trim().length > 0 : s.type === 'multi' ? a?.length > 0 : true;
                 if (!valid) return;
+                if (isSafetyConcernAnswer(s.en, a)) {
+                  setPhase('safety');
+                  saveSafetyAnswers();
+                  return;
+                }
                 if (visionStep < visSteps.length - 1) setVisionStep(visionStep + 1);
                 else {
                   setPhase('saving');
-                  await saveAllData();
+                  if (!await saveAllData()) {
+                    setPhase('vision');
+                    setSaveError(true);
+                    return;
+                  }
+                  setSaveError(false);
                   router.push(`/plan-generation?track=${trackSlug}`);
                 }
               }

@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { AppShell, type ShellData } from '@/components/shell/AppShell';
+import { hasSafetyConcern } from '@/lib/safety';
 
 // Route group: the parentheses keep these URLs exactly as they were —
 // /dashboard is still /dashboard. What changes is that the sidebar now lives
@@ -33,7 +34,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const { data: journey } = await supabase
     .from('journeys')
-    .select('id, status, track_id, tracks(slug, name_en, name_fr)')
+    .select('id, status, track_id, pre_assessment_data, tracks(slug, name_en, name_fr)')
     .eq('user_id', user.id)
     .order('started_at', { ascending: false })
     .limit(1)
@@ -69,6 +70,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     trackIcon: trackMeta[trackSlug]?.icon || '👑',
     scoredCount,
     totalPillars,
+    safetyConcern: hasSafetyConcern(journey?.pre_assessment_data),
   };
 
   return <AppShell data={data}>{children}</AppShell>;

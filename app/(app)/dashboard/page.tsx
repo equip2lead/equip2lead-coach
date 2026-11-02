@@ -7,6 +7,7 @@ import { WhatYouveWritten } from '@/components/dashboard/WhatYouveWritten';
 import { ModuleGrid } from '@/components/dashboard/ModuleGrid';
 import { YourPillars } from '@/components/dashboard/YourPillars';
 import { ClosingWord } from '@/components/dashboard/ClosingWord';
+import { SafetySupportCard } from '@/components/dashboard/SafetySupportCard';
 
 // The coach's office. Text-forward at the top, browsable in the middle,
 // lightly data-informed at the bottom — a server component throughout, with
@@ -22,6 +23,14 @@ export default async function DashboardPage() {
   // A reader with no journey has not chosen a track yet, and every block below
   // is about a track. Sending them to choose one is the only useful answer.
   if (!data.journeyId) redirect('/track-selection');
+
+  if (data.safetyConcern) {
+    return (
+      <div className="min-h-screen bg-[#F9FAFB]">
+        <SafetySupportCard lang={data.lang} />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">

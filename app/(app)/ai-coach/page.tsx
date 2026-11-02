@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { switchLanguage } from '@/lib/language';
 import { useAuth } from '@/lib/hooks/useAuth';
+import { hasSafetyConcern, SAFETY_COACH_COPY } from '@/lib/safety';
+import { QuickExitButton } from '@/components/safety/SafetyScreen';
 
 const SendIcon = () => <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>;
 const SparkIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
@@ -46,6 +48,8 @@ export default function AiCoachPage() {
   const [coachContext, setCoachContext] = useState<any>(null);
   const [trackSlug, setTrackSlug] = useState('leadership');
   const [journeyId, setJourneyId] = useState<string | null>(null);
+  const [safetyMode, setSafetyMode] = useState(false);
+  const safetyLangApplied = useRef(false);
   const [conversationId] = useState(() => crypto.randomUUID());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -89,11 +93,28 @@ export default function AiCoachPage() {
       setTrackSlug(slug);
       setJourneyId(journey.id);
 
+      // Every journey, as the server does: a concern on an older one still counts.
+      const { data: allJourneys } = await supabase.from('journeys')
+        .select('pre_assessment_data').eq('user_id', user!.id);
+      const flagged = (allJourneys || []).some((j: any) => hasSafetyConcern(j.pre_assessment_data));
+      setSafetyMode(flagged);
+
       const [scoresRes, planRes, profileRes] = await Promise.all([
         supabase.from('pillar_scores').select('pillar_id, score, sub_domain_scores, pillars(name_en)').eq('journey_id', journey.id),
         supabase.from('coaching_plans').select('focus_areas, coach_lens_summary').eq('journey_id', journey.id).single(),
-        supabase.from('profiles').select('full_name').eq('id', user!.id).single(),
+        supabase.from('profiles').select('full_name, preferred_language').eq('id', user!.id).single(),
       ]);
+
+      // This page starts in English whatever the reader's language. In safety
+      // mode their first screen must be in their own language, so follow their
+      // saved preference once; the language button still works after that.
+      if (flagged && !safetyLangApplied.current) {
+        safetyLangApplied.current = true;
+        if (profileRes.data?.preferred_language === 'fr' && lang !== 'fr') {
+          setLang('fr');
+          return;
+        }
+      }
 
       const ctx: any = {
         journeyId: journey.id,
@@ -117,7 +138,9 @@ export default function AiCoachPage() {
       const welcomeName = ctx.userName.split(' ')[0];
       const hasScores = ctx.pillarScores.length > 0;
       let welcome = '';
-      if (lang === 'fr') {
+      if (flagged) {
+        welcome = SAFETY_COACH_COPY[lang].welcome(welcomeName);
+      } else if (lang === 'fr') {
         welcome = `Bonjour ${welcomeName} ! 👋 Je suis votre Coach IA Equip2Lead, formé sur le cadre du Dr. Ekobena.\n\n`;
         if (hasScores) {
           const lowest = [...ctx.pillarScores].sort((a: any, b: any) => a.score - b.score)[0];
@@ -221,7 +244,10 @@ export default function AiCoachPage() {
             </div>
           </div>
         </div>
-        <button onClick={() => switchLanguage(lang === 'en' ? 'fr' : 'en', user!.id, supabase, setLang)} className="px-2.5 py-1 rounded-md border border-gray-200 bg-transparent text-[11px] font-semibold text-gray-500 cursor-pointer" style={{ fontFamily: 'inherit' }}>🌐 {lang === 'en' ? 'FR' : 'EN'}</button>
+        <div className="flex items-center gap-3">
+          {safetyMode && <QuickExitButton lang={lang} className="!px-3.5 !py-2 !text-[12.5px]" />}
+          <button onClick={() => switchLanguage(lang === 'en' ? 'fr' : 'en', user!.id, supabase, setLang)} className="px-2.5 py-1 rounded-md border border-gray-200 bg-transparent text-[11px] font-semibold text-gray-500 cursor-pointer" style={{ fontFamily: 'inherit' }}>🌐 {lang === 'en' ? 'FR' : 'EN'}</button>
+        </div>
       </div>
 
       {/* Messages */}
@@ -256,7 +282,7 @@ export default function AiCoachPage() {
           <div className="max-w-[700px] mx-auto">
             <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">{t.suggestLabel}</p>
             <div className="flex flex-wrap gap-2">
-              {(lang === 'en' ? trackSuggestions.en : trackSuggestions.fr).map((s, i) => (
+              {(safetyMode ? SAFETY_COACH_COPY[lang].suggestions : lang === 'en' ? trackSuggestions.en : trackSuggestions.fr).map((s, i) => (
                 <button key={i} onClick={() => sendMessage(s)}
                   className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-[13px] text-gray-700 font-medium cursor-pointer hover:border-[#F9250E] hover:text-[#F9250E] transition-all" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   {s}

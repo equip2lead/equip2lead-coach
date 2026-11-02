@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { createClient as createSessionClient } from '@/lib/supabase/server';
+import { buildSafetySystemPrompt, hasSafetyConcern } from '@/lib/safety';
 
 async function embedText(text: string): Promise<number[] | null> {
   try {
@@ -99,12 +101,30 @@ ${doc.content.slice(0, 500)}
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await createSessionClient();
+    const { data: { user } } = await session.auth.getUser();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
     const { messages, context } = await req.json();
     const apiKey = process.env.ANTHROPIC_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
     }
+
+    // Read on the server from every journey, not taken from the browser's
+    // context: the coach only loads the newest journey, and a concern on an older
+    // one still applies. If this can't be checked, the coach doesn't answer.
+    const { data: journeys, error: journeysError } = await session
+      .from('journeys')
+      .select('id, pre_assessment_data')
+      .eq('user_id', user.id);
+    if (journeysError) {
+      console.error('Safety check failed:', journeysError);
+      return NextResponse.json({ error: 'Could not verify account' }, { status: 503 });
+    }
+    const flaggedJourney = (journeys ?? []).find((j) => hasSafetyConcern(j.pre_assessment_data));
+    const ownsJourney = (journeys ?? []).some((j) => j.id === context?.journeyId);
 
     let contextBlock = '';
     let quality: 'strong' | 'weak' | 'none' = 'none';
@@ -119,8 +139,9 @@ export async function POST(req: NextRequest) {
         process.env.SUPABASE_SERVICE_ROLE_KEY!
       );
 
-      // RAG lookup
-      if (canDoRag) {
+      // RAG lookup. Skipped in safety mode: the knowledge base is full of
+      // couple-focused material that could suggest joint work.
+      if (canDoRag && !flaggedJourney) {
         try {
           const lastUserMessage = [...messages]
             .reverse()
@@ -140,7 +161,7 @@ export async function POST(req: NextRequest) {
       }
 
       // Cross-session memory
-      if (context?.journeyId) {
+      if (ownsJourney) {
         try {
           const { data: memData } = await supabase.rpc('get_coaching_memory_context', {
             p_journey_id: context.journeyId,
@@ -151,7 +172,14 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const systemPrompt = buildSystemPrompt(context, contextBlock, quality, memoryContext);
+    const systemPrompt = flaggedJourney
+      ? buildSafetySystemPrompt({
+          userName: context?.userName,
+          lang: context?.lang,
+          preAssessment: flaggedJourney.pre_assessment_data,
+          memoryContext,
+        })
+      : buildSystemPrompt(context, contextBlock, quality, memoryContext);
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',

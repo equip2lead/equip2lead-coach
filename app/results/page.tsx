@@ -9,6 +9,7 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import { switchLanguage } from '@/lib/language';
 import UserMenu from '@/components/UserMenu';
 import { Logo } from '@/components/Logo';
+import { hasSafetyConcern } from '@/lib/safety';
 
 const pillarColors = ['#2563EB', '#7C3AED', '#059669', '#DC2626', '#D97706'];
 
@@ -53,9 +54,13 @@ function ResultsContent() {
 
       // Get journey
       const { data: journey } = await supabase
-        .from('journeys').select('id')
+        .from('journeys').select('id, pre_assessment_data')
         .eq('user_id', user!.id).eq('track_id', track.id).single();
       if (!journey) { setNoData(true); setLoading(false); return; }
+      if (hasSafetyConcern(journey.pre_assessment_data)) {
+        window.location.replace('/dashboard');
+        return;
+      }
 
       // Get pillars
       const { data: pillars } = await supabase

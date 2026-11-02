@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
 import UserMenu from '@/components/UserMenu';
 import { Logo } from '@/components/Logo';
+import { hasSafetyConcern } from '@/lib/safety';
 
 const pillarColors = ['#2563EB', '#7C3AED', '#059669', '#DC2626', '#D97706'];
 
@@ -223,9 +224,13 @@ function PillarOverviewContent() {
       if (!trk) return;
 
       const { data: journey } = await supabase
-        .from('journeys').select('id')
+        .from('journeys').select('id, pre_assessment_data')
         .eq('user_id', user!.id).eq('track_id', trk.id).single();
       if (!journey) return;
+      if (hasSafetyConcern(journey.pre_assessment_data)) {
+        window.location.replace('/dashboard');
+        return;
+      }
 
       const { data: pillars } = await supabase
         .from('pillars').select('id, sort_order')

@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { isSafetyModePath } from '@/lib/shell/nav';
 import { SideRail } from './SideRail';
 import { MenuIcon } from './icons';
 
@@ -17,6 +19,7 @@ export type ShellData = {
   trackIcon: string;
   scoredCount: number;
   totalPillars: number;
+  safetyConcern: boolean;
 };
 
 export function AppShell({ data, children }: { data: ShellData; children: React.ReactNode }) {
@@ -27,6 +30,15 @@ export function AppShell({ data, children }: { data: ShellData; children: React.
   // profiles.preferred_language by the server layout, so a French reader now
   // gets French on arrival instead of English until they re-toggle.
   const [lang, setLang] = useState<'en' | 'fr'>(data.preferredLanguage);
+
+  // With a safety concern on the journey, lessons and tracks are couple-focused
+  // and score-led, so those routes go back to the support card.
+  const router = useRouter();
+  const pathname = usePathname();
+  const blocked = data.safetyConcern && !isSafetyModePath(pathname);
+  useEffect(() => {
+    if (blocked) router.replace('/dashboard');
+  }, [blocked, router]);
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]" style={{ fontFamily: "'Outfit', sans-serif" }}>
@@ -57,7 +69,7 @@ export function AppShell({ data, children }: { data: ShellData; children: React.
           Phase 5.5 mounts it here once the AI Coach panel gives it content;
           the flex row is kept so that is a one-line change. */}
       <div className="shell:ml-[260px] flex min-h-screen">
-        <main className="flex-1 min-w-0">{children}</main>
+        <main className="flex-1 min-w-0">{blocked ? null : children}</main>
       </div>
 
       {/* Fixed rather than living inside a page's header, so it works over

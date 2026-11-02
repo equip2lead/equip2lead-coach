@@ -58,7 +58,7 @@ export function YourPillars({ data }: { data: DashboardData }) {
               </>
             )}
             {canRetake ? (
-              <Link href="/pre-assessment" className="font-semibold text-[#F9250E] no-underline hover:underline">
+              <Link href={data.trackSlug ? `/pre-assessment?track=${data.trackSlug}` : '/track-selection'} className="font-semibold text-[#F9250E] no-underline hover:underline">
                 {lang === 'en' ? 'Retake' : 'Repasser'} →
               </Link>
             ) : (

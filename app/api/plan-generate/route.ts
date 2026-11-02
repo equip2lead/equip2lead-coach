@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { hasSafetyConcern } from '@/lib/safety';
 
 export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
@@ -35,6 +36,7 @@ type Score = { pillar_id: string; score: number; sub_domain_scores: Record<strin
 
 type Context = {
   journey: { id: string; track_id: string };
+  safetyConcern: boolean;
   language: 'en' | 'fr';
   trackName: string;
   pillars: Pillar[];
@@ -52,7 +54,7 @@ async function loadJourneyContext(
 ): Promise<Context | null> {
   const { data: journey } = await supabase
     .from('journeys')
-    .select('id, user_id, track_id, tracks(name_en, name_fr, slug)')
+    .select('id, user_id, track_id, pre_assessment_data, tracks(name_en, name_fr, slug)')
     .eq('id', journeyId)
     .single();
   if (!journey || journey.user_id !== userId) return null;
@@ -109,6 +111,7 @@ async function loadJourneyContext(
 
   return {
     journey: { id: journey.id, track_id: journey.track_id },
+    safetyConcern: hasSafetyConcern(journey.pre_assessment_data),
     language,
     trackName,
     pillars,
@@ -387,6 +390,9 @@ export async function POST(req: NextRequest) {
 
     const ctx = await loadJourneyContext(supabase, journey_id, user.id);
     if (!ctx) return NextResponse.json({ error: 'journey not found' }, { status: 404 });
+    if (ctx.safetyConcern) {
+      return NextResponse.json({ error: 'safety_hold' }, { status: 403 });
+    }
     if (ctx.scores.length === 0) {
       return NextResponse.json({ error: 'No assessment scores found' }, { status: 400 });
     }

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { switchLanguage } from '@/lib/language';
+import { hasSafetyConcern } from '@/lib/safety';
 
 /* ── Icons ── */
 /**
@@ -147,10 +148,14 @@ export default function WeeklyCheckinPage() {
     if (!user) return;
     async function load() {
       const { data: j } = await supabase
-        .from('journeys').select('id, current_week')
+        .from('journeys').select('id, current_week, pre_assessment_data')
         .eq('user_id', user!.id)
         .order('started_at', { ascending: false })
         .limit(1).single();
+      if (hasSafetyConcern(j?.pre_assessment_data)) {
+        window.location.replace('/dashboard');
+        return;
+      }
       if (j) {
         setJourneyId(j.id);
         setWeekNum(j.current_week || 1);

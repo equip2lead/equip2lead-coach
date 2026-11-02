@@ -38,6 +38,13 @@ export function buildNav(trackSlug: string): NavItemDef[] {
   ];
 }
 
+/** The routes that stay open to someone with a safety concern on their journey. */
+export function isSafetyModePath(path: string): boolean {
+  return ['/dashboard', '/ai-coach', '/settings', '/admin'].some(
+    (p) => path === p || path.startsWith(`${p}/`),
+  );
+}
+
 /** Compares against the pathname only — a nav href carrying a query string
     (Results) would never match otherwise. */
 export function isNavItemActive(item: NavItemDef, pathname: string): boolean {

@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { Logo } from '@/components/Logo';
+import { hasSafetyConcern } from '@/lib/safety';
 
 type Phase = 'metadata' | 'weeks-1-3' | 'weeks-4-6' | 'weeks-7-9' | 'weeks-10-12';
 
@@ -58,11 +59,15 @@ function PlanGenerationContent() {
 
       const { data: journey } = await supabase
         .from('journeys')
-        .select('id')
+        .select('id, pre_assessment_data')
         .eq('user_id', user.id)
         .eq('track_id', track.id)
         .single();
       if (!journey) throw new Error('Journey not found');
+      if (hasSafetyConcern(journey.pre_assessment_data)) {
+        window.location.replace('/dashboard');
+        return;
+      }
       setJourneyId(journey.id);
 
       // 3. Skip if plan already complete

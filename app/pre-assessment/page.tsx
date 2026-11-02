@@ -6,6 +6,9 @@ import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { Logo } from '@/components/Logo';
+import { SafetyScreen } from '@/components/safety/SafetyScreen';
+import { saveAssessmentData } from '@/lib/assessment-save';
+import { isSafetyConcernAnswer } from '@/lib/safety';
 
 /* ═══ STEP TYPES ═══ */
 type StepSelect = { type: 'select'; en: string; fr: string; tag?: string; tagFr?: string; options: string[]; optionsFr: string[] };
@@ -125,6 +128,11 @@ function PreAssessContent() {
   const [lang, setLang] = useState<'en' | 'fr'>('en');
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<number, any>>({});
+  const [saveError, setSaveError] = useState(false);
+  const [showSafety, setShowSafety] = useState(false);
+  const [safetySaving, setSafetySaving] = useState(false);
+  const [safetySaved, setSafetySaved] = useState(false);
+  const [safetySaveFailed, setSafetySaveFailed] = useState(false);
 
   const flow = flowsByTrack[trackSlug] || personalFlow;
   const total = flow.length;
@@ -143,24 +151,47 @@ function PreAssessContent() {
 
   const setAnswer = (val: any) => setAnswers(prev => ({ ...prev, [step]: val }));
 
+  // Saves the answers up to and including `lastStep`. Later sliders hold a
+  // default value the reader never chose, so they are left out of a partial save.
+  const saveAnswers = async (lastStep: number): Promise<boolean> => {
+    if (!user) return false;
+    const { data: track } = await supabase.from('tracks').select('id').eq('slug', trackSlug).single();
+    if (!track) return false;
+    let { data: journey } = await supabase.from('journeys').select('id').eq('user_id', user.id).eq('track_id', track.id).single();
+    if (!journey) {
+      const { data: nj } = await supabase.from('journeys').insert({ user_id: user.id, track_id: track.id }).select('id').single();
+      journey = nj;
+    }
+    if (!journey) return false;
+    const preData: Record<string, any> = {};
+    flow.slice(0, lastStep + 1).forEach((s, i) => { preData[`step_${i}_${s.type}`] = { question: s.en, answer: answers[i] }; });
+    return saveAssessmentData(supabase, journey.id, preData);
+  };
+
+  const saveSafetyAnswers = async (): Promise<boolean> => {
+    setSafetySaving(true);
+    setSafetySaveFailed(false);
+    const ok = await saveAnswers(step);
+    setSafetySaving(false);
+    setSafetySaved(ok);
+    setSafetySaveFailed(!ok);
+    return ok;
+  };
+
+  const continueFromSafety = async () => {
+    if (safetySaved || await saveSafetyAnswers()) window.location.replace('/dashboard');
+  };
+
   const handleNext = async () => {
+    if (current && isSafetyConcernAnswer(current.en, answers[step])) {
+      setShowSafety(true);
+      saveSafetyAnswers();
+      return;
+    }
     if (step < total - 1) { setStep(step + 1); return; }
     // Save and navigate
-    if (user) {
-      const { data: track } = await supabase.from('tracks').select('id').eq('slug', trackSlug).single();
-      if (track) {
-        let { data: journey } = await supabase.from('journeys').select('id').eq('user_id', user!.id).eq('track_id', track.id).single();
-        if (!journey) {
-          const { data: nj } = await supabase.from('journeys').insert({ user_id: user!.id, track_id: track.id }).select('id').single();
-          journey = nj;
-        }
-        if (journey) {
-          const preData: Record<string, any> = {};
-          flow.forEach((s, i) => { preData[`step_${i}_${s.type}`] = { question: s.en, answer: answers[i] }; });
-          await supabase.from('journeys').update({ pre_assessment_data: preData, updated_at: new Date().toISOString() }).eq('id', journey.id);
-        }
-      }
-    }
+    if (!await saveAnswers(step)) { setSaveError(true); return; }
+    setSaveError(false);
     router.push(`/pillar-overview?track=${trackSlug}`);
   };
 
@@ -170,6 +201,10 @@ function PreAssessContent() {
     flow.forEach((s, i) => { if (s.type === 'slider' && answers[i] === undefined) defaults[i] = 5; });
     if (Object.keys(defaults).length > 0) setAnswers(prev => ({ ...defaults, ...prev }));
   }, [trackSlug]);
+
+  if (showSafety) {
+    return <SafetyScreen lang={lang} onContinue={continueFromSafety} saving={safetySaving} saveFailed={safetySaveFailed} />;
+  }
 
   return (
     <div className="min-h-screen bg-white flex flex-col" style={{ fontFamily: "'Outfit', sans-serif" }}>
@@ -280,6 +315,13 @@ function PreAssessContent() {
 
       {/* Footer */}
       <div className="sticky bottom-0 bg-white border-t border-gray-100 px-6 py-4">
+        {saveError && (
+          <p role="alert" className="max-w-[600px] mx-auto mb-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[14px] text-red-800">
+            {lang === 'en'
+              ? 'We could not save your answers. Please check your connection and try again.'
+              : 'Nous n’avons pas pu enregistrer vos réponses. Veuillez vérifier votre connexion et réessayer.'}
+          </p>
+        )}
         <div className="max-w-[600px] mx-auto flex items-center justify-between">
           <button onClick={() => step > 0 && setStep(step - 1)} disabled={step === 0}
             className="flex items-center gap-2 px-5 py-3 rounded-xl border border-gray-200 bg-white text-[14px] font-semibold text-gray-600 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-gray-50"

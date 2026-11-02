@@ -2,6 +2,7 @@ import 'server-only';
 import { createClient } from '@/lib/supabase/server';
 import { parseBlocks, type AssignmentPromptBlock } from '@/lib/lesson-blocks';
 import { splitBlocksBySection } from '@/lib/lessons/split-sections';
+import { hasSafetyConcern } from '@/lib/safety';
 
 // Everything the dashboard reads, in one pass.
 //
@@ -59,6 +60,10 @@ export type DashboardData = {
   nextStepMode: NextStepMode;
   journeyId: string | null;
   trackName: string;
+  /** Null only if the journey's track could not be read. */
+  trackSlug: string | null;
+  /** The journey carries a safety concern: the dashboard shows support only. */
+  safetyConcern: boolean;
   modules: ModuleCard[];
   submissions: SubmissionCard[];
   submissionCount: number;
@@ -103,15 +108,17 @@ export async function getDashboardData(): Promise<DashboardData | null> {
 
   const { data: journey } = await supabase
     .from('journeys')
-    .select('id, track_id, tracks(name_en, name_fr)')
+    .select('id, track_id, pre_assessment_data, tracks(slug, name_en, name_fr)')
     .eq('user_id', user.id)
     .order('started_at', { ascending: false })
     .limit(1)
     .maybeSingle();
 
   const journeyId = journey?.id ?? null;
-  const track = journey?.tracks as unknown as { name_en: string; name_fr: string } | null;
+  const track = journey?.tracks as unknown as { slug: string; name_en: string; name_fr: string } | null;
   const trackName = (lang === 'en' ? track?.name_en : track?.name_fr) || track?.name_en || '';
+  const trackSlug = track?.slug ?? null;
+  const safetyConcern = hasSafetyConcern(journey?.pre_assessment_data);
 
   /* ── modules + progress ─────────────────────────────────────────────────── */
   const { data: modRows } = journey?.track_id
@@ -272,7 +279,7 @@ export async function getDashboardData(): Promise<DashboardData | null> {
   }
 
   return {
-    firstName, lang, nextStepMode, journeyId, trackName,
+    firstName, lang, nextStepMode, journeyId, trackName, trackSlug, safetyConcern,
     modules,
     submissions: allSubmissions.slice(0, 5),
     submissionCount: allSubmissions.length,

@@ -47,7 +47,7 @@ const i18n = {
     dims: ['5 pillars \u00b7 21 dimensions', '5 pillars \u00b7 21 dimensions', '5 pillars \u00b7 20 dimensions', '5 pillars \u00b7 21 dimensions', '5 pillars \u00b7 23 dimensions'],
     duration: '12 weeks', couples: 'Both spouses', starter: 'Starter track',
     learnMore: 'Learn more',
-    marriageNote: 'Both you and your spouse will complete separate intake questionnaires. The platform will then analyse your combined responses to generate a shared coaching plan. Your partner will receive an email invitation.',
+    marriageNote: 'Both you and your spouse will complete separate intake questionnaires.',
     btn: 'Continue to Assessment \u2192', langLabel: 'FR',
   },
   fr: {
@@ -73,7 +73,7 @@ const i18n = {
     dims: ['5 piliers \u00b7 21 dimensions', '5 piliers \u00b7 21 dimensions', '5 piliers \u00b7 20 dimensions', '5 piliers \u00b7 21 dimensions', '5 piliers \u00b7 23 dimensions'],
     duration: '12 semaines', couples: 'Les deux conjoints', starter: "Parcours d'entr\u00e9e",
     learnMore: 'En savoir plus',
-    marriageNote: "Vous et votre conjoint remplirez des questionnaires s\u00e9par\u00e9s. La plateforme analysera vos r\u00e9ponses combin\u00e9es.",
+    marriageNote: "Vous et votre conjoint remplirez des questionnaires s\u00e9par\u00e9s.",
     btn: "Continuer vers l'\u00e9valuation \u2192", langLabel: 'EN',
   },
 };

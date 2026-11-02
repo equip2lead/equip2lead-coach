@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/Logo';
 import { NavItem } from './NavItem';
 import { RailFooter } from './RailFooter';
-import { buildNav, isNavItemActive } from '@/lib/shell/nav';
+import { buildNav, isNavItemActive, isSafetyModePath } from '@/lib/shell/nav';
 import type { ShellData } from './AppShell';
 
 export function SideRail({
@@ -19,7 +19,9 @@ export function SideRail({
   onBlockedSwitch: () => void;
 }) {
   const pathname = usePathname();
-  const nav = buildNav(data.trackSlug).filter((i) => !i.adminOnly || data.isAdmin);
+  const nav = buildNav(data.trackSlug)
+    .filter((i) => !i.adminOnly || data.isAdmin)
+    .filter((i) => !data.safetyConcern || isSafetyModePath(i.href));
 
   return (
     <aside
@@ -46,9 +48,11 @@ export function SideRail({
               <div className="text-[12px] font-bold text-white truncate">
                 {lang === 'en' ? data.trackNameEn : data.trackNameFr}
               </div>
-              <div className="text-[10px] text-gray-500">
-                {data.scoredCount}/{data.totalPillars} {lang === 'en' ? 'pillars' : 'piliers'}
-              </div>
+              {!data.safetyConcern && (
+                <div className="text-[10px] text-gray-500">
+                  {data.scoredCount}/{data.totalPillars} {lang === 'en' ? 'pillars' : 'piliers'}
+                </div>
+              )}
             </div>
           </div>
         </div>
