@@ -22,7 +22,7 @@ export function Greeting({ data }: { data: DashboardData }) {
     lastActivityKind: data.lastActivityKind,
   });
 
-  const copy = greetingFor(state, lang, nextStepMode);
+  const copy = greetingFor(state, lang, nextStepMode, undefined, data.trackSlug);
   const days = daysSince(data.lastActivityAt);
 
   // The last line hands off to the next module. With none published it would

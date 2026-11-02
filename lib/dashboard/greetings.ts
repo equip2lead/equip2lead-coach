@@ -138,13 +138,24 @@ const SALUTATION: Record<GreetingState, GreetingCopy['salutation']> = {
   active: 'time_of_day',
 };
 
+/** Lines that speak to leaders, reworded for Marriage. Every other track keeps
+    the bank as written. */
+const MARRIAGE_LINES: Record<string, string> = {
+  'You know why you came. That is more than most leaders can say.':
+    'You know why you came. That is more than most couples can say on their wedding day.',
+  'Vous savez pourquoi vous êtes venu. C’est plus que la plupart des leaders.':
+    'Vous savez pourquoi vous êtes venu. C’est plus que la plupart des couples ne peuvent en dire le jour de leur mariage.',
+};
+
 export function greetingFor(
   state: GreetingState,
   lang: 'en' | 'fr',
   mode: NextStepMode = 'assessment',
   date = new Date(),
+  trackSlug: string | null = null,
 ): GreetingCopy {
-  const lines = pickVariant(BANK[state][lang], date);
+  const variant = pickVariant(BANK[state][lang], date);
+  const lines = trackSlug === 'marriage' ? variant.map((l) => MARRIAGE_LINES[l] ?? l) : variant;
   return {
     salutation: SALUTATION[state],
     lines: state === 'oriented' ? [...lines, ORIENTED_HANDOFF[mode][lang]] : lines,

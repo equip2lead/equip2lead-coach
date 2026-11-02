@@ -3257,8 +3257,18 @@ is finished. Leadership's wording is unchanged.
 - Insert and publish the row, then run `check-generators.sh marriage:0`.
 - `is_published` is the only gate and previews share the production database, so
   publishing makes the module live for Marriage users at once.
-- The module says "nobody sees this but you" and "read only by you", but admins can
-  read scorecard ratings and assignment submissions.
-- The overview byline is hard-coded to "By Dr. Denis Ekobena"; the module credits
-  Denis & Arit.
-- One `oriented` greeting variant says "more than most leaders can say".
+- Marriage readers can still get "Leadership isn't lost in the gap", a `returning`
+  greeting variant.
+
+### Decided before publishing
+
+- **Privacy wording.** "Nobody sees this but you" and "read only by you" became "your
+  partner can't see this", because admins can read scorecard ratings and assignment
+  submissions. Marriage Module 1 needs the same fix.
+- **Byline.** The overview page reads the author from the module's own byline
+  paragraph (`lib/lessons/byline.ts`), so this module credits Dr. Denis & Arit Ekobena.
+  Every Leadership module still reads Dr. Denis Ekobena.
+- **Greeting.** Marriage readers get "more than most couples can say on their wedding
+  day". Leadership and the other tracks are unchanged.
+- **Source files.** `build_module0_marriage.py` and `module0_marriage.json` were removed
+  at Denis's request. The generator is the source now.

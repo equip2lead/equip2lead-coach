@@ -106,6 +106,35 @@ ok('scorecard in section 7', has(6, 'scorecard') && sections[6].hasScorecard);
 ok('assignment in section 9', has(8, 'assignment_prompt') && sections[8].hasAssignment);
 ok('quiz present', sections.some((s) => s.blocks.some((b) => b.type === 'quiz')));
 
+console.log('\nPrivacy wording');
+const allText = JSON.stringify(blocks);
+ok('no "nobody sees" or "read only by you"', !/nobody sees|read only by you|only you can/i.test(allText));
+ok('scorecard intro says the partner can\'t see it', allText.includes('be honest: your partner can\'t see this.'));
+ok('assignment says the partner can\'t see it', allText.includes('Write honestly: your partner can\'t see this, and a mentor reads it only if you choose to share it.'));
+
+console.log('\nByline and greeting');
+const compile = (file, strip) => {
+  const shimPath = join(dir, file.split('/').pop());
+  writeFileSync(shimPath, strip(readFileSync(file, 'utf8')));
+  execFileSync('npx', ['tsc', shimPath, '--outDir', dir, '--target', 'es2020', '--module', 'es2020', '--skipLibCheck'], { stdio: 'inherit' });
+  return import(pathToFileURL(shimPath.replace(/\.ts$/, '.js')).href);
+};
+const { moduleAuthor } = await compile('lib/lessons/byline.ts', (s) => s);
+ok('this module credits both authors', moduleAuthor(frontMatter) === 'Dr. Denis & Arit Ekobena', moduleAuthor(frontMatter));
+const para = (text) => [{ type: 'paragraph', text }];
+ok('Leadership Module 0 form', moduleAuthor(para('By Dr. Denis Ekobena · Equip2Lead Coach')) === 'Dr. Denis Ekobena');
+ok('Leadership Module 1-12 form', moduleAuthor(para('Module 1 of the Leadership Track · By Dr. Denis Ekobena / Equip2Lead Coach')) === 'Dr. Denis Ekobena');
+ok('no byline falls back', moduleAuthor(para('Stand by me')) === 'Dr. Denis Ekobena');
+ok('"by" inside a sentence is not a byline', moduleAuthor(para('Written with care. By the end you will know.')) === 'Dr. Denis Ekobena');
+
+const { greetingFor } = await compile('lib/dashboard/greetings.ts', (s) => s.replace(/^import type .*$/m, 'type NextStepMode = any;'));
+const days = Array.from({ length: 6 }, (_, i) => new Date(Date.UTC(2026, 0, i + 1)));
+const oriented = (lang, track) => days.flatMap((d) => greetingFor('oriented', lang, 'assessment', d, track).lines);
+ok('Marriage greeting, English', oriented('en', 'marriage').includes('You know why you came. That is more than most couples can say on their wedding day.'));
+ok('Marriage greeting no longer says leaders', !oriented('en', 'marriage').concat(oriented('fr', 'marriage')).some((l) => /most leaders|plupart des leaders/.test(l)));
+ok('Leadership greeting unchanged', oriented('en', 'leadership').includes('You know why you came. That is more than most leaders can say.'));
+ok('Other tracks unchanged', oriented('en', 'ministry').includes('You know why you came. That is more than most leaders can say.'));
+
 const outIdx = process.argv.indexOf('--out');
 if (outIdx !== -1) copyFileSync(payloadPath, process.argv[outIdx + 1]);
 

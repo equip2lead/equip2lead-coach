@@ -6,6 +6,7 @@ import { BlockRenderer } from '@/components/lessons/BlockRenderer';
 import { parseBlocks } from '@/lib/lesson-blocks';
 import { splitBlocksBySection } from '@/lib/lessons/split-sections';
 import { getModuleProgress } from '@/lib/lessons/progress';
+import { moduleAuthor } from '@/lib/lessons/byline';
 
 // One id space, two content systems. An id is either an authored module or a
 // legacy RAG document, so this route resolves which and hands off. Existing
@@ -108,7 +109,7 @@ export default async function LessonEntryPage({ params }: { params: { id: string
           {subtitle && <p className="mt-2 text-[16px] text-gray-500">{subtitle}</p>}
 
           <p className="mt-4 text-[13.5px] text-gray-500">
-            {lang === 'en' ? 'By' : 'Par'} <strong className="font-semibold text-gray-700">Dr. Denis Ekobena</strong>
+            {lang === 'en' ? 'By' : 'Par'} <strong className="font-semibold text-gray-700">{moduleAuthor(frontMatter as Array<{ type: string; text?: unknown }>)}</strong>
             {' · '}{sections.length} {lang === 'en' ? 'sections' : 'sections'}
             {' · '}{totalMinutes} min
           </p>

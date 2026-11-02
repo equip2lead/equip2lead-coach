@@ -405,7 +405,7 @@ const section7 = {
   title: "Your Eight Doors Today",
   blocks: [
     heading(2, "Your Eight Doors Today"),
-    paragraph("Rate each door from 0 to 10. A 10 means you have talked about it openly, in detail, and you genuinely agree. A 0 means you have never discussed it at all. Rate the conversation, not the relationship, and be honest: nobody sees this but you."),
+    paragraph("Rate each door from 0 to 10. A 10 means you have talked about it openly, in detail, and you genuinely agree. A 0 means you have never discussed it at all. Rate the conversation, not the relationship, and be honest: your partner can't see this."),
     scorecard("Where Are Your Doors Today?", "marriage_module0_eight_doors", [
       {
         "key": "faith",
@@ -483,7 +483,7 @@ const section9 = {
     heading(2, "Your First Assignment — Set Your Intention"),
     assignmentPrompt({
       "title": "Starting Point Assignment",
-      "instructions": "Before Module 1, write down where you are and what you are asking God and this journey to do. Answer the version of each prompt that fits your season. Write honestly: this is read only by you, and by a mentor if you choose to share it.",
+      "instructions": "Before Module 1, write down where you are and what you are asking God and this journey to do. Answer the version of each prompt that fits your season. Write honestly: your partner can't see this, and a mentor reads it only if you choose to share it.",
       "word_min": 200,
       "word_max": 700,
       "prompts": [
