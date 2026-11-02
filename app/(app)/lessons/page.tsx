@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
 import { switchLanguage } from '@/lib/language';
 import type { ModuleSummary } from '@/app/api/lesson-modules/summary/route';
+import { LessonsComingSoon } from '@/components/lessons/LessonsComingSoon';
 
 const pillarColors = ['#2563EB', '#7C3AED', '#059669', '#DC2626', '#D97706'];
 const difficultyLabels: Record<string, { en: string; fr: string; color: string }> = {
@@ -279,6 +280,17 @@ export default function LessonsPage() {
         {/* Authored modules first: the premium curriculum, not one lesson
             among many. Clicking opens the module overview rather than
             dropping the reader into 489 blocks of content. */}
+        {modules.length === 0 && (
+          <div className={pillarGroups.length > 0 ? 'mb-10' : ''}>
+            <LessonsComingSoon lang={lang} />
+            {pillarGroups.length > 0 && (
+              <h2 className="mb-3 mt-10 text-[12px] font-bold uppercase tracking-wider text-gray-500" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                {lang === 'en' ? 'Library' : 'Bibliothèque'}
+              </h2>
+            )}
+          </div>
+        )}
+
         {modules.length > 0 && (
           <div className="mb-10">
             <h2 className="mb-3 text-[12px] font-bold uppercase tracking-wider text-gray-500" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
@@ -343,11 +355,13 @@ export default function LessonsPage() {
         )}
 
         {pillarGroups.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-[15px] text-gray-400">
-              {lang === 'en' ? 'No lessons available yet for your track.' : 'Pas encore de leçons disponibles pour votre parcours.'}
-            </p>
-          </div>
+          modules.length > 0 && (
+            <div className="text-center py-16">
+              <p className="text-[15px] text-gray-400">
+                {lang === 'en' ? 'No lessons available yet for your track.' : 'Pas encore de leçons disponibles pour votre parcours.'}
+              </p>
+            </div>
+          )
         ) : (
           <div className="flex flex-col gap-4">
             {pillarGroups.map((g, pi) => {
