@@ -32,7 +32,7 @@ export default async function CoachingPlanPage() {
           <h1 className="mb-3 text-[24px] font-bold text-gray-900" style={{ fontFamily: DISPLAY }}>{heading}</h1>
           <p className="mb-6 text-[16px] leading-[1.65] text-gray-700" style={{ fontFamily: SERIF }}>
             {needsAssessment
-              ? (en ? 'Your plan is built from your assessment. Finish it, and your 12 weeks will be ready.' : 'Votre plan est construit à partir de votre évaluation. Terminez-la, et vos 12 semaines seront prêtes.')
+              ? (en ? 'Your plan is built from your assessment. Finish it, and your 12 weeks will be ready.' : 'Votre plan est construit à partir de votre évaluation. Terminez-la et vos 12 semaines seront prêtes.')
               : (en ? 'Your assessment is done, but your plan isn’t finished yet.' : 'Votre évaluation est terminée, mais votre plan n’est pas encore prêt.')}
           </p>
           <Link href={href} className="inline-block rounded-xl bg-[#F9250E] px-6 py-3 text-[14px] font-bold text-white no-underline" style={{ fontFamily: DISPLAY }}>
