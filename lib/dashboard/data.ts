@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { parseBlocks, type AssignmentPromptBlock } from '@/lib/lesson-blocks';
 import { splitBlocksBySection } from '@/lib/lessons/split-sections';
 import { hasSafetyConcern } from '@/lib/safety';
+import { clampWeek, isPlanComplete, localized, parseWeeks } from '@/lib/coaching-plan/parse';
 
 // Everything the dashboard reads, in one pass.
 //
@@ -64,6 +65,8 @@ export type DashboardData = {
   trackSlug: string | null;
   /** The journey carries a safety concern: the dashboard shows support only. */
   safetyConcern: boolean;
+  /** This week of the coaching plan. Null until the plan is complete. */
+  planThisWeek: { week: number; title: string } | null;
   modules: ModuleCard[];
   submissions: SubmissionCard[];
   submissionCount: number;
@@ -108,7 +111,7 @@ export async function getDashboardData(): Promise<DashboardData | null> {
 
   const { data: journey } = await supabase
     .from('journeys')
-    .select('id, track_id, pre_assessment_data, tracks(slug, name_en, name_fr)')
+    .select('id, track_id, current_week, pre_assessment_data, tracks(slug, name_en, name_fr)')
     .eq('user_id', user.id)
     .order('started_at', { ascending: false })
     .limit(1)
@@ -119,6 +122,18 @@ export async function getDashboardData(): Promise<DashboardData | null> {
   const trackName = (lang === 'en' ? track?.name_en : track?.name_fr) || track?.name_en || '';
   const trackSlug = track?.slug ?? null;
   const safetyConcern = hasSafetyConcern(journey?.pre_assessment_data);
+
+  /* ── this week of the coaching plan ─────────────────────────────────────── */
+  const { data: planRow } = journeyId && !safetyConcern
+    ? await supabase.from('coaching_plans').select('plan_data').eq('journey_id', journeyId).maybeSingle()
+    : { data: null };
+  const planWeeks = parseWeeks(planRow?.plan_data);
+  const currentPlanWeek = isPlanComplete(planWeeks)
+    ? planWeeks.find((w) => w.week === clampWeek(journey?.current_week))
+    : undefined;
+  const planThisWeek = currentPlanWeek
+    ? { week: currentPlanWeek.week, title: localized(lang, currentPlanWeek.titleEn, currentPlanWeek.titleFr) }
+    : null;
 
   /* ── modules + progress ─────────────────────────────────────────────────── */
   const { data: modRows } = journey?.track_id
@@ -279,7 +294,7 @@ export async function getDashboardData(): Promise<DashboardData | null> {
   }
 
   return {
-    firstName, lang, nextStepMode, journeyId, trackName, trackSlug, safetyConcern,
+    firstName, lang, nextStepMode, journeyId, trackName, trackSlug, safetyConcern, planThisWeek,
     modules,
     submissions: allSubmissions.slice(0, 5),
     submissionCount: allSubmissions.length,

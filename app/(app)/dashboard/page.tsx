@@ -8,6 +8,7 @@ import { ModuleGrid } from '@/components/dashboard/ModuleGrid';
 import { YourPillars } from '@/components/dashboard/YourPillars';
 import { ClosingWord } from '@/components/dashboard/ClosingWord';
 import { SafetySupportCard } from '@/components/dashboard/SafetySupportCard';
+import { ThisWeekCard } from '@/components/dashboard/ThisWeekCard';
 
 // The coach's office. Text-forward at the top, browsable in the middle,
 // lightly data-informed at the bottom — a server component throughout, with
@@ -36,6 +37,7 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-[#F9FAFB]">
       <Greeting data={data} />
       <NextStep data={data} />
+      <ThisWeekCard data={data} />
       {/* Renders nothing until there is something written. */}
       <WhatYouveWritten data={data} />
       <Suspense fallback={null}>

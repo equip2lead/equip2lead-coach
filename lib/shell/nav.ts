@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import {
-  HomeIcon, PlayIcon, BookIcon, ChatIcon, CalIcon,
+  HomeIcon, PlayIcon, PlanIcon, BookIcon, ChatIcon, CalIcon,
   BarIcon, TrendIcon, SettingsIcon, AdminIcon,
 } from '@/components/shell/icons';
 
@@ -28,7 +28,8 @@ export function buildNav(trackSlug: string): NavItemDef[] {
   return [
     { key: 'dashboard', href: '/dashboard',    en: 'Dashboard', fr: 'Tableau de bord', Icon: HomeIcon },
     { key: 'my-track',  href: '/my-track',     en: 'My Track',  fr: 'Mon Parcours',    Icon: PlayIcon },
-    { key: 'lessons',   href: '/lessons',      en: 'Lessons',   fr: 'Leçons',          Icon: BookIcon, matchPrefix: true },
+    { key: 'plan',      href: '/coaching-plan', en: 'My Plan', fr: 'Mon plan',         Icon: PlanIcon },
+    { key: 'lessons',   href: '/lessons',     en: 'Lessons',   fr: 'Leçons',          Icon: BookIcon, matchPrefix: true },
     { key: 'ai-coach',  href: '/ai-coach',     en: 'AI Coach',  fr: 'Coach IA',        Icon: ChatIcon, badge: 'NEW' },
     { key: 'checkin',   href: '/weekly-checkin', en: 'Check-in', fr: 'Bilan',          Icon: CalIcon },
     { key: 'results',   href: `/results?track=${trackSlug}`, en: 'Results', fr: 'Résultats', Icon: BarIcon },
