@@ -3406,6 +3406,13 @@ Section 7) are where they were. The Meg Jay caption is Denis's "Why 30 is not th
 - Module 2 SQL on the same engine: stored 129 blocks equal to the payload; refused a
   second run, a changed letter and the wrong pillar.
 
+### SQL files removed
+
+`marriage_module0_update.sql` and `marriage_module2_insert.sql` were deleted at Denis's
+request from `scripts/content/marriage/` and from Downloads. They were never committed
+and never run against the live database. The generators remain the source for this
+content.
+
 ### Still open
 
 - 4 image and 3 video placeholders in Module 2 remain visible as callouts until the
