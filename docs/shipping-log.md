@@ -3285,11 +3285,21 @@ is finished. Leadership's wording is unchanged.
 - **Source files.** `build_module0_marriage.py` and `module0_marriage.json` were removed
   at Denis's request. The generator is the source now.
 
-## 2026-11-03 — Marriage Module 1 prepared: "Marriage Was God's Idea"
+## 2026-11-03 — Marriage Module 1 published: "Marriage Was God's Idea"
 
-**Status when written: the row is not yet in the database.** The Supabase connector is
-down, so Denis runs the SQL from another session. No week linking. No change to any
-Leadership row or to `knowledge_documents`.
+**The row is live.** Row id `5a7c958e-2f66-473d-a996-876e8e9e4804`, inserted by Denis
+from another session, because the Supabase connector was down. The SQL carried a
+checksum of the module text (`a9a5353f1a8190a24cebb1ec402844f5`), which passed. No week
+linking. No change to any Leadership row or to `knowledge_documents`.
+
+Checked against the real row afterwards:
+
+- `check-generators.sh marriage:1`: 144 live, 144 generated, zero differences.
+- Full run: Leadership M0 to M12 and Marriage M0 all zero differences.
+- Slug, titles, pillar, difficulty, duration, sort order and published flag as authored,
+  not a starting point. Every block id matches `sha256(slug|index|type)`.
+- No French version yet: `title_fr` and `body_blocks_fr` are null, so French readers
+  get the English text.
 
 ### Generator
 
@@ -3325,5 +3335,6 @@ watch page describes Keller discussing the book at Google in November 2011. It r
 
 ### Still open
 
-- Run the SQL, then `check-generators.sh marriage:1`.
 - 4 image and 3 video placeholders remain visible as callouts until the assets arrive.
+- The Section 7 video's tip mentions Keller by name; the talk itself was checked from
+  its YouTube details, not watched.
