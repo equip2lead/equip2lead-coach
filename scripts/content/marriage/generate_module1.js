@@ -16,6 +16,11 @@
 // - The [EXTERNAL VIDEO] callout in Section 7 is now the video it proposed, after an
 //   oEmbed check: Timothy Keller at Talks at Google, C9THu0PZwwk, embeddable. A tip
 //   callout follows it, added by Denis, because the talk runs about an hour.
+// - Section 1 closes with BibleProject's Genesis overview (GQI72THyO5I), and Section 6
+//   has Dr. Tony Evans on covenant (cRptjonzx0o), each with a paragraph and a tip in
+//   Denis's wording. The Evans video is on Lakepointe Church's channel, its own
+//   recording of Marriage Night 2023, where Dr. Evans was the guest speaker. Denis
+//   accepted that on 2026-11-03.
 
 const fs = require('fs');
 
@@ -68,6 +73,9 @@ const section1 = {
     paragraph("Because it comes before the church and before redemption, marriage belongs to the whole human race, not only to believers. Every man and woman was made able to taste its goodness. That is why even people who do not yet know God can build marriages full of real joy and faithfulness, and why Christians have no monopoly on the gift."),
     callout("scripture", "\"Enjoy life with your wife, whom you love, all the days of this meaningless life that God has given you under the sun.\" — Ecclesiastes 9:9"),
     paragraph("The Teacher in Ecclesiastes calls a good marriage a portion: a share of real good in a hard world. In the same breath he reminds us that life under the sun is labour. Marriage is a gift, but never an effortless one. You will spend the rest of this track learning how to work the gift well."),
+    paragraph("If you would like to see the whole sweep of these opening chapters at once, BibleProject's animated overview of Genesis 1 to 11 is one of the clearest available. It shows God creating a good world, giving humans, male and female, the dignity of bearing His image and ruling it with Him, and then how quickly that partnership was broken when humanity chose to define good and evil for itself."),
+    videoEmbed("GQI72THyO5I", "Book of Genesis Summary: A Complete Animated Overview (Part 1) | BibleProject"),
+    callout("tip", "About 8 minutes. Watch for two moments: the creation of man and woman together as God's image, and what the fall does to their relationship in Genesis 3. Everything this track teaches about marriage is an attempt to return, by grace, to the first picture."),
     divider(),
   ],
 };
@@ -343,6 +351,9 @@ const section6 = {
     ]),
     callout("scripture", "\"Therefore what God has joined together, let no one separate.\" — Mark 10:9"),
     pullQuote("Marriage is not a deal you leave when the terms disappoint. It is a covenant you keep even when they do."),
+    paragraph("Dr. Tony Evans, who led Oak Cliff Bible Fellowship in Dallas for nearly fifty years and whose teaching on the family is heard across Africa, preached a whole message on this one distinction: why God designed marriage as a covenant and not a deal."),
+    videoEmbed("cRptjonzx0o", "Marriage: It's a Covenant, Not a Contract | Dr. Tony Evans"),
+    callout("tip", "As you watch, compare what he says with the table above. Then ask yourself honestly: in the way I think and speak about marriage, am I living by covenant or by contract?"),
     heading(3, "Repairers in a Replacement Age"),
     paragraph("There is a reason covenant sounds strange to modern ears. We may be the first generations in history raised almost entirely without repair."),
     paragraph("When your grandmother's wrapper tore, she mended it. When your grandfather's radio stopped working, he took it to a man in the market who opened it up and fixed it. Shoes were resoled, pots were patched, tools were sharpened. To own something was to maintain it."),

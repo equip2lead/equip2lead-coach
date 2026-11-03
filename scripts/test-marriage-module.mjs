@@ -22,12 +22,24 @@ const EXPECT = {
     subtitle: 'Design, Covenant, and the Cord of Three Strands',
     duration: 100,
     sortOrder: 1,
-    blocks: 144,
+    blocks: 150,
     scorecardKey: 'marriage_module1_covenant',
-    videos: [{
+    videos: [
+      {
+        id: "GQI72THyO5I", section: 1, title: "Book of Genesis Summary: A Complete Animated Overview (Part 1) | BibleProject",
+        after: 'If you would like to see the whole sweep', before: 'divider',
+        tip: "About 8 minutes. Watch for two moments: the creation of man and woman together as God's image, and what the fall does to their relationship in Genesis 3. Everything this track teaches about marriage is an attempt to return, by grace, to the first picture.",
+      },
+      {
+        id: "cRptjonzx0o", section: 6, title: "Marriage: It's a Covenant, Not a Contract | Dr. Tony Evans",
+        after: 'Dr. Tony Evans, who led Oak Cliff', before: 'heading',
+        tip: "As you watch, compare what he says with the table above. Then ask yourself honestly: in the way I think and speak about marriage, am I living by covenant or by contract?",
+      },
+      {
       id: 'C9THu0PZwwk', section: 7, title: 'The Meaning of Marriage | Timothy Keller | Talks at Google',
       tip: "Optional: this is Tim Keller's full talk on his book The Meaning of Marriage, about an hour long. You can finish this module without it. Watch it when you have time, and listen for how he describes covenant: the promise that makes love stable instead of fragile.",
-    }],
+      },
+    ],
     sections: [
       'Section 1 — It Began With Him',
       'Section 2 — Alone Is Not the Same as Lonely',
@@ -80,11 +92,43 @@ const EXPECT = {
       'That counts as completing it.',
     ],
   },
+  3: {
+    slug: 'choosing-well',
+    title: 'Choosing Well',
+    subtitle: "Infatuation, Compatibility, and the Convictions Before the Ring",
+    duration: 120,
+    sortOrder: 3,
+    blocks: 169,
+    scorecardKey: 'marriage_module3_choosing',
+    videos: [
+      { id: "kVkW5Nt9YHE", section: 1, title: "Key Dating Advice From Dr. Myles Munroe | Munroe Global" },
+      { id: "OYfoGTIG7pY", section: 2, title: "The brain in love | Helen Fisher | TED" },
+      { id: "jodhovumkHQ", section: 6, title: "Select the right relationship | Alexandra Redcay | TEDxUpperEastSide" },
+    ],
+    sections: [
+      "Section 1 — Finding, Not Chasing",
+      "Section 2 — Three Girls in One Year",
+      "Section 3 — Time, Desperation and Deciding",
+      "Section 4 — The Right Order",
+      "Section 5 — Nine Areas of Compatibility",
+      "Section 6 — Seeing Clearly",
+      "Section 7 — The Conversation Nobody Wants First",
+      "Section 8 — The Fifteen Convictions",
+      "Am I Choosing Well?",
+      "Module 3 Assignment — See Clearly, Choose Deliberately",
+      "Module 3 Complete",
+    ],
+    privacy: 'Your partner cannot see this assignment. Write honestly.',
+    keep: [
+      'Your partner cannot see these ratings.',
+      'speak to a trusted pastor or counsellor before you take any other step',
+    ],
+  },
 };
 
 const N = Number(process.argv[2]);
 const want = EXPECT[N];
-if (!want) { console.error('usage: test-marriage-module.mjs <1|2> [--out <file>]'); process.exit(2); }
+if (!want) { console.error('usage: test-marriage-module.mjs <1|2|3> [--out <file>]'); process.exit(2); }
 
 const repo = process.cwd();
 const dir = mkdtempSync(join(tmpdir(), `marriage-m${N}-`));
@@ -138,6 +182,11 @@ ok('1 assignment, key a1', count('assignment_prompt') === 1 && blocks.find((b) =
 ok('1 quiz', count('quiz') === 1);
 const videos = blocks.filter((b) => b.type === 'video_embed');
 ok(`${want.videos.length} video(s), the verified ones, in order`, videos.length === want.videos.length && want.videos.every((v, i) => videos[i].youtubeId === v.id && videos[i].title === v.title));
+want.videos.filter((v) => v.after).forEach((v) => {
+  const at = blocks.findIndex((b) => b.youtubeId === v.id);
+  ok(`paragraph directly before ${v.id}`, blocks[at - 1].type === 'paragraph' && blocks[at - 1].text.startsWith(v.after));
+  ok(`${v.before} closes the addition after ${v.id}`, blocks[at + 2].type === v.before);
+});
 want.videos.filter((v) => v.tip).forEach((v) => {
   const next = blocks[blocks.findIndex((b) => b.youtubeId === v.id) + 1];
   ok(`tip callout directly after ${v.id}`, next.type === 'callout' && next.variant === 'tip' && next.text === v.tip);
