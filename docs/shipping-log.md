@@ -3339,13 +3339,23 @@ watch page describes Keller discussing the book at Google in November 2011. It r
 - The Section 7 video's tip mentions Keller by name; the talk itself was checked from
   its YouTube details, not watched.
 
-## 2026-11-03 — Marriage Module 0 video added, Module 2 prepared
+## 2026-11-03 — Marriage Module 0 video added, Module 2 published
 
-**Status when written: neither change is in the database.** The Supabase connector is
-down, so Denis runs both SQL files from another session. Until then
-`check-generators.sh marriage:0` reports a difference and `marriage:2` reports no live
-row, both expected. No week linking. No change to any Leadership row or to
-`knowledge_documents`.
+**Both changes are live.** Denis applied them from Claude chat through Supabase rather
+than by running the SQL files, because the connector was down in this session. He
+reports the content matches the payloads with checksums
+`590c5a2c46e95f3a30066fd10ec2223a` (Module 0) and `d62cd9bd71c8a12a612f585f4f3be5bc`
+(Module 2). Module 2 is row id `90fedb90-e21c-4c83-bab3-dd6da8bba6ea`. No week linking.
+No change to any Leadership row or to `knowledge_documents`.
+
+Checked against the real rows afterwards:
+
+- `check-generators.sh`, full run: all 16 modules zero differences, Leadership M0 to M12
+  and Marriage M0 (154 blocks), M1 (144) and M2 (129).
+- Module 2's slug, title, pillar, difficulty, duration, sort order and published flag as
+  authored, not a starting point. Every Marriage block id matches
+  `sha256(slug|index|type)`.
+- No French version of either module: readers in French get the English text.
 
 ### Module 0: Meg Jay
 
@@ -3398,6 +3408,5 @@ Section 7) are where they were. The Meg Jay caption is Denis's "Why 30 is not th
 
 ### Still open
 
-- Run both SQL files, then `check-generators.sh marriage:0 marriage:2`.
 - 4 image and 3 video placeholders in Module 2 remain visible as callouts until the
   assets arrive.
