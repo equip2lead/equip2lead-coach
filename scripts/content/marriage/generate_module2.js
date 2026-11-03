@@ -27,9 +27,10 @@ const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: {
 const assignmentPrompt = (fields) => ({ type: "assignment_prompt", data: fields });
 const quiz = (scope, title, questions) => ({ type: "quiz", data: { scope, title, questions } });
 
-// Art and video not produced yet stay visible as callouts. Images will go in
-// public/images/marriage/module-2/MM2-1..4.png.
-const imagePlaceholder = (ref, brief) => callout("note", `[IMAGE PLACEHOLDER — ${ref}] ${brief}`);
+// Images are Denis's, used as delivered, in public/images/marriage/module-2/.
+const image = (url, alt) => ({ type: "image", data: { url, alt } });
+
+// Video not produced yet stays visible as a callout.
 const videoPlaceholder = (brief) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${brief}`);
 
 // ─── Front matter ───
@@ -54,7 +55,7 @@ const section1 = {
   title: "Why Do You Want to Marry?",
   blocks: [
     heading(2, "Section 1 — Why Do You Want to Marry?"),
-    imagePlaceholder("MM2-1", "Content: A young African man and a young African woman each sitting alone by a window in separate rooms at dusk, both looking out thoughtfully, a soft golden sky. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-2/MM2-1.png", "Two scenes side by side at dusk: a young African man and a young African woman, each sitting alone by a window in a separate room, chin on hand, looking out thoughtfully at the sunset. No text appears in the image."),
     paragraph("Before you ask whether this is the right person, ask a harder question: why do you want to be married at all? Most people have never answered it honestly, even to themselves."),
     paragraph("Some reasons can carry the weight of a lifelong covenant. Others look like love but are really something else wearing its clothes."),
     table([
@@ -200,7 +201,7 @@ const section3 = {
     paragraph("What you carry does not wait for the wedding. It shows up in courtship first. Here is a pattern I see constantly. A woman's last relationship ended in betrayal. Now a different man, with a different heart, does one small thing that faintly resembles the old one, and every alarm goes off. She searches, accuses, tests. He is bewildered, standing in a battle he never started."),
     paragraph("If you recognise yourself, the road back begins with one honest sentence, said first to yourself and then, if you can, to the person beside you: \"I am sorry that happened to me, but you are not the one who did it.\" If you cannot stop reacting even after naming it, treat that as a warning light. The wound underneath has not yet healed."),
     heading(3, "The Parable of the Tape"),
-    imagePlaceholder("MM2-2", "Content: Close-up of a strip of clear adhesive tape held between two fingers, its sticky side catching the light and visibly carrying specks of lint and thread from different fabrics. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-2/MM2-2.png", "Close-up of two hands holding up a strip of clear adhesive tape, its sticky side carrying lint and threads in several colours from the fabrics behind it. No text appears in the image."),
     paragraph("When I teach young people, I use a simple roll of tape. Press a piece firmly onto someone's sleeve, and it holds fast. Peel it off and press it onto a second person: it still sticks, but less. A third person, and a fourth, and soon it barely holds at all."),
     paragraph("Look closely at that tape and you notice something else. It does not come away clean. It carries fibres from every fabric it has touched, and presses them onto the next one."),
     paragraph("The human heart works in a similar way. God designed us to bond: that is what \"cleave\" in Genesis 2:24 means, to cling and hold fast to one person. But every relationship in which we give ourselves away, heart and especially body, and are then torn off, costs something of that power to cleave. And we carry residue into the next relationship: comparisons, suspicions, habits and memories that the next person never earned."),
@@ -355,7 +356,7 @@ const section6 = {
   title: "The Path of Healing",
   blocks: [
     heading(2, "Section 6 — The Path of Healing"),
-    imagePlaceholder("MM2-3", "Content: A lone figure walking a winding path up a green African hillside at sunrise, light breaking through clouds ahead, the path clear and well-trodden. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-2/MM2-3.png", "A man with a backpack, seen from behind, walks a well-trodden path up a green African hillside at sunrise, with light breaking through the clouds ahead. No text appears in the image."),
     paragraph("How does a person actually heal? Not by time: time buries wounds, it does not close them. Not by marriage: marriage presses on wounds. Not by success: a promotion has never yet closed a father wound. Healing is a path, and it has seven steps."),
     table([
       "Step",
@@ -761,7 +762,7 @@ const section11 = {
   title: "Module 2 Complete",
   blocks: [
     heading(2, "Module 2 Complete"),
-    imagePlaceholder("MM2-4", "Content: Golden sunrise light pouring through a cracked clay pot that has been carefully mended with gold seams, resting on a wooden windowsill with a small green plant beside it. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1600×900."),
+    image("/images/marriage/module-2/MM2-4.png", "A cracked clay pot mended with seams of gold sits on a wooden windowsill in the light of the rising sun, a small green plant in a basket beside it. No text appears in the image."),
     videoPlaceholder("2-3 min closing from Denis (and Arit, if possible): a prayer of healing over those carrying something, and an invitation to take the first step this week."),
     paragraph("You have looked honestly at why you want marriage, who you are becoming, and what you carry. That is the hardest work in this whole track, and you did not skip it."),
     paragraph("Module 3 turns from you to the choice itself: how to choose wisely, how to see the person in front of you clearly, and how to tell the difference between chemistry and character."),

@@ -33,9 +33,10 @@ const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: {
 const assignmentPrompt = (fields) => ({ type: "assignment_prompt", data: fields });
 const quiz = (scope, title, questions) => ({ type: "quiz", data: { scope, title, questions } });
 
-// Art and video not produced yet stay visible as callouts. Images will go in
-// public/images/marriage/module-0/MM0-1..6.png.
-const imagePlaceholder = (ref, brief) => callout("note", `[IMAGE PLACEHOLDER — ${ref}] ${brief}`);
+// Images are Denis's, used as delivered, in public/images/marriage/module-0/.
+const image = (url, alt) => ({ type: "image", data: { url, alt } });
+
+// Video not produced yet stays visible as a callout.
 const videoPlaceholder = (brief) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${brief}`);
 
 // ─── Front matter ───
@@ -60,7 +61,7 @@ const section1 = {
   title: "The Question Beneath Every Struggling Marriage",
   blocks: [
     heading(2, "Section 1 — The Question Beneath Every Struggling Marriage"),
-    imagePlaceholder("MM0-1", "Content: A woman alone at a kitchen table late in the evening, a cold cup of tea beside her, a lit doorway behind her into a quiet house. No faces in sharp focus. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-0/MM0-1.png", "A woman in a patterned headwrap sits alone at a wooden kitchen table in the evening, her head resting on her hand and her eyes lowered, a cup of tea in front of her. Behind her a doorway opens onto a lamplit, empty living room. No text appears in the image."),
     paragraph("A letter like this one reaches a pastor's desk more often than you would think. The woman who wrote it signed herself simply \"a tired wife.\" She and her husband both worked full days. When they came home, he changed his clothes and went out to relax with his friends. She stayed behind to cook, clean, supervise homework and keep order in a house full of children and relatives."),
     paragraph("Her question was short. \"I earn a salary too. Is it wrong to expect my husband to help me run our home? What are a husband's duties, really? And why do I feel so alone inside my own house?\""),
     paragraph("I have read that letter many times, because it is not really about dishes, or friends, or even about her husband. It is the question that sits underneath almost every marriage that struggles: did either of us understand what we were agreeing to?"),
@@ -123,7 +124,7 @@ const section2 = {
   title: "Foundations Nobody Photographs",
   blocks: [
     heading(2, "Section 2 — Foundations Nobody Photographs"),
-    imagePlaceholder("MM0-2", "Content: A construction site at dawn: deep foundation trenches and steel reinforcement bars set in fresh concrete, no walls yet, workers' tools resting at the edge. Red earth, warm light. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-0/MM0-2.png", "A building site at sunrise on red earth: concrete foundations and steel reinforcement bars, with no walls yet. A yellow hard hat rests on a plank beside a wheelbarrow and a shovel. No text appears in the image."),
     videoPlaceholder("2-3 min from Denis, ideally filmed on the FIRE headquarters building site in Cameroon: the season when everything went into the ground and nothing could be photographed, and what it taught him about marriage."),
     paragraph("For several years our ministry has been building its headquarters in Cameroon: a church, a school and a hospital on one piece of land. I have stood on that site more times than I can count, and it changed the way I counsel couples."),
     paragraph("For a long season there was nothing to show anyone. Trucks came and went. Money left my hands every week. There was noise and dust and no building. Every bit of work was going down into the ground, not up into the air."),
@@ -155,7 +156,7 @@ const section3 = {
   title: "Four Seasons, in Order",
   blocks: [
     heading(2, "Section 3 — Four Seasons, in Order"),
-    imagePlaceholder("MM0-3", "Content: Four stone steps rising up a garden path toward an open wooden gate, each step a little more finished than the last, warm morning light beyond the gate. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-0/MM0-3.png", "Four stone steps rise through a garden in warm morning light, each more finished than the last, toward an open wooden gate with a lawn beyond it. Pink bougainvillea hangs over the wall. No text appears in the image."),
     paragraph("Let me describe something I see constantly in Cameroon, and I suspect you will recognise it wherever you live. A man tells a woman he would like to marry her. She says yes. From that moment, they introduce each other as fiancé and fiancée, even in church."),
     paragraph("Look at what has actually happened. Two people who hardly know each other are now presenting themselves to everyone as an engaged couple. Nothing has been tested. No friendship has been built. No family has been consulted. There is a feeling, a yes and a title."),
     paragraph("Then the ordinary problems arrive, as they always do, and the relationship breaks. It is no longer two people quietly discovering they are not suited. It is a public engagement falling apart, with all the shame and confusion that brings. They took the title before they had built anything to carry it."),
@@ -237,7 +238,7 @@ const section4 = {
   title: "The Eight Doors",
   blocks: [
     heading(2, "Section 4 — The Eight Doors"),
-    imagePlaceholder("MM0-4", "Content: A long warm-lit corridor in an African home with eight wooden doors along it: some wide open with light pouring out, some half-open, a few still closed. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-0/MM0-4.png", "A long, warm-lit corridor with eight wooden doors along one wall. The first two stand wide open onto a sitting room and a dining room, the next few are partly open, and the last are closed. No text appears in the image."),
     videoPlaceholder("3-4 min from Denis and Arit together: the Eight Doors, which ones couples most often leave closed, and which door the two of them had to open later than they should have."),
     paragraph("In counselling couples before and after their weddings, Arit and I keep seeing the same thing. Marriages are rarely decided by the big romantic moments. They are decided by a handful of conversations: whether a couple has had them honestly, avoided them, or assumed they agreed without ever checking."),
     paragraph("We call them the Eight Doors. Every one of them leads to a room you will live in together for the rest of your lives. Some couples walk through all eight before the wedding. Most open three or four and leave the rest closed until life forces them open, usually at the worst possible moment."),
@@ -389,7 +390,7 @@ const section6 = {
     paragraph("You will discover that some of what you thought was your partner's problem is, at least partly, yours. The most useful sentence in any marriage is not \"you always\" but \"I was wrong.\" Learn to say it early."),
     callout("tip", "Who you marry will give you a good marriage. Who you choose to become will give you a great one. This track will spend as much time on the second as on the first."),
     heading(3, "And It Will Repay You"),
-    imagePlaceholder("MM0-5", "Content: An elderly African couple on a veranda at sunset, sharing a quiet laugh, her hand resting on his arm, a garden and children's toys visible in the background. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-0/MM0-5.png", "An elderly African couple laugh together on a wicker seat on a veranda at sunset, her hand resting on his arm. Behind them a child's tricycle and a football lie on the lawn. No text appears in the image."),
     paragraph("Every hour you invest here is an hour you will not spend later repairing what could have been prevented. Couples who prepare well do not avoid every storm. They simply have something under their feet when the storm comes."),
     paragraph("There is a remarkable piece of research that shows what is really at stake. In 1938, Harvard University began following 724 young men: one group of Harvard students, and one group of boys from some of Boston's poorest and most troubled families. Researchers tracked them for the rest of their lives, through careers, marriages, illnesses and old age. It is one of the longest studies of adult life ever carried out, and it now follows their children too."),
     paragraph("Robert Waldinger, the study's fourth director, summarised what eight decades of data revealed. It was not wealth, fame or achievement that predicted a long, healthy life. It was the quality of a person's closest relationships. The men who were most satisfied in their relationships at age 50 were the healthiest at age 80. Those who could truly rely on their partner in hard times kept sharper memories in old age. Loneliness, by contrast, was linked to earlier decline in health and shorter lives."),
@@ -673,7 +674,7 @@ const section10 = {
   title: "Starting Point Complete",
   blocks: [
     heading(2, "Starting Point Complete"),
-    imagePlaceholder("MM0-6", "Content: Two simple gold wedding rings resting on an open, well-worn Bible on a wooden table, morning light falling across the pages, a single lit candle beside them. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1600×900."),
+    image("/images/marriage/module-0/MM0-6.png", "Two gold wedding rings rest on an open, well-worn Bible on a wooden table in morning light, beside a lit candle. The left page is headed Ephesians 5 and shows verses 25 to 27, beginning \"Husbands, love your wives, even as Christ also loved the church.\""),
     videoPlaceholder("2-3 min closing from Denis (and Arit, if possible): a blessing over the couples beginning this journey, and why the slow work they are about to do is worth it."),
     paragraph("You now know which season you are in, which doors are open and which are closed, and what this journey will ask of you. That is more clarity than most couples have on their wedding day."),
     paragraph("Module 1 begins where every marriage must begin: with the God who designed it, and what He meant it to be."),

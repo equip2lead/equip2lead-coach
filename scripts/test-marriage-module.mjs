@@ -23,6 +23,7 @@ const EXPECT = {
     duration: 100,
     sortOrder: 1,
     blocks: 150,
+    images: 4,
     scorecardKey: 'marriage_module1_covenant',
     videos: [
       {
@@ -64,6 +65,7 @@ const EXPECT = {
     duration: 110,
     sortOrder: 2,
     blocks: 129,
+    images: 4,
     scorecardKey: 'marriage_module2_carrying',
     videos: [
       {
@@ -191,15 +193,26 @@ want.videos.filter((v) => v.tip).forEach((v) => {
   const next = blocks[blocks.findIndex((b) => b.youtubeId === v.id) + 1];
   ok(`tip callout directly after ${v.id}`, next.type === 'callout' && next.variant === 'tip' && next.text === v.tip);
 });
-ok('no real image blocks yet', count('image') === 0);
+if (want.images) {
+  const images = blocks.filter((b) => b.type === 'image');
+  ok(`${want.images} real images, in order, at their paths`, images.length === want.images && images.every((b, i) => b.url === `/images/marriage/module-${N}/MM${N}-${i + 1}.png`));
+  ok('every image has alt text', images.every((b) => b.alt && b.alt.length > 40));
+  ok('every image file exists and is a PNG', images.every((b) => {
+    const f = readFileSync(resolve(repo, 'public' + b.url));
+    return f.subarray(1, 4).toString() === 'PNG';
+  }));
+} else {
+  ok('no real image blocks yet', count('image') === 0);
+}
 ok('no verification note left in the content', !JSON.stringify(blocks).includes('EXTERNAL VIDEO') && !JSON.stringify(blocks).includes('Claude Code'));
 const quiz = blocks.find((b) => b.type === 'quiz');
 ok('every quiz answer is a real option', quiz.questions.every((q) => q.options.some((o) => o.id === q.correct_option_id)));
 
-console.log('\nPlaceholders stay visible');
+console.log('\nImages and placeholders');
 const callouts = blocks.filter((b) => b.type === 'callout').map((b) => b.text);
 const imgs = callouts.filter((t) => t.startsWith('[IMAGE PLACEHOLDER'));
-ok(`4 image placeholders, MM${N}-1 to MM${N}-4`, imgs.length === 4 && [1, 2, 3, 4].every((n) => imgs.some((t) => t.startsWith(`[IMAGE PLACEHOLDER — MM${N}-${n}]`))));
+if (want.images) ok('no image placeholders left', imgs.length === 0);
+else ok(`4 image placeholders, MM${N}-1 to MM${N}-4`, imgs.length === 4 && [1, 2, 3, 4].every((n) => imgs.some((t) => t.startsWith(`[IMAGE PLACEHOLDER — MM${N}-${n}]`))));
 ok('3 video placeholders', callouts.filter((t) => t.startsWith('[VIDEO PLACEHOLDER')).length === 3);
 
 /* ── the real splitter ────────────────────────────────────────────────────── */

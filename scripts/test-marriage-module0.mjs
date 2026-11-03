@@ -70,12 +70,15 @@ ok('2 videos, Meg Jay then Waldinger', videos.length === 2 && videos[0].youtubeI
 ok('Meg Jay title as given', videos[0].title === 'Why 30 is not the new 20 | Meg Jay | TED');
 const jay = blocks.indexOf(videos[0]);
 ok('Meg Jay block order', blocks[jay - 2].type === 'callout' && blocks[jay - 2].text.startsWith('Lack of preparation is the reason') && blocks[jay - 1].type === 'paragraph' && blocks[jay - 1].text.startsWith('The psychologist Meg Jay') && blocks[jay + 1].variant === 'tip' && blocks[jay + 1].text.startsWith('About 15 minutes.') && blocks[jay + 2].text === 'A Throw-Away Age');
-ok('no real image blocks yet', count('image') === 0);
+const images = blocks.filter((b) => b.type === 'image');
+ok('6 real images, in order, at their paths', images.length === 6 && images.every((b, i) => b.url === `/images/marriage/module-0/MM0-${i + 1}.png`));
+ok('every image has alt text', images.every((b) => b.alt && b.alt.length > 40));
+ok('every image file exists and is a PNG', images.every((b) => readFileSync(`public${b.url}`).subarray(1, 4).toString() === 'PNG'));
 
 console.log('\nPlaceholders stay visible');
 const callouts = blocks.filter((b) => b.type === 'callout').map((b) => b.text);
 const imgs = callouts.filter((t) => t.startsWith('[IMAGE PLACEHOLDER'));
-ok('6 image placeholders, MM0-1 to MM0-6', imgs.length === 6 && [1, 2, 3, 4, 5, 6].every((n) => imgs.some((t) => t.startsWith(`[IMAGE PLACEHOLDER — MM0-${n}]`))));
+ok('no image placeholders left', imgs.length === 0);
 ok('4 video placeholders', callouts.filter((t) => t.startsWith('[VIDEO PLACEHOLDER')).length === 4);
 
 /* ── the real splitter ────────────────────────────────────────────────────── */
