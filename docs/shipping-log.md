@@ -3342,7 +3342,7 @@ watch page describes Keller discussing the book at Google in November 2011. It r
 ## 2026-11-03 — Marriage Module 0 video added, Module 2 published
 
 **Both changes are live.** Denis applied them from Claude chat through Supabase rather
-than by running the SQL files, because the connector was down in this session. He
+than by running the SQL files, because the connector was down in this session. Denis
 reports the content matches the payloads with checksums
 `590c5a2c46e95f3a30066fd10ec2223a` (Module 0) and `d62cd9bd71c8a12a612f585f4f3be5bc`
 (Module 2). Module 2 is row id `90fedb90-e21c-4c83-bab3-dd6da8bba6ea`. No week linking.
