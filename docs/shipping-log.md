@@ -3295,13 +3295,15 @@ Leadership row or to `knowledge_documents`.
 
 `scripts/content/marriage/generate_module1.js` is ported from
 `build_module1_marriage.py`, and the builder reproduced `module1_marriage.json` exactly
-before the port. Against the authored JSON: 143 blocks in, 143 out, three differences,
+before the port. Against the authored JSON: 143 blocks in, 144 out, four differences,
 all approved by Denis:
 
 - The module title is a level 2 heading rather than level 1.
 - The assignment says "your partner can't see this, and a mentor reads it only if you
   choose to share it" instead of "read only by you", because admins can read submissions.
 - The Section 7 `[EXTERNAL VIDEO]` callout is now a `video_embed`.
+- A tip callout follows the video, in Denis's wording, saying it is optional and about
+  an hour long.
 
 The authored JSON and builder were then removed at Denis's request.
 
@@ -3310,16 +3312,15 @@ The authored JSON and builder were then removed at Denis's request.
 `C9THu0PZwwk`: oEmbed 200, author Talks at Google, title "The Meaning of Marriage |
 Timothy Keller | Talks at Google"; youtube-nocookie 200; `playableInEmbed` true. The
 watch page describes Keller discussing the book at Google in November 2011. It runs
-58 minutes and has no introduction in the module, because the approved change replaced
-the callout with the embed alone.
+58 minutes.
 
 ### Checks
 
-- `scripts/test-marriage-module.mjs 1`, real generator, ingest and splitter: 44 of 44.
-- 34 browser checks of the real content against a local stand-in for Supabase: all 12
-  sections, scorecard, assignment, quiz, video and placeholders, the French fallback,
-  the safety block, and Leadership wording unchanged.
-- The SQL on a real Postgres engine: stored 143 blocks equal to the payload; refused a
+- `scripts/test-marriage-module.mjs 1`, real generator, ingest and splitter: 45 of 45.
+- 35 browser checks of the real content against a local stand-in for Supabase: all 12
+  sections, scorecard, assignment, quiz, video and its tip, placeholders, the French
+  fallback, the safety block, and Leadership wording unchanged.
+- The SQL on a real Postgres engine: stored 144 blocks equal to the payload; refused a
   second run, a changed letter and the wrong pillar.
 
 ### Still open

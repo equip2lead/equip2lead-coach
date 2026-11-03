@@ -22,9 +22,12 @@ const EXPECT = {
     subtitle: 'Design, Covenant, and the Cord of Three Strands',
     duration: 100,
     sortOrder: 1,
-    blocks: 143,
+    blocks: 144,
     scorecardKey: 'marriage_module1_covenant',
-    video: { id: 'C9THu0PZwwk', section: 7, title: 'The Meaning of Marriage | Timothy Keller | Talks at Google' },
+    video: {
+      id: 'C9THu0PZwwk', section: 7, title: 'The Meaning of Marriage | Timothy Keller | Talks at Google',
+      tip: "Optional: this is Tim Keller's full talk on his book The Meaning of Marriage, about an hour long. You can finish this module without it. Watch it when you have time, and listen for how he describes covenant: the promise that makes love stable instead of fragile.",
+    },
     sections: [
       'Section 1 — It Began With Him',
       'Section 2 — Alone Is Not the Same as Lonely',
@@ -129,6 +132,10 @@ ok('1 assignment, key a1', count('assignment_prompt') === 1 && blocks.find((b) =
 ok('1 quiz', count('quiz') === 1);
 const video = blocks.find((b) => b.type === 'video_embed');
 ok('1 video, the verified one', count('video_embed') === 1 && video.youtubeId === want.video.id && video.title === want.video.title);
+if (want.video.tip) {
+  const next = blocks[blocks.indexOf(video) + 1];
+  ok('tip callout directly after the video', next.type === 'callout' && next.variant === 'tip' && next.text === want.video.tip);
+}
 ok('no real image blocks yet', count('image') === 0);
 ok('no verification note left in the content', !JSON.stringify(blocks).includes('EXTERNAL VIDEO') && !JSON.stringify(blocks).includes('Claude Code'));
 const quiz = blocks.find((b) => b.type === 'quiz');

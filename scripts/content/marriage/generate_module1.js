@@ -14,7 +14,8 @@
 // - The assignment no longer says "read only by you", because admins can read
 //   submissions. It says the partner can't see it.
 // - The [EXTERNAL VIDEO] callout in Section 7 is now the video it proposed, after an
-//   oEmbed check: Timothy Keller at Talks at Google, C9THu0PZwwk, embeddable.
+//   oEmbed check: Timothy Keller at Talks at Google, C9THu0PZwwk, embeddable. A tip
+//   callout follows it, added by Denis, because the talk runs about an hour.
 
 const fs = require('fs');
 
@@ -394,6 +395,7 @@ const section7 = {
     paragraph("That is why we make vows at the altar. Strong feelings may bring us there, but feelings will not survive every ordinary Tuesday of a long marriage, so we do not vow our feelings. We vow our choices. And look carefully at what happens: we make our vow to God, about our spouse. The vow is vertical before it is horizontal."),
     pullQuote("Two people moving toward the same God are, without noticing it, moving toward each other."),
     videoEmbed("C9THu0PZwwk", "The Meaning of Marriage | Timothy Keller | Talks at Google"),
+    callout("tip", "Optional: this is Tim Keller's full talk on his book The Meaning of Marriage, about an hour long. You can finish this module without it. Watch it when you have time, and listen for how he describes covenant: the promise that makes love stable instead of fragile."),
     reflectionQuestions("Before You Move On — Just For You", [
       "If you are honest, what are you relying on to hold your relationship together: money, chemistry, or God?",
       "What does the third strand actually look like in your relationship this week, in practice, not in theory?"
