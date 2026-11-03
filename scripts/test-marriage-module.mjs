@@ -24,10 +24,10 @@ const EXPECT = {
     sortOrder: 1,
     blocks: 144,
     scorecardKey: 'marriage_module1_covenant',
-    video: {
+    videos: [{
       id: 'C9THu0PZwwk', section: 7, title: 'The Meaning of Marriage | Timothy Keller | Talks at Google',
       tip: "Optional: this is Tim Keller's full talk on his book The Meaning of Marriage, about an hour long. You can finish this module without it. Watch it when you have time, and listen for how he describes covenant: the promise that makes love stable instead of fragile.",
-    },
+    }],
     sections: [
       'Section 1 — It Began With Him',
       'Section 2 — Alone Is Not the Same as Lonely',
@@ -51,9 +51,15 @@ const EXPECT = {
     subtitle: 'Motives, Marriageability, and the Path of Healing',
     duration: 110,
     sortOrder: 2,
-    blocks: 125,
+    blocks: 129,
     scorecardKey: 'marriage_module2_carrying',
-    video: { id: '95ovIJ3dsNk', section: 4, title: 'How childhood trauma affects health across a lifetime | Nadine Burke Harris | TED' },
+    videos: [
+      {
+        id: 'psN1DORYYV0', section: 3, title: 'Listening to shame | Brené Brown | TED',
+        tip: "About 20 minutes. Listen for her conclusion that empathy is the antidote to shame. That is why this module keeps pointing you toward a safe person, not only toward private effort: shame loses its grip when it is spoken to someone who responds with compassion. It is also the gospel's pattern: Jesus met the Samaritan woman's story with an offer, not a verdict.",
+      },
+      { id: '95ovIJ3dsNk', section: 4, title: 'How childhood trauma affects health across a lifetime | Nadine Burke Harris | TED' },
+    ],
     sections: [
       'Section 1 — Why Do You Want to Marry?',
       'Section 2 — Become the List You Are Looking For',
@@ -130,12 +136,12 @@ const count = (t) => blocks.filter((b) => b.type === t).length;
 ok('1 scorecard, keyed', count('scorecard') === 1 && blocks.find((b) => b.type === 'scorecard').scorecard_key === want.scorecardKey);
 ok('1 assignment, key a1', count('assignment_prompt') === 1 && blocks.find((b) => b.type === 'assignment_prompt').assignment_key === 'a1');
 ok('1 quiz', count('quiz') === 1);
-const video = blocks.find((b) => b.type === 'video_embed');
-ok('1 video, the verified one', count('video_embed') === 1 && video.youtubeId === want.video.id && video.title === want.video.title);
-if (want.video.tip) {
-  const next = blocks[blocks.indexOf(video) + 1];
-  ok('tip callout directly after the video', next.type === 'callout' && next.variant === 'tip' && next.text === want.video.tip);
-}
+const videos = blocks.filter((b) => b.type === 'video_embed');
+ok(`${want.videos.length} video(s), the verified ones, in order`, videos.length === want.videos.length && want.videos.every((v, i) => videos[i].youtubeId === v.id && videos[i].title === v.title));
+want.videos.filter((v) => v.tip).forEach((v) => {
+  const next = blocks[blocks.findIndex((b) => b.youtubeId === v.id) + 1];
+  ok(`tip callout directly after ${v.id}`, next.type === 'callout' && next.variant === 'tip' && next.text === v.tip);
+});
 ok('no real image blocks yet', count('image') === 0);
 ok('no verification note left in the content', !JSON.stringify(blocks).includes('EXTERNAL VIDEO') && !JSON.stringify(blocks).includes('Claude Code'));
 const quiz = blocks.find((b) => b.type === 'quiz');
@@ -161,7 +167,16 @@ ok(`${want.sections.length} sections`, sections.length === want.sections.length,
 ok('title is in front matter, at level 2', frontMatter[0].text === want.title && frontMatter[0].level === 2);
 want.sections.forEach((t, i) => ok(`section ${i + 1}: ${t}`, sections[i]?.title === t, sections[i]?.title));
 ok('every block accounted for', frontMatter.length + sections.reduce((n, s) => n + s.blocks.length, 0) === blocks.length);
-ok(`video in section ${want.video.section}`, sections[want.video.section - 1].blocks.some((b) => b.type === 'video_embed'));
+want.videos.forEach((v) => ok(`${v.id} in section ${v.section}`, sections[v.section - 1].blocks.some((b) => b.youtubeId === v.id)));
+if (N === 2) {
+  const s3 = sections[2].blocks;
+  const at = s3.findIndex((b) => b.type === 'heading' && b.text === 'Shame or Guilt?');
+  ok('Shame or Guilt? closes Section 3, level 3, in order', at > 0 && s3[at].level === 3
+    && s3[at - 1].text.startsWith('Grace is not a lesser ticket')
+    && s3[at + 1].type === 'paragraph' && s3[at + 1].text.startsWith('The researcher Brené Brown')
+    && s3[at + 2].youtubeId === 'psN1DORYYV0' && s3[at + 3].variant === 'tip'
+    && s3[at + 4].type === 'divider' && at + 5 === s3.length);
+}
 const scoreSection = want.sections.length - 3;
 ok('scorecard section', sections[scoreSection].hasScorecard);
 ok('assignment section', sections[scoreSection + 1].hasAssignment);

@@ -15,6 +15,9 @@
 // The slug is authored rather than derived from the title, because the block ids
 // depend on it: sha256(slug|index|type). A Leadership title and a Marriage title
 // could otherwise produce the same slug.
+//
+// The Meg Jay video, its paragraph and its tip were added to the live row by Denis on
+// 2026-11-03, with an UPDATE. Section numbers did not change.
 
 const fs = require('fs');
 
@@ -98,6 +101,9 @@ const section1 = {
     ]),
     callout("note", "An honest note: these studies show that couples who prepare do better, not that a course alone causes it. Couples motivated enough to prepare may already be different. Researchers have looked at that question, and at least one study found that couples who choose preparation are not very different from those who do not, which suggests the preparation itself helps. Either way, the lesson is the same: the couples who take their marriage seriously before it is tested are the ones most likely to still have one when it is."),
     callout("tip", "Lack of preparation is the reason this track exists to confront. Arit and I cannot repair every marriage that has already broken. But we can help you build one that is far less likely to break, or help you rebuild the one you have before it does."),
+    paragraph("The psychologist Meg Jay sees the same pattern from a different angle. In her 2013 TED talk, she argues that the years before settling down are not a waiting room. Even though marriage, work and children now come later for many people, the choices that shape them are being made now, and she urges young adults to prepare deliberately instead of drifting."),
+    videoEmbed("vhhgI4tSMwc", "Why 30 is not the new 20 | Meg Jay | TED"),
+    callout("tip", "About 15 minutes. Meg Jay speaks as a clinical psychologist, not a pastor, and her talk is about the whole of adult life, not only marriage. Listen for her point that the years before you settle down are not wasted time but the time you build on. If you are married, apply it to the season you are in now: the choices you make this year are shaping the next ten."),
     heading(3, "A Throw-Away Age"),
     paragraph("Underneath the statistics is a change in how we think. We live in a consumer culture. When a phone stops pleasing us, we replace it. When a product disappoints, we return it. Very little is expected to last."),
     paragraph("A culture that learns to throw away its possessions eventually learns to throw away its promises. That is not a sermon against modern life. It is a warning that a marriage built only on feeling will be treated like everything else built on feeling: kept while it feels good, discarded when it does not."),

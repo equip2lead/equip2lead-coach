@@ -3338,3 +3338,66 @@ watch page describes Keller discussing the book at Google in November 2011. It r
 - 4 image and 3 video placeholders remain visible as callouts until the assets arrive.
 - The Section 7 video's tip mentions Keller by name; the talk itself was checked from
   its YouTube details, not watched.
+
+## 2026-11-03 — Marriage Module 0 video added, Module 2 prepared
+
+**Status when written: neither change is in the database.** The Supabase connector is
+down, so Denis runs both SQL files from another session. Until then
+`check-generators.sh marriage:0` reports a difference and `marriage:2` reports no live
+row, both expected. No week linking. No change to any Leadership row or to
+`knowledge_documents`.
+
+### Module 0: Meg Jay
+
+Three blocks in Section 1, in Denis's wording, after the "Lack of preparation" tip and
+before "A Throw-Away Age": a paragraph, the video and a tip. 151 blocks become 154 and
+nothing else in the content changes. Section numbers hold, so reading progress holds.
+Block ids after the insert change, which is safe because no user data is keyed on them.
+
+The SQL replaces `body_blocks` on this one row. It refuses to run unless the live row is
+still the 151-block version.
+
+### Module 2: "Know Yourself, Heal Yourself"
+
+`scripts/content/marriage/generate_module2.js` is ported from
+`build_module2_marriage.py`, and the builder reproduced `module2_marriage.json` exactly
+before the port. Against the authored JSON: 125 blocks in, 129 out. Two changes, both
+approved by Denis:
+
+- "Shame or Guilt?" closes Section 3: a level 3 heading, a paragraph, the Brené Brown
+  video and a tip, in Denis's wording.
+- The assignment opens "Your partner cannot see this assignment. Write honestly."
+  instead of "This assignment is private", because admins can read submissions. The care
+  notice, the warning and "That counts as completing it" are as authored.
+
+The authored JSON and builder were then removed at Denis's request.
+
+### Videos
+
+| Id | YouTube title | Channel | Length |
+|---|---|---|---|
+| `vhhgI4tSMwc` | Why 30 is not the new 20 \| Meg Jay | TED | 14:50 |
+| `psN1DORYYV0` | Listening to shame \| Brené Brown \| TED | TED | 20:39 |
+
+Each: oEmbed 200, youtube-nocookie 200, `playableInEmbed` true. Burke Harris
+(`95ovIJ3dsNk`, Module 2 Section 4), Waldinger (Module 0 Section 6) and Keller (Module 1
+Section 7) are where they were. The Meg Jay caption is Denis's "Why 30 is not the new 20
+| Meg Jay | TED", which adds "| TED" to the YouTube title.
+
+### Checks
+
+- `scripts/test-marriage-module0.mjs`: 58 of 58. `scripts/test-marriage-module.mjs 2`:
+  49 of 49. Module 1 still 45 of 45.
+- Browser checks of the real content against a local stand-in for Supabase: Module 0,
+  42 of 42; Module 2, 35 of 35.
+- Module 0 SQL on a real Postgres engine: stored 154 blocks equal to the payload, kept
+  the row's other fields and every other row; refused a second run, a changed letter, a
+  row that had changed and a missing row.
+- Module 2 SQL on the same engine: stored 129 blocks equal to the payload; refused a
+  second run, a changed letter and the wrong pillar.
+
+### Still open
+
+- Run both SQL files, then `check-generators.sh marriage:0 marriage:2`.
+- 4 image and 3 video placeholders in Module 2 remain visible as callouts until the
+  assets arrive.
