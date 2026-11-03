@@ -36,9 +36,10 @@ const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: {
 const assignmentPrompt = (fields) => ({ type: "assignment_prompt", data: fields });
 const quiz = (scope, title, questions) => ({ type: "quiz", data: { scope, title, questions } });
 
-// Art and video not produced yet stay visible as callouts. Images will go in
-// public/images/marriage/module-1/MM1-1..4.png.
-const imagePlaceholder = (ref, brief) => callout("note", `[IMAGE PLACEHOLDER — ${ref}] ${brief}`);
+// Images are Denis's, used as delivered, in public/images/marriage/module-1/.
+const image = (url, alt) => ({ type: "image", data: { url, alt } });
+
+// Video not produced yet stays visible as a callout.
 const videoPlaceholder = (brief) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${brief}`);
 
 // ─── Front matter ───
@@ -62,7 +63,7 @@ const section1 = {
   title: "It Began With Him",
   blocks: [
     heading(2, "Section 1 — It Began With Him"),
-    imagePlaceholder("MM1-1", "Content: A garden at first light: mist over green grass, a stream catching the sunrise, two sets of footprints side by side on a dewy path. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-1/MM1-1.png", "A garden path at first light: two sets of bare footprints side by side in the damp earth, running between dewy grass and a stream that catches the sunrise. No text appears in the image."),
     paragraph("Before we can prepare for marriage, we need to settle two questions: what marriage is, and who has the right to define it. Scripture answers both on its very first pages."),
     callout("scripture", "\"The Lord God said, 'It is not good for the man to be alone. I will make a helper suitable for him.'\" — Genesis 2:18"),
     paragraph("Read it slowly and notice who is speaking. It is not Adam. Adam did not look around the garden, feel the need for a wife and ask for one. God looked at the man, made His own assessment, and called his situation \"not good.\" Marriage began as God's observation and God's provision."),
@@ -314,7 +315,7 @@ const section6 = {
   title: "Covenant, Not Contract",
   blocks: [
     heading(2, "Section 6 — Covenant, Not Contract"),
-    imagePlaceholder("MM1-2", "Content: An elderly woman's hands mending a torn piece of colourful African wax-print cloth with needle and thread, a sewing tin beside her, warm afternoon light through a window. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-1/MM1-2.png", "An elderly woman in glasses and a wax-print headwrap smiles as she sews a tear in colourful African cloth, with a sewing tin of thread and a pincushion beside her and afternoon light coming through the window. No text appears in the image."),
     paragraph("Of all the words that describe marriage, Scripture chooses one with special care."),
     callout("scripture", "\"She is your partner, the wife of your marriage covenant.\" — Malachi 2:14"),
     paragraph("A covenant is not a contract, and the difference is everything."),
@@ -421,7 +422,7 @@ const section8 = {
   title: "When Are You Actually Married?",
   blocks: [
     heading(2, "Section 8 — When Are You Actually Married?"),
-    imagePlaceholder("MM1-3", "Content: Three moments laid side by side: a traditional African marriage ceremony with families gathered, a couple signing a civil register, and a church altar with a couple kneeling. Warm, joyful light. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-1/MM1-3.png", "Three scenes side by side. A couple in traditional African dress hold hands at a customary marriage ceremony as their families applaud. A couple sign a register beneath a sign reading CIVIL REGISTRY and the flag of Cameroon. A couple kneel at a church altar as a minister raises a hand in blessing beneath a lit cross."),
     paragraph("Across Africa a fair and practical question comes up again and again. When exactly is a couple married in the eyes of God? When the bride price has been paid and the traditional rites are done? When the marriage is registered by the state? Or only after the church wedding?"),
     paragraph("Scripture does not prescribe one ceremony. It records weddings (Jesus Himself attended one at Cana), but it never commands a single form. What it does insist on are the elements we have already seen: a public leaving, a covenant vow, and two lives joined before God and the community. It also commands believers to honour the laws and authorities of their land."),
     table([
@@ -764,7 +765,7 @@ const section12 = {
   title: "Module 1 Complete",
   blocks: [
     heading(2, "Module 1 Complete"),
-    imagePlaceholder("MM1-4", "Content: A strong braided rope of three strands, one gold, tied firmly around a weathered wooden post on a riverbank at sunset, holding a small boat steady in the current. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1600×900."),
+    image("/images/marriage/module-1/MM1-4.png", "A thick rope braided from three strands, gold, red and cream, is tied around a weathered wooden post on a riverbank at sunset, holding a small wooden boat steady in the current. No text appears in the image."),
     videoPlaceholder("2-3 min closing from Denis: which of the three totals he and Arit found hardest in their own early marriage, and what giving it cost and gave them."),
     paragraph("You now know where marriage came from, what it is for, and why it is a covenant rather than a contract. You have named the total you find hardest to give, and the torn place you need to mend."),
     paragraph("Module 2 turns from the design to the person who brings it to life: you. Before you can build a marriage, you have to know, and often heal, the one who is building it."),

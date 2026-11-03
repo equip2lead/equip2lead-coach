@@ -27,9 +27,10 @@ const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: {
 const assignmentPrompt = (fields) => ({ type: "assignment_prompt", data: fields });
 const quiz = (scope, title, questions) => ({ type: "quiz", data: { scope, title, questions } });
 
-// Art and video not produced yet stay visible as callouts. Images will go in
-// public/images/marriage/module-5/MM5-1..3.png.
-const imagePlaceholder = (ref, brief) => callout("note", `[IMAGE PLACEHOLDER — ${ref}] ${brief}`);
+// Images are Denis's, used as delivered, in public/images/marriage/module-5/.
+const image = (url, alt) => ({ type: "image", data: { url, alt } });
+
+// Video not produced yet stays visible as a callout.
 const videoPlaceholder = (brief) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${brief}`);
 
 // ─── Front matter ───
@@ -53,7 +54,7 @@ const section1 = {
   title: "Two Cultures, One House",
   blocks: [
     heading(2, "Section 1 — Two Cultures, One House"),
-    imagePlaceholder("MM5-1", "Content: Two African families seated at two separate dinner tables in contrasting homes, one loud and animated with everyone talking at once, the other quiet and still, a young man and young woman visible one in each, warm evening light. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-5/MM5-1.png", "Two family dinners side by side. On the left, an African family in bright prints talk and laugh over a full table, gesturing as they speak. On the right, another family sit in silence at a plainly laid table, their eyes lowered. No text appears in the image."),
     paragraph("Everyone says couples must \"communicate\", but few ever define it. Communication is two skills, not one: talking honestly and listening well. Most of us are untrained in both."),
     paragraph("Here is something nobody warns you about. It is only once you are married that you discover your way of seeing things is not the universal way of seeing things. You assumed your whole life that any reasonable person processes the world roughly as you do. You were wrong, and you are about to live with the evidence."),
     heading(3, "Two Questions About Your Wiring"),
@@ -237,7 +238,7 @@ const section4 = {
   title: "Conflict Is Not Failure",
   blocks: [
     heading(2, "Section 4 — Conflict Is Not Failure"),
-    imagePlaceholder("MM5-2", "Content: A young African couple sitting on opposite ends of a sofa after a disagreement, both looking down, a small gap between them, a single lamp lighting the room, the mood heavy but not hopeless. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-5/MM5-2.png", "A young African husband and wife sit apart on a sofa after a disagreement, both looking down, his hand at his forehead and her chin in her hand, with a single lamp lighting the room behind them. No text appears in the image."),
     paragraph("Settle this in your heart now: conflict is not a sign that you married wrong. Conflict is inevitable, because marriage is two different people, from two different histories, with two different sets of desires and a shared portion of ordinary human selfishness, living in one house with one bed, one budget and one calendar. Put plainly: if you have courted for more than six months with no misunderstanding, someone is pretending."),
     pullQuote("The question is never whether you will disagree. It is whether you have the tools to disagree without destroying anything."),
     callout("scripture", "\"In your anger do not sin: Do not let the sun go down while you are still angry.\" — Ephesians 4:26"),
@@ -718,7 +719,7 @@ const section11 = {
   title: "Module 5 Complete",
   blocks: [
     heading(2, "Module 5 Complete"),
-    imagePlaceholder("MM5-3", "Content: A young African husband and wife sitting side by side at a table facing a single sheet of paper together, both pointing at it and smiling slightly, sunlight through a window, conveying 'us against the problem'. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1600×900."),
+    image("/images/marriage/module-5/MM5-3.png", "A young African husband and wife sit side by side at a table in the light from a window, smiling slightly as they both point to a single sheet of paper between their coffee mugs. The writing on the page is too small to read."),
     videoPlaceholder("2-3 min closing from Denis and Arit: an argument they still laugh about, the rule that has saved them most often, and a prayer over couples whose words have become weapons."),
     paragraph("You have named your wiring and your family's culture, learned to listen until someone feels understood, met the Four Horsemen and their antidotes, found a path through any disagreement, heard what the quiet hour is asking, and learned the three movements that heal hurt. Words and conflict will not disappear from your home. But they no longer have to destroy it."),
     paragraph("Module 6 turns to how two people actually run a shared life: roles, work, headship and partnership, and who does what when there is only one house and one calendar."),
