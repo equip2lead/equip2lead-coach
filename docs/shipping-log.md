@@ -3284,3 +3284,45 @@ is finished. Leadership's wording is unchanged.
   retrouve dans le retour."). Leadership and the other tracks are unchanged.
 - **Source files.** `build_module0_marriage.py` and `module0_marriage.json` were removed
   at Denis's request. The generator is the source now.
+
+## 2026-11-03 — Marriage Module 1 prepared: "Marriage Was God's Idea"
+
+**Status when written: the row is not yet in the database.** The Supabase connector is
+down, so Denis runs the SQL from another session. No week linking. No change to any
+Leadership row or to `knowledge_documents`.
+
+### Generator
+
+`scripts/content/marriage/generate_module1.js` is ported from
+`build_module1_marriage.py`, and the builder reproduced `module1_marriage.json` exactly
+before the port. Against the authored JSON: 143 blocks in, 143 out, three differences,
+all approved by Denis:
+
+- The module title is a level 2 heading rather than level 1.
+- The assignment says "your partner can't see this, and a mentor reads it only if you
+  choose to share it" instead of "read only by you", because admins can read submissions.
+- The Section 7 `[EXTERNAL VIDEO]` callout is now a `video_embed`.
+
+The authored JSON and builder were then removed at Denis's request.
+
+### Video
+
+`C9THu0PZwwk`: oEmbed 200, author Talks at Google, title "The Meaning of Marriage |
+Timothy Keller | Talks at Google"; youtube-nocookie 200; `playableInEmbed` true. The
+watch page describes Keller discussing the book at Google in November 2011. It runs
+58 minutes and has no introduction in the module, because the approved change replaced
+the callout with the embed alone.
+
+### Checks
+
+- `scripts/test-marriage-module.mjs 1`, real generator, ingest and splitter: 44 of 44.
+- 34 browser checks of the real content against a local stand-in for Supabase: all 12
+  sections, scorecard, assignment, quiz, video and placeholders, the French fallback,
+  the safety block, and Leadership wording unchanged.
+- The SQL on a real Postgres engine: stored 143 blocks equal to the payload; refused a
+  second run, a changed letter and the wrong pillar.
+
+### Still open
+
+- Run the SQL, then `check-generators.sh marriage:1`.
+- 4 image and 3 video placeholders remain visible as callouts until the assets arrive.
