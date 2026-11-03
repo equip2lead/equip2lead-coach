@@ -134,6 +134,13 @@ ok('Marriage greeting, English', oriented('en', 'marriage').includes('You know w
 ok('Marriage greeting no longer says leaders', !oriented('en', 'marriage').concat(oriented('fr', 'marriage')).some((l) => /most leaders|plupart des leaders/.test(l)));
 ok('Leadership greeting unchanged', oriented('en', 'leadership').includes('You know why you came. That is more than most leaders can say.'));
 ok('Other tracks unchanged', oriented('en', 'ministry').includes('You know why you came. That is more than most leaders can say.'));
+ok('Marriage greeting, French, plural', oriented('fr', 'marriage').includes('Vous savez pourquoi vous êtes venus. C’est plus que la plupart des couples ne peuvent en dire le jour de leur mariage.'));
+const returning = (lang, track) => days.flatMap((d) => greetingFor('returning', lang, 'assessment', d, track).lines);
+ok('Marriage return line, English', returning('en', 'marriage').includes('Love isn’t lost in the gap. It’s found in the return.'));
+ok('Marriage return line, French', returning('fr', 'marriage').includes('L’amour ne se perd pas dans l’absence. Il se retrouve dans le retour.'));
+ok('Marriage return line no longer says leadership', !returning('en', 'marriage').concat(returning('fr', 'marriage')).some((l) => /leadership/i.test(l)));
+ok('Leadership return line unchanged', returning('en', 'leadership').includes('Leadership isn’t lost in the gap. It’s found in the return.') && returning('fr', 'leadership').includes('Le leadership ne se perd pas dans l’interruption. Il se trouve dans le retour.'));
+ok('Other tracks keep the return line', returning('en', 'ministry').includes('Leadership isn’t lost in the gap. It’s found in the return.'));
 
 const outIdx = process.argv.indexOf('--out');
 if (outIdx !== -1) copyFileSync(payloadPath, process.argv[outIdx + 1]);

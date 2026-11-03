@@ -3209,11 +3209,21 @@ modules, so the message goes away with the first one published.
 The dashboard no longer tells these users "You've finished everything", "No
 modules match these filters", or "Your Starting Point is ready when you are."
 
-## 2026-11-02 — Marriage Module 0 prepared: "Starting Point — Clarity Before Covenant"
+## 2026-11-03 — Marriage Module 0 published: "Starting Point — Clarity Before Covenant"
 
-**Status when written: the row is not yet in the database.** The Supabase connector
-was down, and the public key can't write to `lesson_modules`. Everything up to the
-insert is done and verified.
+**The row is live.** Row id `5c169a40-2581-4891-a3b8-bcbeaf7d2dbd`, inserted by Denis
+from another session, because the Supabase connector was down and the public key
+can't write to `lesson_modules`. The SQL carried a checksum of the module text
+(`cfda59001d2214015e0204e154239857`), which passed.
+
+Checked against the real row afterwards:
+
+- `check-generators.sh marriage:0`: 151 live, 151 generated, zero differences.
+- Full run: Leadership M0 to M12 all zero differences, so no Leadership row moved.
+- Slug, titles, pillar, starting point, difficulty, duration, sort order and published
+  flag as authored. Every block id matches `sha256(slug|index|type)`.
+- No French version yet: `title_fr` and `body_blocks_fr` are null, so French readers
+  get the English text.
 
 ### Generator
 
@@ -3226,10 +3236,11 @@ renderer has none. The splitter still files it under front matter.
 ### Checks
 
 `scripts/test-marriage-module0.mjs` runs the real generator, ingest script and
-splitter: 37 of 37. It confirms 10 sections with the right titles, ids by
+splitter: 55 of 55. It confirms 10 sections with the right titles, ids by
 `sha256(slug|index|type)`, one each of scorecard, assignment, quiz and video, and 6
-image and 4 video placeholders kept as callouts. 38 browser checks of the real
-content passed against a local stand-in for Supabase.
+image and 4 video placeholders kept as callouts. 39 browser checks of the real
+content passed against a local stand-in for Supabase, before the final two greeting
+changes; those two are covered by the 55.
 
 Video `8KkKuTCFvzI`: oEmbed 200, author TED, title "What Makes a Good Life? Lessons
 from the Longest Study on Happiness | Robert Waldinger | TED"; youtube-nocookie 200.
@@ -3254,13 +3265,12 @@ is finished. Leadership's wording is unchanged.
 
 ### Still open
 
-- Insert and publish the row, then run `check-generators.sh marriage:0`.
-- `is_published` is the only gate and previews share the production database, so
-  publishing makes the module live for Marriage users at once.
-- Marriage readers can still get "Leadership isn't lost in the gap", a `returning`
-  greeting variant.
+- `is_published` is the only gate and previews share the production database, so the
+  module has been live for Marriage users since the insert. The app wording and
+  greetings below reach production only when this branch merges.
+- 6 image and 4 video placeholders remain visible as callouts until the assets arrive.
 
-### Decided before publishing
+### Decided
 
 - **Privacy wording.** "Nobody sees this but you" and "read only by you" became "your
   partner can't see this", because admins can read scorecard ratings and assignment
@@ -3268,7 +3278,9 @@ is finished. Leadership's wording is unchanged.
 - **Byline.** The overview page reads the author from the module's own byline
   paragraph (`lib/lessons/byline.ts`), so this module credits Dr. Denis & Arit Ekobena.
   Every Leadership module still reads Dr. Denis Ekobena.
-- **Greeting.** Marriage readers get "more than most couples can say on their wedding
-  day". Leadership and the other tracks are unchanged.
+- **Greetings.** Marriage readers get "more than most couples can say on their wedding
+  day" (French "Vous savez pourquoi vous êtes venus…") and "Love isn't lost in the gap.
+  It's found in the return." (French "L'amour ne se perd pas dans l'absence. Il se
+  retrouve dans le retour."). Leadership and the other tracks are unchanged.
 - **Source files.** `build_module0_marriage.py` and `module0_marriage.json` were removed
   at Denis's request. The generator is the source now.

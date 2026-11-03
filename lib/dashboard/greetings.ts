@@ -144,7 +144,11 @@ const MARRIAGE_LINES: Record<string, string> = {
   'You know why you came. That is more than most leaders can say.':
     'You know why you came. That is more than most couples can say on their wedding day.',
   'Vous savez pourquoi vous êtes venu. C’est plus que la plupart des leaders.':
-    'Vous savez pourquoi vous êtes venu. C’est plus que la plupart des couples ne peuvent en dire le jour de leur mariage.',
+    'Vous savez pourquoi vous êtes venus. C’est plus que la plupart des couples ne peuvent en dire le jour de leur mariage.',
+  'Leadership isn’t lost in the gap. It’s found in the return.':
+    'Love isn’t lost in the gap. It’s found in the return.',
+  'Le leadership ne se perd pas dans l’interruption. Il se trouve dans le retour.':
+    'L’amour ne se perd pas dans l’absence. Il se retrouve dans le retour.',
 };
 
 export function greetingFor(
