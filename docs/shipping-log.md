@@ -3493,3 +3493,27 @@ text does not assume they were read, and the Smalley tip. The generator matches 
 The 3 Module 5 images joined the others, making 24, all on main and served from
 app.equip2lead.coach. Image SQL exists for Modules 0 to 5, each guarded on its exact live row.
 
+## 2026-11-04 — Marriage images live in Modules 0 to 4, Module 6 prepared
+
+### Images live
+
+The image SQL ran from Claude chat for Modules 0 to 4. Each live row equals its image content
+exactly, with no image placeholders left: 6, 4, 4, 4 and 3 images. The SQL files for those
+modules were deleted from the repo folder and Downloads. Module 5's image SQL is still to run.
+The Module 5 builders and JSON were also deleted, after the live row matched the new builder.
+
+### Module 6 prepared, not live until the SQL runs
+
+"Roles & Work": 115 blocks, in the Partnership & Roles pillar, no edits to the authored text.
+
+| Slot | Video | Channel | Result |
+| --- | --- | --- | --- |
+| Munroe | `Gy_tHy6_KHc` | Munroe Global | Used |
+| Munroe | `-65jxGAxMco` | Munroe Global | Not needed |
+| Eggerichs | `L24ybGrcGIM` | Arlene Pellicane | Not an accepted channel |
+| Eggerichs | `ER0nj_wr-Pg` | Hagee Ministries | Not an accepted channel |
+| Eggerichs | `N1otteFv6zw` | lifetodaytv (LIFE Today) | Used |
+| Eggerichs | `b2Cpou8_y4g` | 100huntley | Not reached |
+
+The MM6-1 to MM6-3 images are held on `content/marriage-images`. MM6-4 is not saved yet.
+

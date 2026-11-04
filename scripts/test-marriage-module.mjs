@@ -200,11 +200,35 @@ const EXPECT = {
       'Module 4 tells our own story of exactly this',
     ],
   },
+  6: {
+    slug: 'roles-and-work',
+    title: 'Roles & Work',
+    subtitle: 'Headship, Submission, Love and Respect, and Who Carries What',
+    pillarSlug: 'partnership-roles',
+    pillarId: '00000000-0000-0000-0002-000000000013',
+    duration: 110,
+    sortOrder: 6,
+    blocks: 115,
+    videoPlaceholders: 2,
+    scorecardKey: 'marriage_module6_roles',
+    videos: [
+      { id: "Gy_tHy6_KHc", section: 2, title: "The Husband and Wife's Role in Marriage | Dr. Myles Munroe", after: "Dr. Myles Munroe taught a generation of ", before: "reflection_questions", tip: "As you listen, write down one responsibility he names that you have never thought of as part of your role. Then compare it with the job description above." },
+      { id: "N1otteFv6zw", section: 5, title: "Love and Respect in Marriage and Family | Dr. Emerson Eggerichs", after: "Dr. Emerson Eggerichs and his wife Sarah", before: "pull_quote_card", tip: "As you watch, notice one way you may be sending your partner a message you never intended. Then ask them, this week, what makes them feel most loved and most respected." },
+    ],
+    sections: ["Section 1 — Equal in Worth, Distinct in Calling", "Section 2 — Headship Is Responsibility, Not Superiority", "Section 3 — He Decides, With Her", "Section 4 — Submission: What It Is and What It Has Never Been", "Section 5 — Love and Respect", "Section 6 — Both of You Were Made to Work", "Section 7 — Who Carries What", "Are We Partners?", "Module 6 Assignment — Build Your Partnership", "Module 6 Complete"],
+    privacy: 'Your partner cannot see this assignment. Write honestly.',
+    keep: [
+      'Your partner cannot see these ratings.',
+      'skip the prompts and speak to a trusted pastor or counsellor first',
+      'Nothing taught here ever requires anyone to remain in reach of violence, control or abuse.',
+      'contact local emergency services if you are in danger',
+    ],
+  },
 };
 
 const N = Number(process.argv[2]);
 const want = EXPECT[N];
-if (!want) { console.error('usage: test-marriage-module.mjs <1|2|3|4|5> [--out <file>]'); process.exit(2); }
+if (!want) { console.error('usage: test-marriage-module.mjs <1|2|3|4|5|6> [--out <file>]'); process.exit(2); }
 
 const repo = process.cwd();
 const dir = mkdtempSync(join(tmpdir(), `marriage-m${N}-`));
@@ -279,7 +303,8 @@ const callouts = blocks.filter((b) => b.type === 'callout').map((b) => b.text);
 const imgs = callouts.filter((t) => t.startsWith('[IMAGE PLACEHOLDER'));
 const imageCount = want.imagePlaceholders ?? 4;
 ok(`${imageCount} image placeholders, MM${N}-1 to MM${N}-${imageCount}`, imgs.length === imageCount && Array.from({ length: imageCount }, (_, k) => k + 1).every((n) => imgs.some((t) => t.startsWith(`[IMAGE PLACEHOLDER — MM${N}-${n}]`))));
-ok('3 video placeholders', callouts.filter((t) => t.startsWith('[VIDEO PLACEHOLDER')).length === 3);
+const videoPlaceholders = want.videoPlaceholders ?? 3;
+ok(`${videoPlaceholders} video placeholders`, callouts.filter((t) => t.startsWith('[VIDEO PLACEHOLDER')).length === videoPlaceholders);
 
 /* ── the real splitter ────────────────────────────────────────────────────── */
 const src = readFileSync('lib/lessons/split-sections.ts', 'utf8').replace(/^import type .*$/m, '');
