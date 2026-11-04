@@ -12,6 +12,9 @@
 //   read submissions. It says the partner can't see it.
 // - "Shame or Guilt?" closes Section 3: a heading, a paragraph, the Brené Brown video
 //   and a tip, in Denis's wording, after an oEmbed check of psN1DORYYV0.
+// - The T.D. Jakes video closes "Section 6" before the final tip, with a paragraph and a
+//   tip in Denis's wording. oEmbed check of MxPEBPrZq-4 on 2026-11-04: on TBN's channel,
+//   which Denis accepted for this slot.
 
 const fs = require('fs');
 
@@ -403,6 +406,9 @@ const section6 = {
     paragraph("Some wounds need a wise counsellor as well as prayer, and seeking one is not a lack of faith. This is especially true of deep wounds: abuse, trauma, the losses that shaped your childhood. God heals, and very often He heals through trained, patient, godly people He has placed in His church for exactly this purpose."),
     paragraph("And give it time. Do not run from the wreckage of one relationship straight to the altar of the next. A rebound feels like healing but is usually only anaesthetic, and anaesthetic wears off, often after the vows."),
     pullQuote("Healing is not a delay on the road to your covenant. It is the road."),
+    paragraph("Bishop T.D. Jakes has preached for decades to people carrying wounds, and in this short message he makes the same point this section makes: healing has its own pace, and trying to rush it only drives the wound deeper."),
+    videoEmbed("MxPEBPrZq-4", "You Can't Rush the Healing Process | T.D. Jakes"),
+    callout("tip", "Listen for what he says about the time healing takes. Then ask yourself honestly: is there a wound I have been trying to hurry past, or cover with a new relationship, instead of letting God heal it?"),
     callout("tip", "Who you marry will give you a good marriage. Who you choose to become will give you a great one. In counselling rooms we meet many couples who know exactly what to do to fix their marriage, and do not do it, because underneath the knowing is a sea of unhealed emotion pulling the strings."),
     divider(),
   ],

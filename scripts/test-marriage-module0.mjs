@@ -57,16 +57,19 @@ ok('duration', payload.estimated_duration_minutes === 65);
 ok('sort_order', payload.sort_order === 0);
 
 console.log('\nBlocks');
-ok('154 blocks', blocks.length === 154, String(blocks.length));
+ok('157 blocks', blocks.length === 157, String(blocks.length));
 const expectedId = (i, t) => 'b_' + createHash('sha256').update(`${payload.slug}|${i}|${t}`).digest('hex').slice(0, 12);
 ok('every id is sha256(slug|index|type)', blocks.every((b, i) => b.id === expectedId(i, b.type)));
-ok('ids are unique', new Set(blocks.map((b) => b.id)).size === 154);
+ok('ids are unique', new Set(blocks.map((b) => b.id)).size === 157);
 const count = (t) => blocks.filter((b) => b.type === t).length;
 ok('1 scorecard, keyed', count('scorecard') === 1 && blocks.find((b) => b.type === 'scorecard').scorecard_key === 'marriage_module0_eight_doors');
 ok('1 assignment, key a1', count('assignment_prompt') === 1 && blocks.find((b) => b.type === 'assignment_prompt').assignment_key === 'a1');
 ok('1 quiz', count('quiz') === 1);
 const videos = blocks.filter((b) => b.type === 'video_embed');
-ok('2 videos, Meg Jay then Waldinger', videos.length === 2 && videos[0].youtubeId === 'vhhgI4tSMwc' && videos[1].youtubeId === '8KkKuTCFvzI');
+ok('3 videos: Meg Jay, Munroe, Waldinger', videos.length === 3 && videos[0].youtubeId === 'vhhgI4tSMwc' && videos[1].youtubeId === '5JG0S9jTp78' && videos[2].youtubeId === '8KkKuTCFvzI');
+ok('Munroe caption as given', videos[1].title === 'Dr. Myles Munroe on Preparing for Marriage | Munroe Global');
+const munroe = blocks.indexOf(videos[1]);
+ok('Munroe block order', blocks[munroe - 2].text.startsWith('If you are already married, the same is true') && blocks[munroe - 1].type === 'paragraph' && blocks[munroe - 1].text.startsWith('Dr. Myles Munroe, the Bahamian Bible teacher') && blocks[munroe + 1].variant === 'tip' && blocks[munroe + 1].text.startsWith('As you listen, write down') && blocks[munroe + 2].type === 'heading' && blocks[munroe + 2].text === "It Was God's Idea First");
 ok('Meg Jay title as given', videos[0].title === 'Why 30 is not the new 20 | Meg Jay | TED');
 const jay = blocks.indexOf(videos[0]);
 ok('Meg Jay block order', blocks[jay - 2].type === 'callout' && blocks[jay - 2].text.startsWith('Lack of preparation is the reason') && blocks[jay - 1].type === 'paragraph' && blocks[jay - 1].text.startsWith('The psychologist Meg Jay') && blocks[jay + 1].variant === 'tip' && blocks[jay + 1].text.startsWith('About 15 minutes.') && blocks[jay + 2].text === 'A Throw-Away Age');
@@ -103,9 +106,10 @@ const titles = [
   'Starting Point Complete',
 ];
 titles.forEach((t, i) => ok(`section ${i + 1}: ${t}`, sections[i]?.title === t, sections[i]?.title));
-ok('every block accounted for', frontMatter.length + sections.reduce((n, s) => n + s.blocks.length, 0) === 154);
+ok('every block accounted for', frontMatter.length + sections.reduce((n, s) => n + s.blocks.length, 0) === 157);
 const has = (i, t) => sections[i].blocks.some((b) => b.type === t);
 ok('Meg Jay in section 1', sections[0].blocks.some((b) => b.youtubeId === 'vhhgI4tSMwc'));
+ok('Munroe in section 2', sections[1].blocks.some((b) => b.youtubeId === '5JG0S9jTp78'));
 ok('Waldinger still in section 6', sections[5].blocks.some((b) => b.youtubeId === '8KkKuTCFvzI'));
 ok('scorecard in section 7', has(6, 'scorecard') && sections[6].hasScorecard);
 ok('assignment in section 9', has(8, 'assignment_prompt') && sections[8].hasAssignment);

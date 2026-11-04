@@ -63,7 +63,7 @@ const EXPECT = {
     subtitle: 'Motives, Marriageability, and the Path of Healing',
     duration: 110,
     sortOrder: 2,
-    blocks: 129,
+    blocks: 132,
     scorecardKey: 'marriage_module2_carrying',
     videos: [
       {
@@ -71,6 +71,11 @@ const EXPECT = {
         tip: "About 20 minutes. Listen for her conclusion that empathy is the antidote to shame. That is why this module keeps pointing you toward a safe person, not only toward private effort: shame loses its grip when it is spoken to someone who responds with compassion. It is also the gospel's pattern: Jesus met the Samaritan woman's story with an offer, not a verdict.",
       },
       { id: '95ovIJ3dsNk', section: 4, title: 'How childhood trauma affects health across a lifetime | Nadine Burke Harris | TED' },
+      {
+        id: 'MxPEBPrZq-4', section: 6, title: "You Can't Rush the Healing Process | T.D. Jakes",
+        after: 'Bishop T.D. Jakes has preached for decades', before: 'callout',
+        tip: "Listen for what he says about the time healing takes. Then ask yourself honestly: is there a wound I have been trying to hurry past, or cover with a new relationship, instead of letting God heal it?",
+      },
     ],
     sections: [
       'Section 1 — Why Do You Want to Marry?',
@@ -124,11 +129,46 @@ const EXPECT = {
       'speak to a trusted pastor or counsellor before you take any other step',
     ],
   },
+  4: {
+    slug: 'teach-me-how-to-love',
+    title: 'Teach Me How to Love',
+    subtitle: 'Agape, the Three Levels of Love, and the Deposits That Keep It Alive',
+    pillarSlug: 'communication-connection',
+    pillarId: '00000000-0000-0000-0002-000000000012',
+    duration: 110,
+    sortOrder: 4,
+    blocks: 135,
+    imagePlaceholders: 3,
+    scorecardKey: 'marriage_module4_loving',
+    // No candidate for the Chapman or Gottman slot was on an official channel.
+    videos: [],
+    sections: [
+      'Section 1 — Lord, Teach Me How to Love',
+      'Section 2 — The Slow Drift',
+      'Section 3 — Four Words for Love',
+      'Section 4 — Love in Verbs',
+      'Section 5 — The Three Levels of Love',
+      'Section 6 — Learning the Person You Actually Married',
+      'Section 7 — Love Can Be Grown',
+      'Section 8 — When Love Goes Cold',
+      'Section 9 — Seven Deposits',
+      'Section 10 — The Teacher Himself',
+      'How Am I Loving?',
+      'Module 4 Assignment — Learn Love, Then Give It',
+      'Module 4 Complete',
+    ],
+    privacy: 'Your partner cannot see this assignment.',
+    keep: [
+      'Your partner cannot see these ratings.',
+      'speak to a trusted pastor or counsellor before you work thr',
+      'Ask yourself two questions: which language do I speak most naturally',
+    ],
+  },
 };
 
 const N = Number(process.argv[2]);
 const want = EXPECT[N];
-if (!want) { console.error('usage: test-marriage-module.mjs <1|2|3> [--out <file>]'); process.exit(2); }
+if (!want) { console.error('usage: test-marriage-module.mjs <1|2|3|4> [--out <file>]'); process.exit(2); }
 
 const repo = process.cwd();
 const dir = mkdtempSync(join(tmpdir(), `marriage-m${N}-`));
@@ -165,7 +205,7 @@ ok(`module_number ${N}`, payload.module_number === N);
 ok('slug', payload.slug === want.slug, payload.slug);
 ok('title', payload.title_en === want.title);
 ok('subtitle', payload.subtitle_en === want.subtitle);
-ok('pillar', payload.pillar_slug === 'personal-foundation' && gen.pillar_id === '00000000-0000-0000-0002-000000000011');
+ok('pillar', payload.pillar_slug === (want.pillarSlug ?? 'personal-foundation') && gen.pillar_id === (want.pillarId ?? '00000000-0000-0000-0002-000000000011'));
 ok('not a starting point', payload.is_starting_point === false);
 ok('difficulty', payload.difficulty === 'beginner');
 ok('duration', payload.estimated_duration_minutes === want.duration);
@@ -192,6 +232,7 @@ want.videos.filter((v) => v.tip).forEach((v) => {
   ok(`tip callout directly after ${v.id}`, next.type === 'callout' && next.variant === 'tip' && next.text === v.tip);
 });
 ok('no real image blocks yet', count('image') === 0);
+if (N === 4) ok('nothing still points at a left-out video', !/as you listen|as you watch|this talk|this video|kCUkBO7F_dY|pFtkQw0OWq0/i.test(JSON.stringify(blocks)));
 ok('no verification note left in the content', !JSON.stringify(blocks).includes('EXTERNAL VIDEO') && !JSON.stringify(blocks).includes('Claude Code'));
 const quiz = blocks.find((b) => b.type === 'quiz');
 ok('every quiz answer is a real option', quiz.questions.every((q) => q.options.some((o) => o.id === q.correct_option_id)));
@@ -199,7 +240,8 @@ ok('every quiz answer is a real option', quiz.questions.every((q) => q.options.s
 console.log('\nPlaceholders stay visible');
 const callouts = blocks.filter((b) => b.type === 'callout').map((b) => b.text);
 const imgs = callouts.filter((t) => t.startsWith('[IMAGE PLACEHOLDER'));
-ok(`4 image placeholders, MM${N}-1 to MM${N}-4`, imgs.length === 4 && [1, 2, 3, 4].every((n) => imgs.some((t) => t.startsWith(`[IMAGE PLACEHOLDER — MM${N}-${n}]`))));
+const imageCount = want.imagePlaceholders ?? 4;
+ok(`${imageCount} image placeholders, MM${N}-1 to MM${N}-${imageCount}`, imgs.length === imageCount && Array.from({ length: imageCount }, (_, k) => k + 1).every((n) => imgs.some((t) => t.startsWith(`[IMAGE PLACEHOLDER — MM${N}-${n}]`))));
 ok('3 video placeholders', callouts.filter((t) => t.startsWith('[VIDEO PLACEHOLDER')).length === 3);
 
 /* ── the real splitter ────────────────────────────────────────────────────── */

@@ -16,6 +16,9 @@
 // depend on it: sha256(slug|index|type). A Leadership title and a Marriage title
 // could otherwise produce the same slug.
 //
+// The Myles Munroe video, its paragraph and its tip close the first part of Section 2,
+// in Denis's wording. oEmbed check of 5JG0S9jTp78 on 2026-11-04: Munroe Global. The first
+// candidate, rfBthtg4D1Y, returned 404, so this is the first that qualified.
 // The Meg Jay video, its paragraph and its tip were added to the live row by Denis on
 // 2026-11-03, with an UPDATE. Section numbers did not change.
 
@@ -135,6 +138,9 @@ const section2 = {
     paragraph("A wedding is the opening ceremony: public, beautiful, photographed from every side. The marriage is the foundation work: slow, hidden, unglamorous and decisive."),
     paragraph("The way you learn to talk now, the way you practise forgiveness now, the honesty you establish now: that is concrete going into the ground. None of your guests will ever see it. Every storm of your life will test it."),
     paragraph("If you are already married, the same is true, only in a different tense. You are not laying a first foundation. You are inspecting the one you have, finding where it was poured thin, and strengthening it while the house is lived in. It is harder work, and it is very possible work, whether you are in the fourth year or the fortieth."),
+    paragraph("Dr. Myles Munroe, the Bahamian Bible teacher whose books on singleness and marriage shaped a generation of believers across Africa, taught again and again that marriage does not fix an unprepared person; it reveals one. In this message he speaks to the preparation that has to happen in you before a wedding can lead to a strong marriage."),
+    videoEmbed("5JG0S9jTp78", "Dr. Myles Munroe on Preparing for Marriage | Munroe Global"),
+    callout("tip", "As you listen, write down one thing he says that your own foundation still needs. If you are married, apply it in the present tense: what in your foundation needs strengthening now?"),
     heading(3, "It Was God's Idea First"),
     paragraph("Every serious preparation for marriage has to start with the One who invented it."),
     callout("scripture", "\"The Lord God said, 'It is not good for the man to be alone. I will make a helper suitable for him.'\" — Genesis 2:18"),
