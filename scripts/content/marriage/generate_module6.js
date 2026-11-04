@@ -10,7 +10,7 @@
 // paragraph on the live row, so it no longer assumes Module 4 was read. Its privacy wording already says the partner cannot
 // see the reflections, ratings and assignment. oEmbed check on 2026-11-04: the Munroe video
 // is on Munroe Global's channel and the Eggerichs video is on LIFE Today's. Captions are the
-// real titles, tidied. The MM6-4 image stays a placeholder until it is saved.
+// real titles, tidied.
 
 const fs = require('fs');
 
@@ -26,9 +26,10 @@ const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: {
 const assignmentPrompt = (fields) => ({ type: "assignment_prompt", data: fields });
 const quiz = (scope, title, questions) => ({ type: "quiz", data: { scope, title, questions } });
 
-// Art and video not produced yet stay visible as callouts. Images will go in
-// public/images/marriage/module-6/MM6-1..4.png.
-const imagePlaceholder = (ref, brief) => callout("note", `[IMAGE PLACEHOLDER — ${ref}] ${brief}`);
+// Images are Denis's, used as delivered, in public/images/marriage/module-6/.
+const image = (url, alt) => ({ type: "image", data: { url, alt } });
+
+// Video not produced yet stays visible as a callout.
 const videoPlaceholder = (brief) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${brief}`);
 
 // ─── Front matter ───
@@ -53,7 +54,7 @@ const section1 = {
   title: "Equal in Worth, Distinct in Calling",
   blocks: [
     heading(2, "Section 1 — Equal in Worth, Distinct in Calling"),
-    imagePlaceholder("MM6-1", "Content: A young African husband and wife walking side by side up a hillside path at sunrise, carrying a basket between them, each holding one handle, both looking ahead. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-6/MM6-1.png", "A young African husband and wife walk side by side up a hillside path at sunrise, carrying a basket of fruit and vegetables between them, each holding one handle and looking ahead. No readable text appears in the image."),
     callout("scripture", "\"So God created mankind in his own image, in the image of God he created them; male and female he created them.\" — Genesis 1:27"),
     paragraph("Every conversation about roles has to begin here, or it will go wrong. The man and the woman both carry the image of God, fully and equally. Neither is more valuable. Neither is more spiritual by default. Whatever Scripture says about different responsibilities in marriage, it says nothing about different worth."),
     heading(3, "Not an Assistant: Ezer"),
@@ -196,7 +197,7 @@ const section4 = {
   title: "Submission: What It Is and What It Has Never Been",
   blocks: [
     heading(2, "Section 4 — Submission: What It Is and What It Has Never Been"),
-    imagePlaceholder("MM6-2", "Content: An African woman in her thirties standing confidently at a church lectern or community meeting, speaking with authority, her husband seated in the front row listening with visible respect. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-6/MM6-2.png", "An African woman in her thirties stands at a lectern with a microphone, speaking confidently to a community meeting. Her husband, seated in the front row with his chin on his hand, listens with visible respect. No readable text appears in the image."),
     paragraph("There is no word in the Christian vocabulary that has been used against women more often, or more carelessly, than submission. It has been quoted over women who were being beaten, preached at women who were being cheated on, and used by families who wanted a daughter-in-law who would not speak. If the word has been used to injure you, your reaction is not rebellion. It is memory."),
     paragraph("But the abuse of a thing is never proof against the thing itself. There is a third way between a distorted submission that destroys women and no teaching at all, and it is what Scripture actually says."),
     heading(3, "The Verse Before the Verse"),
@@ -312,7 +313,7 @@ const section7 = {
   title: "Who Carries What",
   blocks: [
     heading(2, "Section 7 — Who Carries What"),
-    imagePlaceholder("MM6-3", "Content: A young African couple at a dining table with a large sheet of paper divided into columns, writing and discussing together, a laptop and two cups of coffee beside them, bright morning light. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-6/MM6-3.png", "A young African couple work together at a dining table in morning light, beside a laptop and two cups of coffee, on a large sheet headed Our Responsibilities. It has three columns: Husband, listing Provide, Lead, Protect and Plan; Wife, listing Nurture, Manage home, Support and Encourage; and Together, listing Pray, Make decisions, Manage finances and Raise our children."),
     paragraph("Here is one common pattern of primary responsibility. It is not a rigid law, and it is not a list of chores to hand to your wife. It is a picture of what a well-ordered home actually requires, so that the two of you can decide together who carries what. The point is not that one person does everything, but that every area has a clear owner, with both ready to help."),
     table([
       "Responsibility",
@@ -696,7 +697,7 @@ const section10 = {
   title: "Module 6 Complete",
   blocks: [
     heading(2, "Module 6 Complete"),
-    imagePlaceholder("MM6-4", "Content: An African husband and wife in their forties working side by side in a small family business or shop, he arranging stock and she speaking with a customer, both visibly at ease and in partnership, warm afternoon light. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1600×900."),
+    image("/images/marriage/module-6/MM6-4.png", "An African husband and wife in their forties, both in aprons, work side by side in a small family shop. He smiles as he arranges stock on the shelves while she speaks warmly with a customer. No readable text appears in the image."),
     videoPlaceholder("2-3 min closing from Denis and Arit: how they divide the work of their home and ministry, one thing they had to renegotiate, and a prayer for couples learning to lead and follow like Christ."),
     paragraph("You have seen that man and woman are equal in worth and distinct in calling, that headship is a burden of responsibility and not a throne, that a husband decides with his wife and not over her, what submission is and what it has never been, how love and respect break the Crazy Cycle, and how to agree who carries what. That is not a fixed arrangement. It is a partnership you will keep refining for life."),
     paragraph("Module 7 turns to the subject behind more marriage conflict than almost any other: money, debt and the obligations our families place on us."),
