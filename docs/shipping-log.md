@@ -3417,3 +3417,42 @@ content.
 
 - 4 image and 3 video placeholders in Module 2 remain visible as callouts until the
   assets arrive.
+
+## 2026-11-04 — Marriage Module 3 published, Module 1 videos added, Module 4 prepared
+
+### Live now, checked against the database
+
+The SQL for Module 3 ("Choosing Well") and the Module 1 update ran through Claude chat.
+`scripts/verify/check-generators.sh` shows zero differences for Marriage Module 1 (150
+blocks) and Module 3 (169 blocks), and for all 13 Leadership modules. The Evans video in
+Module 1 is on Lakepointe Church's channel, which Denis accepted.
+
+### Prepared on this branch, not live until the SQL runs
+
+- Module 4, "Teach Me How to Love": 135 blocks, in the Communication & Connection pillar,
+  the first Marriage module outside Personal Foundation.
+- Module 0: 154 to 157 blocks, adding Dr. Myles Munroe to Section 2.
+- Module 2: 129 to 132 blocks, adding T.D. Jakes to Section 6.
+
+### Video check, 2026-11-04
+
+| Slot | Video | Channel | Result |
+| --- | --- | --- | --- |
+| Module 0 | `rfBthtg4D1Y` | none, oEmbed 404 | Not used |
+| Module 0 | `5JG0S9jTp78` | Munroe Global | Used |
+| Module 0 | `GuZOSiAkqQY` | Okocha Happy Marcel | Not reached |
+| Module 2 | `MxPEBPrZq-4` | TBN | Used |
+| Module 4 Chapman | `pFtkQw0OWq0` | Jake & Gino | Not official |
+| Module 4 Chapman | `lAOu_kK2cWw`, `HEA5McLPE9c` | 100huntley | Not on the accepted list |
+| Module 4 Chapman | `ZDvgwbXWdoA` | Dear Future Wifey | Not official |
+| Module 4 Gottman | `kCUkBO7F_dY` | Man Down Project | Not official |
+
+Both Module 4 slots are left out, as instructed. The Chapman tip now opens "Ask yourself
+two questions" instead of "As you listen, ask two questions". The Gottman tip stands
+unchanged.
+
+### Run order
+
+The Module 0 and Module 2 image SQL now depends on these video updates, so it was rebuilt
+on the 157 and 132 block rows. Run the video updates first. The image SQL also needs the
+image files on main first.
