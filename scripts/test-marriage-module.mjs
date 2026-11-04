@@ -228,12 +228,32 @@ const EXPECT = {
       'contact local emergency services if you are in danger',
       'Dr. Emerson Eggerichs, author of Love and Respect, pictures a wife seeing the world through pink sunglasses',
     ],
+  },  7: {
+    slug: 'money-and-obligation',
+    title: 'Money & Obligation',
+    subtitle: 'Your Money Story, Debt, Family Obligations, the First Budget, and When Money Becomes a Weapon',
+    pillarSlug: 'partnership-roles',
+    pillarId: '00000000-0000-0000-0002-000000000013',
+    duration: 115,
+    sortOrder: 7,
+    blocks: 135,
+    scorecardKey: 'marriage_module7_money',
+    // The only Munroe candidate was not on Munroe Global, so that slot is left out.
+    videos: [
+      { id: 'lLslQ64COOQ', section: 6, title: 'Avoid These 5 Money Conflicts in Your Marriage | Rachel Cruze', after: 'Dave Ramsey and his daughter Rachel Cruze', before: 'heading', tip: "As you watch, look for one habit you can adopt this month. Then translate it into your own context: your currency, your family obligations, your way of saving." },
+    ],
+    sections: ["Section 1 — Where Your Treasure Is", "Section 2 — One Covenant, One Purse", "Section 3 — Nothing Hidden", "Section 4 — Debt and What It Does", "Section 5 — The Family Purse", "Section 6 — Build the Budget Together", "Section 7 — When the Money Changes", "Section 8 — When Money Becomes a Weapon", "Section 9 — Arit's Turn: The One on the Plane", "How Do We Handle Money?", "Module 7 Assignment — Put It on the Table", "Module 7 Complete"],
+    privacy: 'Your partner cannot see this assignment. Write honestly.',
+    keep: [
+      'Your partner cannot see these ratings.',
+      'skip Prompts 3 and 4 and speak to a trusted pastor or counsellor on your own first',
+    ],
   },
 };
 
 const N = Number(process.argv[2]);
 const want = EXPECT[N];
-if (!want) { console.error('usage: test-marriage-module.mjs <1|2|3|4|5|6> [--out <file>]'); process.exit(2); }
+if (!want) { console.error('usage: test-marriage-module.mjs <1|2|3|4|5|6|7> [--out <file>]'); process.exit(2); }
 
 const repo = process.cwd();
 const dir = mkdtempSync(join(tmpdir(), `marriage-m${N}-`));
@@ -307,6 +327,7 @@ if (want.images) {
 } else {
   ok('no real image blocks yet', count('image') === 0);
 }
+if (N === 7) ok('no unofficial candidate, and the Munroe slot is fully left out', !/db6HpqxeBfM|Munroe|"youtubeId":"none"/.test(JSON.stringify(blocks)));
 if (N === 5) ok('no unofficial candidate or dummy id', !/rcXD7HMYlJM|"youtubeId":"(none|X|Y|Z)"|Marriage Course is a Christian course/.test(JSON.stringify(blocks)));
 if (N === 4) ok('no unofficial candidate or empty Gottman slot', !/kCUkBO7F_dY|pFtkQw0OWq0|"youtubeId":"none"/.test(JSON.stringify(blocks)));
 ok('no verification note left in the content', !JSON.stringify(blocks).includes('EXTERNAL VIDEO') && !JSON.stringify(blocks).includes('Claude Code'));
