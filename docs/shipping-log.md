@@ -3427,32 +3427,41 @@ The SQL for Module 3 ("Choosing Well") and the Module 1 update ran through Claud
 blocks) and Module 3 (169 blocks), and for all 13 Leadership modules. The Evans video in
 Module 1 is on Lakepointe Church's channel, which Denis accepted.
 
-### Prepared on this branch, not live until the SQL runs
+### Modules 0 and 2 videos, live
 
-- Module 4, "Teach Me How to Love": 135 blocks, in the Communication & Connection pillar,
-  the first Marriage module outside Personal Foundation.
-- Module 0: 154 to 157 blocks, adding Dr. Myles Munroe to Section 2.
-- Module 2: 129 to 132 blocks, adding T.D. Jakes to Section 6.
+Denis ran these from Claude chat, after changing the wording so it matches the real videos.
+The Munroe caption is now "The Purpose and Priority of Singleness | Dr. Myles Munroe", and
+"short" came out of the Jakes paragraph. The generators match, with zero differences:
 
-### Video check, 2026-11-04
+- Module 0: 157 blocks, adding Dr. Myles Munroe (`5JG0S9jTp78`, Munroe Global) to Section 2.
+- Module 2: 132 blocks, adding T.D. Jakes (`MxPEBPrZq-4`, TBN) to Section 6.
 
-| Slot | Video | Channel | Result |
-| --- | --- | --- | --- |
-| Module 0 | `rfBthtg4D1Y` | none, oEmbed 404 | Not used |
-| Module 0 | `5JG0S9jTp78` | Munroe Global | Used |
-| Module 0 | `GuZOSiAkqQY` | Okocha Happy Marcel | Not reached |
-| Module 2 | `MxPEBPrZq-4` | TBN | Used |
-| Module 4 Chapman | `pFtkQw0OWq0` | Jake & Gino | Not official |
-| Module 4 Chapman | `lAOu_kK2cWw`, `HEA5McLPE9c` | 100huntley | Not on the accepted list |
-| Module 4 Chapman | `ZDvgwbXWdoA` | Dear Future Wifey | Not official |
-| Module 4 Gottman | `kCUkBO7F_dY` | Man Down Project | Not official |
+### Prepared, not live until the SQL runs
 
-Both Module 4 slots are left out, as instructed. The Chapman tip now opens "Ask yourself
-two questions" instead of "As you listen, ask two questions". The Gottman tip stands
-unchanged.
+Module 4, "Teach Me How to Love": 136 blocks, in the Communication & Connection pillar, the
+first Marriage module outside Personal Foundation. In the default recommendation mode a
+reader whose weakest pillar is Communication & Connection is sent to Module 4 straight
+after the Starting Point. Denis reviewed this and kept the logic, and changed the Module 1
+reference so the text does not assume Module 1 was read first.
 
-### Run order
+### Module 4 video check, 2026-11-04
 
-The Module 0 and Module 2 image SQL now depends on these video updates, so it was rebuilt
-on the 157 and 132 block rows. Run the video updates first. The image SQL also needs the
-image files on main first.
+`_FYvr-UsAGI`, "The Five Love Languages | Dr. Gary Chapman": oEmbed 200, nocookie 200, channel
+100huntleyplus. The channel describes itself as highlights from the 100 Huntley Street
+broadcast and links to crossroads.ca, and the video is embedded on 100huntley.com's own page.
+No official Gottman video was found, so his research is cited in the text only.
+
+### Image order
+
+The 3 Module 4 images joined the 14 on `content/marriage-images`. The image SQL for Modules
+0 and 2 was rebuilt on the live 157 and 132 block rows, and Module 4's is guarded on the 136
+block row. It needs the image files on main first, and Module 4's also needs its INSERT.
+
+### Files removed
+
+Deleted at Denis's request: `marriage_module0_update.sql`, `marriage_module1_update.sql`,
+`marriage_module2_update.sql` and `marriage_module3_insert.sql` from the repo folder and
+Downloads, and `module3_marriage.json`, `build_module3_marriage.py`, `module1_add_videos.py`,
+`modules0_2_christian_videos.py` and `m02_blocks_final.json` from the repo folder. None was
+committed. The Module 0 and 2 update files were superseded and never run; the wording Denis
+changed went live from Claude chat. The generators remain the source for this content.
