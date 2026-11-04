@@ -3453,9 +3453,9 @@ No official Gottman video was found, so his research is cited in the text only.
 
 ### Image order
 
-The 3 Module 4 images joined the 14 on `content/marriage-images`. The image SQL for Modules
-0 and 2 was rebuilt on the live 157 and 132 block rows, and Module 4's is guarded on the 136
-block row. It needs the image files on main first, and Module 4's also needs its INSERT.
+The 4 Module 3 and 3 Module 4 images joined the 14 on `content/marriage-images`, making 21.
+The image SQL for Modules 0 and 2 was rebuilt on the live 157 and 132 block rows, Module 3's
+is guarded on the live 169 block row, and Module 4's on the 136 block row. It needs the image files on main first, and Module 4's also needs its INSERT.
 
 ### Files removed
 
