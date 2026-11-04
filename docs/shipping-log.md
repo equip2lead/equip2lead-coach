@@ -3493,18 +3493,21 @@ text does not assume they were read, and the Smalley tip. The generator matches 
 The 3 Module 5 images joined the others, making 24, all on main and served from
 app.equip2lead.coach. Image SQL exists for Modules 0 to 5, each guarded on its exact live row.
 
-## 2026-11-04 — Marriage images live in Modules 0 to 4, Module 6 prepared
+## 2026-11-04 — Marriage images live in Modules 0 to 5, Module 6 live
 
 ### Images live
 
 The image SQL ran from Claude chat for Modules 0 to 4. Each live row equals its image content
-exactly, with no image placeholders left: 6, 4, 4, 4 and 3 images. The SQL files for those
-modules were deleted from the repo folder and Downloads. Module 5's image SQL is still to run.
+exactly, with no image placeholders left: 6, 4, 4, 4 and 3 images. Module 5's ran after them,
+with 3 images. All six SQL files were deleted from the repo folder and Downloads.
 The Module 5 builders and JSON were also deleted, after the live row matched the new builder.
 
-### Module 6 prepared, not live until the SQL runs
+### Module 6 live
 
-"Roles & Work": 115 blocks, in the Partnership & Roles pillar, no edits to the authored text.
+"Roles & Work": 115 blocks, in the Partnership & Roles pillar, run from Claude chat. Denis then
+reworded the opening of the Love and Respect paragraph (`b_7235f2938edf`) on the live row, so it
+no longer assumes Module 4 was read. The generator matches the live row, and
+`marriage_module6_insert.sql` was deleted from the repo folder and Downloads.
 
 | Slot | Video | Channel | Result |
 | --- | --- | --- | --- |
@@ -3515,5 +3518,6 @@ The Module 5 builders and JSON were also deleted, after the live row matched the
 | Eggerichs | `N1otteFv6zw` | lifetodaytv (LIFE Today) | Used |
 | Eggerichs | `b2Cpou8_y4g` | 100huntley | Not reached |
 
-The MM6-1 to MM6-4 images are held on `content/marriage-images` until Module 6 is live.
+The MM6-1 to MM6-4 images are on `content/marriage-images`. They reach main with this branch,
+and the placeholders stay until the Module 6 image SQL runs.
 
