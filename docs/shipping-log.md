@@ -3518,6 +3518,18 @@ no longer assumes Module 4 was read. The generator matches the live row, and
 | Eggerichs | `N1otteFv6zw` | lifetodaytv (LIFE Today) | Used |
 | Eggerichs | `b2Cpou8_y4g` | 100huntley | Not reached |
 
-The MM6-1 to MM6-4 images are on `content/marriage-images`. They reach main with this branch,
-and the placeholders stay until the Module 6 image SQL runs.
+The MM6-1 to MM6-4 images are live: the Module 6 image SQL ran from Claude chat, and the live
+row has 4 images and no image placeholders. Its SQL file was deleted from Downloads, and the
+Module 6 builder and JSON were deleted once the generator covered them.
 
+## 2026-11-04 — Marriage Module 7 prepared
+
+"Money & Obligation": 135 blocks, in the Partnership & Roles pillar, no edits to the authored text.
+Not live until the SQL runs. No week linking.
+
+| Slot | Video | Channel | Result |
+| --- | --- | --- | --- |
+| Money | `lLslQ64COOQ` | Rachel Cruze | Used |
+| Money | `n2q_-7ZIT9E` | THE BULITTS | Not reached, not an accepted channel |
+| Money | `KFxCzzlgNlI` | The Ramsey Show Highlights | Not reached |
+| Munroe | `db6HpqxeBfM` | Money Guy Clips | Not official, title about wealth, slot left out |
