@@ -3466,7 +3466,7 @@ Downloads, and `module3_marriage.json`, `build_module3_marriage.py`, `module1_ad
 committed. The Module 0 and 2 update files were superseded and never run; the wording Denis
 changed went live from Claude chat. The generators remain the source for this content.
 
-## 2026-11-04 — Marriage Module 4 live, Module 5 prepared
+## 2026-11-04 — Marriage Modules 4 and 5 live
 
 ### Module 4 live, checked against the database
 
@@ -3474,10 +3474,11 @@ Module 4, "Teach Me How to Love", ran from Claude chat. Its row has 136 blocks a
 differences against the generator. `build_module4_marriage.py`, `module4_marriage.json` and
 `marriage_module4_insert.sql` were deleted at Denis's request.
 
-### Module 5 prepared, not live until the SQL runs
+### Module 5 live
 
-"Words & Conflict": 115 blocks, in the Communication & Connection pillar, no edits to the
-authored text.
+"Words & Conflict": 115 blocks, in the Communication & Connection pillar. Denis revised the
+wording of 5 blocks before running it from Claude chat: 4 references to earlier modules, so the
+text does not assume they were read, and the Smalley tip. The generator matches the live row.
 
 | Slot | Video | Channel | Result |
 | --- | --- | --- | --- |
@@ -3489,6 +3490,6 @@ authored text.
 
 ### Images
 
-The 3 Module 5 images joined `content/marriage-images`, making 24. Image SQL exists for Modules
-0 to 5, each guarded on its exact row, and needs the image files on main before it runs.
+The 3 Module 5 images joined the others, making 24, all on main and served from
+app.equip2lead.coach. Image SQL exists for Modules 0 to 5, each guarded on its exact live row.
 

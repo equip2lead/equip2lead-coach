@@ -6,7 +6,7 @@
 //
 // Writes module5_marriage.json to the current directory.
 //
-// Built with no edits from the authored source. Its privacy wording already says the
+// Matches the revised source Denis ran from Claude chat. Its privacy wording already says the
 // partner cannot see the reflections, ratings and assignment. oEmbed check on 2026-11-04:
 // the Four Horsemen video is on The Gottman Institute's channel and the Smalley video is on
 // Focus on the Family's. The only Marriage Course candidate was on a local church channel,
@@ -77,7 +77,7 @@ const section1 = {
         "The analytical partner feels the intuitive one is reckless; the intuitive partner feels the analytical one is a brake with no engine. Each is right about the other's risk and blind to their own."
       ]
     ]),
-    paragraph("You met an example of this in Module 4: a husband who announces conclusions and a wife who wants to walk the road. Neither wiring is right or wrong, mature or immature. They are different instruments, and a marriage is meant to be a duet, not a contest over whose instrument is the real music."),
+    paragraph("Picture a husband who announces conclusions and a wife who wants to walk the road (Module 4 tells our own story of exactly this). Neither wiring is right or wrong, mature or immature. They are different instruments, and a marriage is meant to be a duet, not a contest over whose instrument is the real music."),
     heading(3, "The Home That Shaped You"),
     paragraph("Your parents taught you how a household communicates, and they taught you by demonstration, not instruction. You absorbed it without ever examining it. When you marry, two communication cultures move into one house. If you do not name them and consciously build a third one, your own, you will each keep judging the other by the rules of a home the other never lived in."),
     table([
@@ -238,7 +238,7 @@ const section4 = {
   blocks: [
     heading(2, "Section 4 — Conflict Is Not Failure"),
     imagePlaceholder("MM5-2", "Content: A young African couple sitting on opposite ends of a sofa after a disagreement, both looking down, a small gap between them, a single lamp lighting the room, the mood heavy but not hopeless. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
-    paragraph("Settle this in your heart now: conflict is not a sign that you married wrong. Conflict is inevitable, because marriage is two different people, from two different histories, with two different sets of desires and a shared portion of ordinary human selfishness, living in one house with one bed, one budget and one calendar. Module 3 said it plainly: if you have courted for more than six months with no misunderstanding, someone is pretending."),
+    paragraph("Settle this in your heart now: conflict is not a sign that you married wrong. Conflict is inevitable, because marriage is two different people, from two different histories, with two different sets of desires and a shared portion of ordinary human selfishness, living in one house with one bed, one budget and one calendar. Put plainly: if you have courted for more than six months with no misunderstanding, someone is pretending."),
     pullQuote("The question is never whether you will disagree. It is whether you have the tools to disagree without destroying anything."),
     callout("scripture", "\"In your anger do not sin: Do not let the sun go down while you are still angry.\" — Ephesians 4:26"),
     paragraph("Notice that Scripture separates the anger from the sinning. Anger itself is not sin. What damages a marriage is what we do with it."),
@@ -328,7 +328,7 @@ const section5 = {
     paragraph("Here is the warning that must always go with the pause: a paused fight must be finished, not stored. Some couples never truly resolve anything. They load each unresolved offence onto a wagon, quietly, month after month, until one day, in some small disagreement about nothing, the whole wagon is unloaded at once: ancient grievances, expired arguments, wounds from three years ago. That is not peace. It is deferred war, and the person buried under the wagon never saw it coming."),
     callout("info", "So when you pause, set the time and place to finish it, and finish it. The 10 o'clock rule ends the midnight fight. Refusing to load the wagon ends the ten-year one."),
     videoEmbed("5vWkzB2oBuY", "Why The Happiest Couples Still Fight | Greg and Erin Smalley"),
-    callout("tip", "Focus on the Family has helped Christian couples for decades. As you watch, look for one practical habit you can add to the five steps above."),
+    callout("tip", "About 30 minutes. Greg and Erin Smalley lead Focus on the Family's marriage ministry. As you watch, look for one practical habit you can add to the five steps above."),
     divider(),
   ],
 };
@@ -358,7 +358,7 @@ const section7 = {
   title: "The Process That Heals Hurt",
   blocks: [
     heading(2, "Section 7 — The Process That Heals Hurt"),
-    paragraph("Even with every tool in this module, you will hurt each other. Not might: will. Two imperfect people in covenant guarantee it. Module 2 dealt with the wounds you carry into marriage. This is what to do with the wounds you cause inside it. The process has three movements, and none may be skipped."),
+    paragraph("Even with every tool in this module, you will hurt each other. Not might: will. Two imperfect people in covenant guarantee it. The wounds you carry into marriage are the subject of Module 2. This is what to do with the wounds you cause inside it. The process has three movements, and none may be skipped."),
     table([
       "Movement",
       "What it means",
@@ -415,7 +415,7 @@ const section8 = {
   blocks: [
     heading(2, "Section 8 — Ban One Word"),
     paragraph("Now the commitment that crowns the rest. Agree together, solemnly and in so many words, that the word divorce will never be spoken in your house. Not hurled in an argument, not whispered as a threat, not entertained as a quiet fantasy in a hard season."),
-    paragraph("This is not pretending that hard seasons will not come. Every real marriage passes through valleys. It is something far more powerful: removing the exit, so that the only door left is the one marked \"fix it\". This is covenant thinking, the very thing Module 1 said separates covenant from contract. A contract has exit clauses. A covenant burns them."),
+    paragraph("This is not pretending that hard seasons will not come. Every real marriage passes through valleys. It is something far more powerful: removing the exit, so that the only door left is the one marked \"fix it\". This is covenant thinking, the very thing that separates a covenant from a contract. A contract has exit clauses. A covenant burns them."),
     pullQuote("When divorce is an option, every conflict is an audition for it. Ban the word, and the same conflicts become problems you solve together."),
     callout("warning", "But not this. Banning the word divorce never means staying within reach of violence or abuse. Repair assumes two people who both want the marriage whole. Where one person is deliberately and repeatedly harming the other, the language of repair does not apply. If that is your situation, speak to a trusted pastor or counsellor, and contact local emergency services if you are in danger."),
     divider(),

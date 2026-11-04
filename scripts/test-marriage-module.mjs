@@ -188,7 +188,7 @@ const EXPECT = {
       },
       {
         id: '5vWkzB2oBuY', section: 5, title: 'Why The Happiest Couples Still Fight | Greg and Erin Smalley',
-        tip: 'Focus on the Family has helped Christian couples for decades. As you watch, look for one practical habit you can add to the five steps above.',
+        tip: "About 30 minutes. Greg and Erin Smalley lead Focus on the Family's marriage ministry. As you watch, look for one practical habit you can add to the five steps above.",
       },
     ],
     sections: ["Section 1 — Two Cultures, One House", "Section 2 — Listen to Understand", "Section 3 — Words That Build, Words That Break", "Section 4 — Conflict Is Not Failure", "Section 5 — A Path Through Every Disagreement", "Section 6 — Arit's Turn: The Quiet Hour", "Section 7 — The Process That Heals Hurt", "Section 8 — Ban One Word", "How Do I Speak and Fight?", "Module 5 Assignment — Talk, Listen, Fight Well, Forgive", "Module 5 Complete"],
@@ -197,6 +197,7 @@ const EXPECT = {
       'Your partner cannot see these ratings.',
       'skip Prompt 3 and speak to a trusted pastor or counsellor first',
       'Nicky and Sila Lee',
+      'Module 4 tells our own story of exactly this',
     ],
   },
 };
