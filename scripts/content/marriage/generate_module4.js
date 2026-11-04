@@ -6,11 +6,12 @@
 //
 // Writes module4_marriage.json to the current directory.
 //
-// Two changes from the authored source. The Chapman and Gottman videos are left out,
-// because no candidate was on an official channel in the oEmbed check of 2026-11-04.
-// With the Chapman video gone, its tip now opens "Ask yourself two questions" instead
-// of "As you listen, ask two questions". The privacy wording already says the partner
-// cannot see the reflections, ratings and assignment.
+// No edits from the authored source. Its privacy wording already says the partner
+// cannot see the reflections, ratings and assignment. The Chapman video passed an oEmbed
+// check on 2026-11-04: channel 100huntleyplus, which describes itself as highlights from
+// the 100 Huntley Street broadcast, links to crossroads.ca, and is embedded on
+// 100huntley.com's own page. No official Gottman video was found, so his research is
+// cited in the text only.
 
 const fs = require('fs');
 
@@ -54,7 +55,7 @@ const section1 = {
     heading(2, "Section 1 — Lord, Teach Me How to Love"),
     imagePlaceholder("MM4-1", "Content: An older African couple sitting close together on a wooden bench under a mango tree, the husband reading aloud from a worn Bible while the wife listens with her hand on his arm, late afternoon light through the leaves. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
     paragraph("There is a prayer that rises out of a thousand struggling homes, sometimes whispered, sometimes wept: Lord, teach me how to be married. Teach me how to love. This module takes that prayer seriously, because everything else in this track depends on the answer."),
-    paragraph("The logic is simple. If marriage is God's idea, as Module 1 showed, then God is the only one qualified to teach us how to do it. He designed it. He alone knows what it is for and how it works. And because marriage runs on love, God is the only one who can truly teach us how to love."),
+    paragraph("The logic is simple. If marriage is God's idea, which is the whole message of Module 1, then God is the only one qualified to teach us how to do it. He designed it. He alone knows what it is for and how it works. And because marriage runs on love, God is the only one who can truly teach us how to love."),
     callout("scripture", "\"Whoever does not love does not know God, because God is love.\" — 1 John 4:8"),
     pullQuote("We do not learn love from films, from music, from our friends, or even from our parents. We learn it from God, because God is love."),
     heading(3, "Why We Do Not Know How to Love"),
@@ -342,7 +343,8 @@ const section6 = {
         "Neglect, coldness, physical distance"
       ]
     ]),
-    callout("tip", "Ask yourself two questions: which language do I speak most naturally, and which does my partner (or the person closest to me) most need? If you are married or engaged, do not guess. Ask them, write down what they say, and believe it, even if it is not what you would have wanted."),
+    videoEmbed("_FYvr-UsAGI", "The Five Love Languages | Dr. Gary Chapman | 100 Huntley Street"),
+    callout("tip", "As you listen, ask two questions: which language do I speak most naturally, and which does my partner (or the person closest to me) most need? If you are married or engaged, do not guess. Ask them, write down what they say, and believe it, even if it is not what you would have wanted."),
     heading(3, "Arit's Turn"),
     paragraph("In the early days of our marriage, my husband was not a man who remembered anniversaries. I want to say that carefully, because it would be easy to make it sound like neglect, and it was not. It simply was not in him. For me, a day that has been set apart should be marked, and marked out loud."),
     paragraph("So an anniversary came, early on, and I was expecting something. This was not a wife waiting for a husband to read her mind. I had talked about it. He knew. The day arrived anyway, and his posture was: it is just another day."),

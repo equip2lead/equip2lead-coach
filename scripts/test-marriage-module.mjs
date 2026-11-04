@@ -137,11 +137,16 @@ const EXPECT = {
     pillarId: '00000000-0000-0000-0002-000000000012',
     duration: 110,
     sortOrder: 4,
-    blocks: 135,
+    blocks: 136,
     imagePlaceholders: 3,
     scorecardKey: 'marriage_module4_loving',
-    // No candidate for the Chapman or Gottman slot was on an official channel.
-    videos: [],
+    // No official Gottman video was found, so his research is cited in the text only.
+    videos: [
+      {
+        id: '_FYvr-UsAGI', section: 6, title: 'The Five Love Languages | Dr. Gary Chapman | 100 Huntley Street',
+        tip: "As you listen, ask two questions: which language do I speak most naturally, and which does my partner (or the person closest to me) most need? If you are married or engaged, do not guess. Ask them, write down what they say, and believe it, even if it is not what you would have wanted.",
+      },
+    ],
     sections: [
       'Section 1 — Lord, Teach Me How to Love',
       'Section 2 — The Slow Drift',
@@ -161,7 +166,7 @@ const EXPECT = {
     keep: [
       'Your partner cannot see these ratings.',
       'speak to a trusted pastor or counsellor before you work thr',
-      'Ask yourself two questions: which language do I speak most naturally',
+      'which is the whole message of Module 1',
     ],
   },
 };
@@ -232,7 +237,7 @@ want.videos.filter((v) => v.tip).forEach((v) => {
   ok(`tip callout directly after ${v.id}`, next.type === 'callout' && next.variant === 'tip' && next.text === v.tip);
 });
 ok('no real image blocks yet', count('image') === 0);
-if (N === 4) ok('nothing still points at a left-out video', !/as you listen|as you watch|this talk|this video|kCUkBO7F_dY|pFtkQw0OWq0/i.test(JSON.stringify(blocks)));
+if (N === 4) ok('no unofficial candidate or empty Gottman slot', !/kCUkBO7F_dY|pFtkQw0OWq0|"youtubeId":"none"/.test(JSON.stringify(blocks)));
 ok('no verification note left in the content', !JSON.stringify(blocks).includes('EXTERNAL VIDEO') && !JSON.stringify(blocks).includes('Claude Code'));
 const quiz = blocks.find((b) => b.type === 'quiz');
 ok('every quiz answer is a real option', quiz.questions.every((q) => q.options.some((o) => o.id === q.correct_option_id)));

@@ -67,7 +67,7 @@ ok('1 assignment, key a1', count('assignment_prompt') === 1 && blocks.find((b) =
 ok('1 quiz', count('quiz') === 1);
 const videos = blocks.filter((b) => b.type === 'video_embed');
 ok('3 videos: Meg Jay, Munroe, Waldinger', videos.length === 3 && videos[0].youtubeId === 'vhhgI4tSMwc' && videos[1].youtubeId === '5JG0S9jTp78' && videos[2].youtubeId === '8KkKuTCFvzI');
-ok('Munroe caption as given', videos[1].title === 'Dr. Myles Munroe on Preparing for Marriage | Munroe Global');
+ok('Munroe caption as given', videos[1].title === 'The Purpose and Priority of Singleness | Dr. Myles Munroe');
 const munroe = blocks.indexOf(videos[1]);
 ok('Munroe block order', blocks[munroe - 2].text.startsWith('If you are already married, the same is true') && blocks[munroe - 1].type === 'paragraph' && blocks[munroe - 1].text.startsWith('Dr. Myles Munroe, the Bahamian Bible teacher') && blocks[munroe + 1].variant === 'tip' && blocks[munroe + 1].text.startsWith('As you listen, write down') && blocks[munroe + 2].type === 'heading' && blocks[munroe + 2].text === "It Was God's Idea First");
 ok('Meg Jay title as given', videos[0].title === 'Why 30 is not the new 20 | Meg Jay | TED');
