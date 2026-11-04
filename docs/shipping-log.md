@@ -3515,5 +3515,5 @@ The Module 5 builders and JSON were also deleted, after the live row matched the
 | Eggerichs | `N1otteFv6zw` | lifetodaytv (LIFE Today) | Used |
 | Eggerichs | `b2Cpou8_y4g` | 100huntley | Not reached |
 
-The MM6-1 to MM6-3 images are held on `content/marriage-images`. MM6-4 is not saved yet.
+The MM6-1 to MM6-4 images are held on `content/marriage-images` until Module 6 is live.
 
