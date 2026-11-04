@@ -27,9 +27,10 @@ const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: {
 const assignmentPrompt = (fields) => ({ type: "assignment_prompt", data: fields });
 const quiz = (scope, title, questions) => ({ type: "quiz", data: { scope, title, questions } });
 
-// Art and video not produced yet stay visible as callouts. Images will go in
-// public/images/marriage/module-4/MM4-1..3.png.
-const imagePlaceholder = (ref, brief) => callout("note", `[IMAGE PLACEHOLDER — ${ref}] ${brief}`);
+// Images are Denis's, used as delivered, in public/images/marriage/module-4/.
+const image = (url, alt) => ({ type: "image", data: { url, alt } });
+
+// Video not produced yet stays visible as a callout.
 const videoPlaceholder = (brief) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${brief}`);
 
 // ─── Front matter ───
@@ -53,7 +54,7 @@ const section1 = {
   title: "Lord, Teach Me How to Love",
   blocks: [
     heading(2, "Section 1 — Lord, Teach Me How to Love"),
-    imagePlaceholder("MM4-1", "Content: An older African couple sitting close together on a wooden bench under a mango tree, the husband reading aloud from a worn Bible while the wife listens with her hand on his arm, late afternoon light through the leaves. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-4/MM4-1.png", "An older African couple sit close together on a wooden bench under a mango tree in late afternoon light. The husband, in glasses, reads aloud from a worn Bible while his wife listens with a smile, her hand on his arm. No text appears in the image."),
     paragraph("There is a prayer that rises out of a thousand struggling homes, sometimes whispered, sometimes wept: Lord, teach me how to be married. Teach me how to love. This module takes that prayer seriously, because everything else in this track depends on the answer."),
     paragraph("The logic is simple. If marriage is God's idea, which is the whole message of Module 1, then God is the only one qualified to teach us how to do it. He designed it. He alone knows what it is for and how it works. And because marriage runs on love, God is the only one who can truly teach us how to love."),
     callout("scripture", "\"Whoever does not love does not know God, because God is love.\" — 1 John 4:8"),
@@ -301,7 +302,7 @@ const section6 = {
   title: "Learning the Person You Actually Married",
   blocks: [
     heading(2, "Section 6 — Learning the Person You Actually Married"),
-    imagePlaceholder("MM4-2", "Content: An African husband and wife at a kitchen table at night, she talking with open hands and he leaning in and listening closely, a notebook and two cups of tea between them, warm lamplight. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-4/MM4-2.png", "An African wife and husband talk at a kitchen table in the warm light of a hanging lamp. She speaks with open hands while he listens closely, his chin resting on his folded hands. Two cups of tea and an open notebook with a pen lie between them. No text appears in the image."),
     videoPlaceholder("2-3 min from Denis and Arit together: the mathematician and the woman who wants to walk the road, and what each had to learn about the other."),
     paragraph("God's school of love is not theoretical. Its lessons are taught at close range, by the actual person you marry. Let me show you from my own home."),
     paragraph("I am a mathematician by wiring. I run calculations in my head, work the steps silently, and simply announce the result. And I am a visionary by calling: I often see the end of a matter before most people around me realise there is a matter at all. God has used this again and again in ministry. But you can imagine what it does inside a marriage."),
@@ -812,7 +813,7 @@ const section13 = {
   title: "Module 4 Complete",
   blocks: [
     heading(2, "Module 4 Complete"),
-    imagePlaceholder("MM4-3", "Content: Close-up of an older African couple's hands, both wearing simple gold wedding rings, his hand resting over hers on a well-worn Bible, soft morning light from a window. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1600×900."),
+    image("/images/marriage/module-4/MM4-3.png", "Close-up of an older African couple's hands, both wearing simple gold wedding rings, his resting over hers on a well-worn Bible on a wooden table, in soft morning light from a window. The spine of the book reads Holy Bible."),
     videoPlaceholder("2-3 min closing from Denis and Arit: one thing each of them still does for the other that began as a decision and became a delight, and a prayer for couples whose love has grown cold."),
     paragraph("You have looked honestly at what you were taught about love, learned the four words and the three levels, put your own name into 1 Corinthians 13, begun to learn the code of the person you love, and been handed the method Jesus gave for love that has grown cold. That is not a lesson you finish. It is a school you stay in for life."),
     paragraph("Module 5 turns to the place where love is tested most often: our words. How we speak, how we listen, and how we fight will decide whether the love you are learning to give can actually be received."),

@@ -24,9 +24,10 @@ const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: {
 const assignmentPrompt = (fields) => ({ type: "assignment_prompt", data: fields });
 const quiz = (scope, title, questions) => ({ type: "quiz", data: { scope, title, questions } });
 
-// Art and video not produced yet stay visible as callouts. Images will go in
-// public/images/marriage/module-3/MM3-1..4.png.
-const imagePlaceholder = (ref, brief) => callout("note", `[IMAGE PLACEHOLDER — ${ref}] ${brief}`);
+// Images are Denis's, used as delivered, in public/images/marriage/module-3/.
+const image = (url, alt) => ({ type: "image", data: { url, alt } });
+
+// Video not produced yet stays visible as a callout.
 const videoPlaceholder = (brief) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${brief}`);
 
 // ─── Front matter ───
@@ -50,7 +51,7 @@ const section1 = {
   title: "Finding, Not Chasing",
   blocks: [
     heading(2, "Section 1 — Finding, Not Chasing"),
-    imagePlaceholder("MM3-1", "Content: A young African woman drawing water at a village well in the early morning, sleeves rolled up, serving with quiet joy, a line of camels resting in the background, golden dust in the air. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-3/MM3-1.png", "A young African woman in a wax-print dress and headwrap smiles as she draws water from a village well in the golden early morning, her sleeves rolled up. Camels rest on the dusty ground behind her. No text appears in the image."),
     paragraph("One verse has been read at more weddings, and misunderstood at more of them, than almost any other. Read it slowly, because its key word tells you the posture God expects."),
     callout("scripture", "\"He who finds a wife finds what is good and receives favour from the Lord.\" — Proverbs 18:22"),
     paragraph("Finds. Not hunts. Not chases. Not conquers. Finding and chasing are two very different postures. A person who is chasing is anxious, striving and often blind, because desperation cannot see straight. A person who is finding is walking with God, living their assignment, and paying attention along the way."),
@@ -249,7 +250,7 @@ const section4 = {
   title: "The Right Order",
   blocks: [
     heading(2, "Section 4 — The Right Order"),
-    imagePlaceholder("MM3-2", "Content: An open Bible and a notebook with two handwritten columns on a wooden table beside a window, a pen resting between them, morning light falling across the pages. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-3/MM3-2.png", "An open Bible and a spiral notebook on a wooden table beside a window in morning light, with a pen resting between them. The Bible is open at Matthew 6, with the words seek first the kingdom of God highlighted. The notebook is headed The Right Order, with two columns: First, listing God, Character, Calling and Purpose; and Then, listing Relationship, Engagement, Marriage and Family."),
     paragraph("Our generation believes a lie about love: that thinking carefully about a relationship somehow betrays it, and that real love should be all heart. That lie fills counselling rooms. God gave you a heart to love with and a head to judge with, and He expects you to bring both to the most important human decision of your life."),
     pullQuote("The heart asks, \"Do I want this person?\" The head asks, \"Can I build a life with this person?\" A wise marriage answers yes to both."),
     paragraph("And timing matters. Weigh compatibility before you are deeply involved, not after. Once you are emotionally bound and physically entangled, the heart has taken the microphone and the head can no longer be heard."),
@@ -443,7 +444,7 @@ const section6 = {
   title: "Seeing Clearly",
   blocks: [
     heading(2, "Section 6 — Seeing Clearly"),
-    imagePlaceholder("MM3-3", "Content: A young African man and woman talking seriously but warmly on a bench outside a church in the late afternoon, an older couple visible in the background, soft golden light. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-3/MM3-3.png", "A young African man and woman talk warmly on a wooden bench outside a church in the late afternoon, she with a Bible on her lap and her chin on her hand as she listens. An older couple sit together on a bench in the background. No text appears in the image."),
     paragraph("Dating and courtship are not entertainment that happens to end in a decision. They are the decision, taken slowly, in public, with your eyes open. The great danger of this season is not that you will fail to see the person clearly. It is that you will see them clearly and then quietly overrule what you saw, because what you felt was louder."),
     pullQuote("What is cute at twenty-five is expensive at forty. Attraction opens the door. Discernment decides whether to walk through it."),
     heading(3, "Seven Evidences Worth More Than Your List"),
@@ -1030,7 +1031,7 @@ const section11 = {
   title: "Module 3 Complete",
   blocks: [
     heading(2, "Module 3 Complete"),
-    imagePlaceholder("MM3-4", "Content: A young African couple walking side by side along a red-earth path between green fields at sunrise, not touching, both looking ahead in the same direction, long shadows stretching behind them. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1600×900."),
+    image("/images/marriage/module-3/MM3-4.png", "A young African couple, seen from behind, walk side by side along a red-earth path between green fields toward the rising sun, not touching, with long shadows stretching behind them. No text appears in the image."),
     videoPlaceholder("2-3 min closing from Denis and Arit: how they knew, what they tested, and a prayer for wisdom over everyone making this choice."),
     paragraph("You have learned to tell infatuation from love, to let time test what feelings promise, to weigh spirit, soul and body in the right order, to examine nine areas honestly, to read red flags without excuses, and to test your choice against fifteen convictions. That is not cold. That is love with its eyes open."),
     paragraph("Module 4 turns from choosing a person to loving one. If marriage is God's idea, He is the one who can teach us how to love, and most of us have far more to learn than we think."),

@@ -23,6 +23,7 @@ const EXPECT = {
     duration: 100,
     sortOrder: 1,
     blocks: 150,
+    images: 4,
     scorecardKey: 'marriage_module1_covenant',
     videos: [
       {
@@ -64,6 +65,7 @@ const EXPECT = {
     duration: 110,
     sortOrder: 2,
     blocks: 132,
+    images: 4,
     scorecardKey: 'marriage_module2_carrying',
     videos: [
       {
@@ -104,6 +106,7 @@ const EXPECT = {
     duration: 120,
     sortOrder: 3,
     blocks: 169,
+    images: 4,
     scorecardKey: 'marriage_module3_choosing',
     videos: [
       { id: "kVkW5Nt9YHE", section: 1, title: "Key Dating Advice From Dr. Myles Munroe | Munroe Global" },
@@ -138,7 +141,7 @@ const EXPECT = {
     duration: 110,
     sortOrder: 4,
     blocks: 136,
-    imagePlaceholders: 3,
+    images: 3,
     scorecardKey: 'marriage_module4_loving',
     // No official Gottman video was found, so his research is cited in the text only.
     videos: [
@@ -178,7 +181,7 @@ const EXPECT = {
     duration: 115,
     sortOrder: 5,
     blocks: 115,
-    imagePlaceholders: 3,
+    images: 3,
     scorecardKey: 'marriage_module5_words',
     // The only Marriage Course candidate was not on an official channel.
     videos: [
@@ -222,6 +225,7 @@ const EXPECT = {
       'skip the prompts and speak to a trusted pastor or counsellor first',
       'Nothing taught here ever requires anyone to remain in reach of violence, control or abuse.',
       'contact local emergency services if you are in danger',
+      'Dr. Emerson Eggerichs, author of Love and Respect, pictures a wife seeing the world through pink sunglasses',
     ],
   },
 };
@@ -291,18 +295,29 @@ want.videos.filter((v) => v.tip).forEach((v) => {
   const next = blocks[blocks.findIndex((b) => b.youtubeId === v.id) + 1];
   ok(`tip callout directly after ${v.id}`, next.type === 'callout' && next.variant === 'tip' && next.text === v.tip);
 });
-ok('no real image blocks yet', count('image') === 0);
+if (want.images) {
+  const images = blocks.filter((b) => b.type === 'image');
+  ok(`${want.images} real images, in order, at their paths`, images.length === want.images && images.every((b, i) => b.url === `/images/marriage/module-${N}/MM${N}-${i + 1}.png`));
+  ok('every image has alt text', images.every((b) => b.alt && b.alt.length > 40));
+  ok('every image file exists and is a PNG', images.every((b) => {
+    const f = readFileSync(resolve(repo, 'public' + b.url));
+    return f.subarray(1, 4).toString() === 'PNG';
+  }));
+} else {
+  ok('no real image blocks yet', count('image') === 0);
+}
 if (N === 5) ok('no unofficial candidate or dummy id', !/rcXD7HMYlJM|"youtubeId":"(none|X|Y|Z)"|Marriage Course is a Christian course/.test(JSON.stringify(blocks)));
 if (N === 4) ok('no unofficial candidate or empty Gottman slot', !/kCUkBO7F_dY|pFtkQw0OWq0|"youtubeId":"none"/.test(JSON.stringify(blocks)));
 ok('no verification note left in the content', !JSON.stringify(blocks).includes('EXTERNAL VIDEO') && !JSON.stringify(blocks).includes('Claude Code'));
 const quiz = blocks.find((b) => b.type === 'quiz');
 ok('every quiz answer is a real option', quiz.questions.every((q) => q.options.some((o) => o.id === q.correct_option_id)));
 
-console.log('\nPlaceholders stay visible');
+console.log('\nImages and placeholders');
 const callouts = blocks.filter((b) => b.type === 'callout').map((b) => b.text);
 const imgs = callouts.filter((t) => t.startsWith('[IMAGE PLACEHOLDER'));
 const imageCount = want.imagePlaceholders ?? 4;
-ok(`${imageCount} image placeholders, MM${N}-1 to MM${N}-${imageCount}`, imgs.length === imageCount && Array.from({ length: imageCount }, (_, k) => k + 1).every((n) => imgs.some((t) => t.startsWith(`[IMAGE PLACEHOLDER — MM${N}-${n}]`))));
+if (want.images) ok('no image placeholders left', imgs.length === 0);
+else ok(`${imageCount} image placeholders, MM${N}-1 to MM${N}-${imageCount}`, imgs.length === imageCount && Array.from({ length: imageCount }, (_, k) => k + 1).every((n) => imgs.some((t) => t.startsWith(`[IMAGE PLACEHOLDER — MM${N}-${n}]`))));
 const videoPlaceholders = want.videoPlaceholders ?? 3;
 ok(`${videoPlaceholders} video placeholders`, callouts.filter((t) => t.startsWith('[VIDEO PLACEHOLDER')).length === videoPlaceholders);
 

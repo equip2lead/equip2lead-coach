@@ -6,7 +6,8 @@
 //
 // Writes module6_marriage.json to the current directory.
 //
-// No edits from the authored source. Its privacy wording already says the partner cannot
+// One edit from the authored source: Denis reworded the opening of the Love and Respect
+// paragraph on the live row, so it no longer assumes Module 4 was read. Its privacy wording already says the partner cannot
 // see the reflections, ratings and assignment. oEmbed check on 2026-11-04: the Munroe video
 // is on Munroe Global's channel and the Eggerichs video is on LIFE Today's. Captions are the
 // real titles, tidied. The MM6-4 image stays a placeholder until it is saved.
@@ -252,7 +253,7 @@ const section5 = {
   blocks: [
     heading(2, "Section 5 — Love and Respect"),
     callout("scripture", "\"However, each one of you also must love his wife as he loves himself, and the wife must respect her husband.\" — Ephesians 5:33"),
-    paragraph("Module 4 introduced Dr. Emerson Eggerichs' picture of pink and blue sunglasses: a husband and a wife can see the same event and receive two different messages. His fuller insight comes from this verse. Paul commands the husband to love and the wife to respect. Eggerichs observes that these are not random: they speak to what each most needs to feel. Many wives' deepest cry is to feel loved. Many husbands' deepest cry is to feel respected."),
+    paragraph("Dr. Emerson Eggerichs, author of Love and Respect, pictures a wife seeing the world through pink sunglasses and a husband through blue ones: two people can watch the same event and receive two different messages. His central insight comes from this verse. Paul commands the husband to love and the wife to respect. Eggerichs observes that these are not random: they speak to what each most needs to feel. Many wives' deepest cry is to feel loved. Many husbands' deepest cry is to feel respected."),
     table([
       "When a wife does not feel loved, she may...",
       "When a husband does not feel respected, he may..."
