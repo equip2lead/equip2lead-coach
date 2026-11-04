@@ -169,11 +169,41 @@ const EXPECT = {
       'which is the whole message of Module 1',
     ],
   },
+  5: {
+    slug: 'words-and-conflict',
+    title: 'Words & Conflict',
+    subtitle: 'Listening, Fighting Well, and the Process That Heals Hurt',
+    pillarSlug: 'communication-connection',
+    pillarId: '00000000-0000-0000-0002-000000000012',
+    duration: 115,
+    sortOrder: 5,
+    blocks: 115,
+    imagePlaceholders: 3,
+    scorecardKey: 'marriage_module5_words',
+    // The only Marriage Course candidate was not on an official channel.
+    videos: [
+      {
+        id: '1o30Ps-_8is', section: 3, title: 'Four Horsemen of the Apocalypse | The Gottman Institute',
+        tip: "As you watch, identify your own most common horseman, not your partner's. Then practise its antidote once this week, on purpose.",
+      },
+      {
+        id: '5vWkzB2oBuY', section: 5, title: 'Why The Happiest Couples Still Fight | Greg and Erin Smalley',
+        tip: 'Focus on the Family has helped Christian couples for decades. As you watch, look for one practical habit you can add to the five steps above.',
+      },
+    ],
+    sections: ["Section 1 — Two Cultures, One House", "Section 2 — Listen to Understand", "Section 3 — Words That Build, Words That Break", "Section 4 — Conflict Is Not Failure", "Section 5 — A Path Through Every Disagreement", "Section 6 — Arit's Turn: The Quiet Hour", "Section 7 — The Process That Heals Hurt", "Section 8 — Ban One Word", "How Do I Speak and Fight?", "Module 5 Assignment — Talk, Listen, Fight Well, Forgive", "Module 5 Complete"],
+    privacy: 'Your partner cannot see this assignment. Write honestly.',
+    keep: [
+      'Your partner cannot see these ratings.',
+      'skip Prompt 3 and speak to a trusted pastor or counsellor first',
+      'Nicky and Sila Lee',
+    ],
+  },
 };
 
 const N = Number(process.argv[2]);
 const want = EXPECT[N];
-if (!want) { console.error('usage: test-marriage-module.mjs <1|2|3|4> [--out <file>]'); process.exit(2); }
+if (!want) { console.error('usage: test-marriage-module.mjs <1|2|3|4|5> [--out <file>]'); process.exit(2); }
 
 const repo = process.cwd();
 const dir = mkdtempSync(join(tmpdir(), `marriage-m${N}-`));
@@ -237,6 +267,7 @@ want.videos.filter((v) => v.tip).forEach((v) => {
   ok(`tip callout directly after ${v.id}`, next.type === 'callout' && next.variant === 'tip' && next.text === v.tip);
 });
 ok('no real image blocks yet', count('image') === 0);
+if (N === 5) ok('no unofficial candidate or dummy id', !/rcXD7HMYlJM|"youtubeId":"(none|X|Y|Z)"|Marriage Course is a Christian course/.test(JSON.stringify(blocks)));
 if (N === 4) ok('no unofficial candidate or empty Gottman slot', !/kCUkBO7F_dY|pFtkQw0OWq0|"youtubeId":"none"/.test(JSON.stringify(blocks)));
 ok('no verification note left in the content', !JSON.stringify(blocks).includes('EXTERNAL VIDEO') && !JSON.stringify(blocks).includes('Claude Code'));
 const quiz = blocks.find((b) => b.type === 'quiz');
