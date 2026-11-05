@@ -327,6 +327,7 @@ const EXPECT = {
     duration: 110,
     sortOrder: 11,
     blocks: 111,
+    images: 4,
     videoPlaceholders: 2,
     scorecardKey: 'marriage_module11_covenant',
     videos: [

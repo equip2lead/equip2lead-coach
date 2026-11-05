@@ -24,9 +24,10 @@ const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: {
 const assignmentPrompt = (fields) => ({ type: "assignment_prompt", data: fields });
 const quiz = (scope, title, questions) => ({ type: "quiz", data: { scope, title, questions } });
 
-// Art and video not produced yet stay visible as callouts. Images will go in
-// public/images/marriage/module-11/MM11-1..4.png.
-const imagePlaceholder = (ref, brief) => callout("note", `[IMAGE PLACEHOLDER — ${ref}] ${brief}`);
+// Images are Denis's, used as delivered, in public/images/marriage/module-11/.
+const image = (url, alt) => ({ type: "image", data: { url, alt } });
+
+// Video not produced yet stays visible as a callout.
 const videoPlaceholder = (brief) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${brief}`);
 
 // ─── Front matter ───
@@ -50,7 +51,7 @@ const section1 = {
   title: "Plan the Marriage, Not Only the Wedding",
   blocks: [
     heading(2, "Section 1 — Plan the Marriage, Not Only the Wedding"),
-    imagePlaceholder("MM11-1", "Content: A young African engaged couple at a kitchen table in the evening, wedding fabric samples and invitation cards pushed to one side, the two of them leaning together over one notebook, writing and smiling. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-11/MM11-1.png", "A young African engaged couple sit close together at a table in the evening, smiling as he writes in one notebook. Wedding fabric samples and an invitation card lie on the table beside it. The notebook reads \"Our Marriage Plan\" with a checklist: Values, Financial Plan, Communication, Family, Goals. The card reads \"Wedding Invitation.\""),
     paragraph("Watch an engaged couple in the months before their wedding and you will see two full-time project managers. The hall, the outfits, the caterers, the colours, the invitations, the programme, the photographer: months of meetings, budgets and rehearsals for a celebration that will be over in a day. Now ask how much deliberate planning has gone into the marriage that day begins. For many couples the honest answer is almost none."),
     pullQuote("They rehearse the procession and never rehearse a disagreement. They choose the cake and never build a budget."),
     callout("scripture", "\"Therefore everyone who hears these words of mine and puts them into practice is like a wise man who built his house on the rock. The rain came down, the streams rose, and the winds blew and beat against that house; yet it did not fall, because it had its foundation on the rock.\" — Matthew 7:24–25"),
@@ -291,7 +292,7 @@ const section5 = {
   title: "Traditions: Giving Your Home a Personality",
   blocks: [
     heading(2, "Section 5 — Traditions: Giving Your Home a Personality"),
-    imagePlaceholder("MM11-2", "Content: A young African husband and wife laughing together as they lay a festive table for a holiday meal in their home, a decorated Christmas tree and paper lanterns behind them, warm evening light. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-11/MM11-2.png", "A young African husband and wife laugh together as they lay a festive table for a holiday meal, he in an apron setting a place and she carrying a stack of plates. A decorated Christmas tree and paper lanterns glow behind them. No readable text appears in the image."),
     paragraph("Habits keep a marriage healthy. Traditions give it a personality. Your two families each arrive with their own: how Christmas is kept, how a birthday is marked, who hosts the New Year, what happens when a child is born or a loved one dies. Learn each other's traditions with curiosity, honour what is worth honouring, and then do something many couples never do: choose your own."),
     pullQuote("Habits keep a marriage healthy. Traditions give it a personality. Both are chosen, not inherited."),
     table([
@@ -339,7 +340,7 @@ const section6 = {
   title: "A Cord of Three Strands",
   blocks: [
     heading(2, "Section 6 — A Cord of Three Strands"),
-    imagePlaceholder("MM11-3", "Content: An African husband and wife sitting side by side at a small table in a bright room in the early morning, holding hands with heads bowed in prayer, an open Bible and two cups of tea in front of them. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-11/MM11-3.png", "An African husband and wife sit side by side at a small table in a bright room in the morning light, their hands clasped and heads bowed in prayer. An open Bible and two cups of tea are in front of them. The Bible's print is too small to read."),
     callout("scripture", "\"Though one may be overpowered, two can defend themselves. A cord of three strands is not quickly broken.\" — Ecclesiastes 4:12"),
     paragraph("Picture a triangle: God at the top, husband and wife at the two lower corners. As each of you climbs toward God, the distance between you narrows on its own. You cannot draw near to Him without drawing nearer to each other. Every commitment in this module is a plank; prayer is the nails."),
     heading(3, "Why So Few Couples Actually Do It"),
@@ -833,7 +834,7 @@ const section11 = {
   title: "Module 11 Complete",
   blocks: [
     heading(2, "Module 11 Complete"),
-    imagePlaceholder("MM11-4", "Content: An African couple in their sixties walking arm in arm out of a church after renewing their wedding vows, their grown children and grandchildren on the steps around them clapping and smiling, late-afternoon sun. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1600×900."),
+    image("/images/marriage/module-11/MM11-4.png", "An African couple in their sixties walk arm in arm out of a church after renewing their wedding vows, smiling at each other, she holding a bouquet. Their grown children and grandchildren stand on the steps around them, clapping and smiling. No readable text appears in the image."),
     videoPlaceholder("2-3 min closing from Denis and Arit: the habits and traditions that carried their own marriage, what praying together has meant in their home, and a prayer over every couple building a covenant that lasts."),
     paragraph("You have seen how to prepare a marriage and not only a wedding, brought two family cultures into the open, written goals you will pursue together, chosen the habits that make up your Tuesdays and the traditions that will give your home its personality, learned how to pray together in a way that lasts, and seen where the limits of covenant lie when a home becomes unsafe."),
     paragraph("Module 12, the last in this track, asks you to sit down and count the cost: what covenant will truly ask of you, the one cost you should refuse to pay, and the final tests before you build."),
