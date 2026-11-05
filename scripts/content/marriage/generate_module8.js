@@ -6,7 +6,7 @@
 //
 // Writes module8_marriage.json to the current directory.
 //
-// No edits from the authored source. Its privacy wording already says the partner cannot
+// Matches the live row, including Denis's rewording of the video intro and tip. Its privacy wording already says the partner cannot
 // see the reflections, ratings and assignment. oEmbed check on 2026-11-05: the Ted Cunningham
 // video is on Focus on the Family's channel, 26:58 long. Its caption is the real title, tidied.
 
@@ -80,9 +80,9 @@ const section1 = {
     ]),
     paragraph("Here is the whole test, and it is simple. When there is a decision about your household (where you live, how you spend, how you raise your children, whether someone moves in), whose word ends the discussion? If the answer is your mother, then in the sense Scripture means, you have not yet left, however far away you may be living."),
     paragraph("A man who has never truly left cannot fully weave his life into his wife's, because part of him is still woven somewhere else. The same is true of a woman. The cleaving can only go as deep as the leaving."),
-    paragraph("Pastor Ted Cunningham, founding pastor of Woodland Hills Family Church in Missouri, talks with Focus on the Family about Genesis 2:24: why newlyweds must leave their families physically, financially and emotionally, how parents can support the new couple, and how to care for ageing parents while protecting the marriage."),
+    paragraph("Pastor Ted Cunningham, founding pastor of Woodland Hills Family Church in Branson, Missouri, talks with Focus on the Family about Genesis 2:24: why a newly married couple must leave their families emotionally, relationally and financially, and how parents can support the new home instead of competing with it."),
     videoEmbed("xF3s0h_ZIWA", "The Importance of Leaving and Cleaving | Ted Cunningham | Focus on the Family"),
-    callout("tip", "His setting is American, where leaving is easier than here. As you listen, translate it: in your own family, what would leaving well look like without any loss of honour?"),
+    callout("tip", "About 27 minutes. His setting is American, where leaving is easier than here. As you listen, translate it: in your own family, what would leaving well look like without any loss of honour?"),
     reflectionQuestions("Before You Move On — Your Partner Cannot See This", [
       "When a decision about my household has to be made, whose voice really settles it?",
       "Is there any way in which I have not yet left my father and mother?",

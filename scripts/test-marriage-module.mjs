@@ -262,7 +262,7 @@ const EXPECT = {
     videoPlaceholders: 2,
     scorecardKey: 'marriage_module8_family',
     videos: [
-      { id: 'xF3s0h_ZIWA', section: 1, title: 'The Importance of Leaving and Cleaving | Ted Cunningham | Focus on the Family', after: "Pastor Ted Cunningham, founding pastor o", before: "reflection_questions", tip: "His setting is American, where leaving is easier than here. As you listen, translate it: in your own family, what would leaving well look like without any loss of honour?" },
+      { id: 'xF3s0h_ZIWA', section: 1, title: 'The Importance of Leaving and Cleaving | Ted Cunningham | Focus on the Family', after: "Pastor Ted Cunningham, founding pastor o", before: "reflection_questions", tip: "About 27 minutes. His setting is American, where leaving is easier than here. As you listen, translate it: in your own family, what would leaving well look like without any loss of honour?" },
     ],
     sections: ["Section 1 — Leaving Is Not Dishonour", "Section 2 — You Marry a Household", "Section 3 — The Phone Call From Home", "Section 4 — Honour From Inside the Wall", "Section 5 — In-Laws, for Better and for Worse", "Section 6 — Who Lives in Your House?", "Section 7 — Carrying Two Families", "Section 8 — A Word to Parents", "Section 9 — When Family Becomes Harm", "Two Families, One Home", "Module 8 Assignment — Build the Wall, Open the Gate", "Module 8 Complete"],
     privacy: 'Your partner cannot see this assignment. Write honestly.',
