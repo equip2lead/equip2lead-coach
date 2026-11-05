@@ -3563,11 +3563,15 @@ Leadership folder `public/images/module-8/` and were moved to `public/images/mar
 The Module 8 image SQL ran from Claude chat. The live row has 105 blocks, 4 images and no image
 placeholders, and its generator matches. The SQL file was deleted.
 
-## 2026-11-05 — Marriage Module 9 prepared
+## 2026-11-05 — Marriage Module 9 live
 
-"Sex & Body": 110 blocks, in the Intimacy & Sexuality pillar, no edits to the authored text. Not
-live until the SQL runs. No week linking.
+"Sex & Body": 110 blocks, in the Intimacy & Sexuality pillar, run from Claude chat. The video tip
+now starts "About 28 minutes." The generator matches the live row. The builder, JSON and INSERT
+file were deleted. No week linking.
 
 `5_TynBlqaIk`, "Rethinking Godly Sexuality in Your Marriage", is on Focus on the Family's channel
 (27:47). Part 2, `_6uVB-iIlIQ` (27:40), also passed as a backup.
+
+This is the first module in the Intimacy & Sexuality pillar, so a reader whose weakest pillar is
+Intimacy can be sent here straight after the Starting Point. Dey decided to keep that logic.
 

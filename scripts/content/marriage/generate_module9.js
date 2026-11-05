@@ -137,7 +137,7 @@ const section2 = {
     pullQuote("Sex preaches. The only question is whether it tells the truth."),
     paragraph("Dr. Juli Slattery, a Christian psychologist and the co-founder of Authentic Intimacy, talks with Focus on the Family about why so many Christian couples have a weak foundation for intimacy: some learned only rules, duty and shame; others absorbed the culture's idea that sex is about personal fulfilment. She calls couples back to covenant love."),
     videoEmbed("5_TynBlqaIk", "Rethinking Godly Sexuality in Your Marriage | Dr. Juli Slattery | Focus on the Family"),
-    callout("tip", "As you listen, notice which of the two distorted views she describes is closer to what you were taught. Then write one sentence about what God's design says instead."),
+    callout("tip", "About 28 minutes. As you listen, notice which of the two distorted views she describes is closer to what you were taught. Then write one sentence about what God's design says instead."),
     divider(),
   ],
 };

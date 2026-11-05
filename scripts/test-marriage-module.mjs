@@ -283,7 +283,7 @@ const EXPECT = {
     videoPlaceholders: 2,
     scorecardKey: 'marriage_module9_intimacy',
     videos: [
-      { id: '5_TynBlqaIk', section: 2, title: 'Rethinking Godly Sexuality in Your Marriage | Dr. Juli Slattery | Focus on the Family', after: "Dr. Juli Slattery, a Christian psycholog", before: "divider", tip: "As you listen, notice which of the two distorted views she describes is closer to what you were taught. Then write one sentence about what God's design says instead." },
+      { id: '5_TynBlqaIk', section: 2, title: 'Rethinking Godly Sexuality in Your Marriage | Dr. Juli Slattery | Focus on the Family', after: "Dr. Juli Slattery, a Christian psycholog", before: "divider", tip: "About 28 minutes. As you listen, notice which of the two distorted views she describes is closer to what you were taught. Then write one sentence about what God's design says instead." },
     ],
     sections: ["Section 1 — Sex Is God's Idea", "Section 2 — What the Gift Is For", "Section 3 — Why It Is Never Casual", "Section 4 — Drawing the Line Before the Wedding", "Section 5 — Talk Before the Night", "Section 6 — Inside the Marriage", "Section 7 — \"Do Not Deprive\" Is Not Permission to Force", "Section 8 — The Secret Battles", "Section 9 — Washed, Made New", "Where Am I With This Gift?", "Module 9 Assignment — The Conversation You Have Not Had", "Module 9 Complete"],
     privacy: 'Your partner cannot see this assignment. Write honestly',
