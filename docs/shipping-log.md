@@ -3544,3 +3544,18 @@ generator matches the live row. The Module 7 builder, JSON and INSERT file were 
 
 The MM7-1 to MM7-4 images are on main. In MM7-2 the phone faces away, so no transfer is visible;
 it was used as delivered and the alt text says so.
+
+The Module 7 image SQL ran from Claude chat. The live row has 138 blocks, 4 images and no image
+placeholders, and its generator matches. The SQL file was deleted.
+
+## 2026-11-05 — Marriage Module 8 prepared
+
+"Family & In-Laws": 105 blocks, in the Partnership & Roles pillar, no edits to the authored text.
+Not live until the SQL runs. No week linking.
+
+`xF3s0h_ZIWA`, "The Importance of Leaving and Cleaving - Ted Cunningham", is on Focus on the
+Family's channel (26:58).
+
+The MM8-1 to MM8-4 images are held on `content/marriage-images`. They had been saved in the
+Leadership folder `public/images/module-8/` and were moved to `public/images/marriage/module-8/`.
+

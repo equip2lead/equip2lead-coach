@@ -250,12 +250,32 @@ const EXPECT = {
       'Your partner cannot see these ratings.',
       'skip Prompts 3 and 4 and speak to a trusted pastor or counsellor on your own first',
     ],
+  },  8: {
+    slug: 'family-and-in-laws',
+    title: 'Family & In-Laws',
+    subtitle: 'Leaving Without Dishonour, the Phone Call From Home, Who Lives in Your House, and Carrying Two Families',
+    pillarSlug: 'partnership-roles',
+    pillarId: '00000000-0000-0000-0002-000000000013',
+    duration: 110,
+    sortOrder: 8,
+    blocks: 105,
+    videoPlaceholders: 2,
+    scorecardKey: 'marriage_module8_family',
+    videos: [
+      { id: 'xF3s0h_ZIWA', section: 1, title: 'The Importance of Leaving and Cleaving | Ted Cunningham | Focus on the Family', after: "Pastor Ted Cunningham, founding pastor o", before: "reflection_questions", tip: "His setting is American, where leaving is easier than here. As you listen, translate it: in your own family, what would leaving well look like without any loss of honour?" },
+    ],
+    sections: ["Section 1 — Leaving Is Not Dishonour", "Section 2 — You Marry a Household", "Section 3 — The Phone Call From Home", "Section 4 — Honour From Inside the Wall", "Section 5 — In-Laws, for Better and for Worse", "Section 6 — Who Lives in Your House?", "Section 7 — Carrying Two Families", "Section 8 — A Word to Parents", "Section 9 — When Family Becomes Harm", "Two Families, One Home", "Module 8 Assignment — Build the Wall, Open the Gate", "Module 8 Complete"],
+    privacy: 'Your partner cannot see this assignment. Write honestly.',
+    keep: [
+      'Your partner cannot see these ratings.',
+      'skip Prompts 2 and 3 and speak to a trusted pastor or counsellor',
+    ],
   },
 };
 
 const N = Number(process.argv[2]);
 const want = EXPECT[N];
-if (!want) { console.error('usage: test-marriage-module.mjs <1|2|3|4|5|6|7> [--out <file>]'); process.exit(2); }
+if (!want) { console.error('usage: test-marriage-module.mjs <1|2|3|4|5|6|7|8> [--out <file>]'); process.exit(2); }
 
 const repo = process.cwd();
 const dir = mkdtempSync(join(tmpdir(), `marriage-m${N}-`));
