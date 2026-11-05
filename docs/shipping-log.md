@@ -3575,3 +3575,6 @@ file were deleted. No week linking.
 This is the first module in the Intimacy & Sexuality pillar, so a reader whose weakest pillar is
 Intimacy can be sent here straight after the Starting Point. Dey decided to keep that logic.
 
+The MM9-1 to MM9-4 images are on main and load from `app.equip2lead.coach`. This branch swaps them
+into the generator. Merge it only after the image SQL has run.
+

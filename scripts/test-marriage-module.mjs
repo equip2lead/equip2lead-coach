@@ -280,6 +280,7 @@ const EXPECT = {
     duration: 115,
     sortOrder: 9,
     blocks: 110,
+    images: 4,
     videoPlaceholders: 2,
     scorecardKey: 'marriage_module9_intimacy',
     videos: [
