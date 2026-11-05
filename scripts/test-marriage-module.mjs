@@ -259,6 +259,7 @@ const EXPECT = {
     duration: 110,
     sortOrder: 8,
     blocks: 105,
+    images: 4,
     videoPlaceholders: 2,
     scorecardKey: 'marriage_module8_family',
     videos: [

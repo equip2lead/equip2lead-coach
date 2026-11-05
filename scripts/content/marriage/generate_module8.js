@@ -24,9 +24,10 @@ const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: {
 const assignmentPrompt = (fields) => ({ type: "assignment_prompt", data: fields });
 const quiz = (scope, title, questions) => ({ type: "quiz", data: { scope, title, questions } });
 
-// Art and video not produced yet stay visible as callouts. Images will go in
-// public/images/marriage/module-8/MM8-1..4.png.
-const imagePlaceholder = (ref, brief) => callout("note", `[IMAGE PLACEHOLDER — ${ref}] ${brief}`);
+// Images are Denis's, used as delivered, in public/images/marriage/module-8/.
+const image = (url, alt) => ({ type: "image", data: { url, alt } });
+
+// Video not produced yet stays visible as a callout.
 const videoPlaceholder = (brief) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${brief}`);
 
 // ─── Front matter ───
@@ -51,7 +52,7 @@ const section1 = {
   title: "Leaving Is Not Dishonour",
   blocks: [
     heading(2, "Section 1 — Leaving Is Not Dishonour"),
-    imagePlaceholder("MM8-1", "Content: An African bride and groom on their wedding day stepping out through the gate of a family compound, hand in hand, while their parents stand behind them in the courtyard smiling and waving, warm late-afternoon light. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-8/MM8-1.png", "An African bride and groom, hand in hand and smiling at each other, step out through the gate of a family compound on their wedding day. Behind them in the courtyard, their parents smile and wave, in warm late-afternoon light. No readable text appears in the image."),
     callout("scripture", "\"That is why a man leaves his father and mother and is united to his wife, and they become one flesh.\" — Genesis 2:24"),
     paragraph("Before Scripture says the two become one flesh, it says the man leaves his father and mother. In the West that verse costs almost nothing: children leave home at eighteen and rarely come back. Here it costs a great deal, because leaving can sound like ingratitude, and it seems to collide with a holy duty that no marriage ever cancels."),
     callout("scripture", "\"Honour your father and your mother, so that you may live long in the land the Lord your God is giving you.\" — Exodus 20:12"),
@@ -255,7 +256,7 @@ const section5 = {
   title: "In-Laws, for Better and for Worse",
   blocks: [
     heading(2, "Section 5 — In-Laws, for Better and for Worse"),
-    imagePlaceholder("MM8-2", "Content: An older African woman and a younger African woman cooking together in a bright outdoor kitchen, the older one showing the younger how to season a pot, both laughing, a child watching from a stool nearby. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-8/MM8-2.png", "An older African woman and a younger African woman laugh together as they cook in a bright outdoor kitchen, the older one showing the younger how to season a large pot, while a child watches with her chin on her hand. No readable text appears in the image."),
     paragraph("In-law tension is common almost everywhere in the world. When the Cambridge psychologist Terri Apter studied 49 couples and 156 other family members, three in four couples described problems with an in-law. The most difficult relationship, by far, was between a wife and her husband's mother; the relationship between a mother-in-law and her son-in-law was difficult in only about one case in seven. Apter's explanation was that the two women often feel they are competing for the same place: the central woman in one man's family."),
     paragraph("Research also shows how much these relationships matter. The University of Michigan psychologist Terri Orbuch has followed married couples for more than twenty-five years. When a husband reported a close relationship with his wife's parents, the couple's risk of divorce over the following sixteen years was about 20 per cent lower. When a wife reported a close relationship with her husband's parents, the risk was about 20 per cent higher. Orbuch's explanation was that many wives found it harder to set boundaries with in-laws they were close to, and over time experienced the closeness as interference in their marriage and their parenting."),
     callout("info", "These are American and British studies, and our families are structured differently. But the lessons travel. Husbands: draw near to your wife's family; it strengthens your marriage. Wives: you may love your husband's family deeply, and you still need boundaries, agreed with your husband and held by him."),
@@ -340,7 +341,7 @@ const section7 = {
   title: "Carrying Two Families",
   blocks: [
     heading(2, "Section 7 — Carrying Two Families"),
-    imagePlaceholder("MM8-3", "Content: A young African husband and wife sitting at a dining table with a wall calendar open between them, writing names and dates on it together, a phone and a small gift box beside them, soft morning light. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-8/MM8-3.png", "A young African husband and wife sit at a dining table in soft morning light with a calendar open between them. He writes on it while she points to a date, with a phone and a wrapped gift beside them. The writing on the calendar is too small to read."),
     paragraph("Ask most couples who writes the get-well message, who remembers the birthdays, who proposes that you cook food and go and sit with the bereaved, and the honest answer is that nobody decided. It landed on the wife, it stays there for forty years, and the family credits her husband for it. Decide it instead, in writing."),
     table([
       "Agree",
@@ -738,7 +739,7 @@ const section12 = {
   title: "Module 8 Complete",
   blocks: [
     heading(2, "Module 8 Complete"),
-    imagePlaceholder("MM8-4", "Content: A large African family gathered around a long outdoor table at a Sunday meal under a mango tree, three generations together, a young married couple seated side by side at the centre, grandparents at the head of the table smiling. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1600×900."),
+    image("/images/marriage/module-8/MM8-4.png", "A large African family of three generations gathers around a long outdoor table for a Sunday meal under a mango tree, with a young married couple seated side by side and the grandparents smiling beside them. No readable text appears in the image."),
     videoPlaceholder("2-3 min closing from Denis and Arit: how they learned to leave well while honouring both families, one family moment they handled badly and what they learned, and a prayer for couples caught between two households."),
     paragraph("You have learned that leaving is a transfer of authority and not a withdrawal of honour, examined the household you are marrying into, learned to hold a decision when the phone call from home comes, agreed how to honour your families from inside the wall, looked honestly at in-law relationships, settled who may live in your home, shared the work of carrying two families, and learned what to do when family involvement becomes harm."),
     paragraph("Module 9 turns to the most private part of your covenant: the body, desire and sex, and how to talk honestly about what neither of you has yet said."),
