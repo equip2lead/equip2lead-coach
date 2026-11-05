@@ -3604,8 +3604,9 @@ Point. Dey decided to keep that logic, and to keep "Next: Module 12" while Modul
 Not linked to a week. Of the 2 Marriage plans, only 1 week has a growth focus, and it is in a
 reserved position (the first or last week), so none is eligible.
 
-The MM11-1 to MM11-4 images are on main and load from `app.equip2lead.coach`. This branch swaps them
-into the generator. Merge it only after the image SQL has run.
+The MM11-1 to MM11-4 images are on main. The Module 11 image SQL ran from Claude chat. The live row
+has 111 blocks, 4 images and no image placeholders, and its generator matches. The builder, JSON and
+SQL files were deleted.
 
 `t7BSJvoKGKc`, "Making Prayer a Priority in Your Marriage - Ryan & Selena Frederick", is on Focus on
 the Family's channel (24:14). It first aired on 7 April 2022 and is not labelled as a part.
