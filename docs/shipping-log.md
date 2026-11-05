@@ -3575,6 +3575,8 @@ file were deleted. No week linking.
 This is the first module in the Intimacy & Sexuality pillar, so a reader whose weakest pillar is
 Intimacy can be sent here straight after the Starting Point. Dey decided to keep that logic.
 
+The MM9-1 to MM9-4 images are on main. The Module 9 image SQL ran from Claude chat. The live row has
+110 blocks, 4 images and no image placeholders, and its generator matches. The SQL file was deleted.
 
 ## 2026-11-05 — Marriage Module 10 live
 

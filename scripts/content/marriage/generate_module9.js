@@ -24,9 +24,10 @@ const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: {
 const assignmentPrompt = (fields) => ({ type: "assignment_prompt", data: fields });
 const quiz = (scope, title, questions) => ({ type: "quiz", data: { scope, title, questions } });
 
-// Art and video not produced yet stay visible as callouts. Images will go in
-// public/images/marriage/module-9/MM9-1..4.png.
-const imagePlaceholder = (ref, brief) => callout("note", `[IMAGE PLACEHOLDER — ${ref}] ${brief}`);
+// Images are Denis's, used as delivered, in public/images/marriage/module-9/.
+const image = (url, alt) => ({ type: "image", data: { url, alt } });
+
+// Video not produced yet stays visible as a callout.
 const videoPlaceholder = (brief) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${brief}`);
 
 // ─── Front matter ───
@@ -51,7 +52,7 @@ const section1 = {
   title: "Sex Is God's Idea",
   blocks: [
     heading(2, "Section 1 — Sex Is God's Idea"),
-    imagePlaceholder("MM9-1", "Content: A young African husband and wife walking hand in hand along a quiet beach at sunset, barefoot at the water's edge, her head resting against his shoulder, seen from behind at a respectful distance. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-9/MM9-1.png", "A young African husband and wife walk barefoot and hand in hand along the water's edge at sunset, seen from behind, her head resting against his shoulder. No readable text appears in the image."),
     paragraph("Before we can talk about what sex must not be, we have to answer a question almost nobody asks: where did sex come from? It did not come from Hollywood, or from the advertisers who use it to sell perfume and cars. It did not crawl out of the Fall as a regrettable side effect God has been managing ever since. Open the first pages of Scripture and you find something that has embarrassed a silent church for generations: sex is God's idea. He designed it, blessed it, and called it very good."),
     callout("scripture", "\"Adam and his wife were both naked, and they felt no shame.\" — Genesis 2:25"),
     paragraph("Notice the order. Sex appears in Genesis 1 and 2. Sin does not appear until Genesis 3. Sexuality is not a product of the Fall; it is a casualty of it. And the very first words God spoke to human beings, \"Be fruitful and increase in number\" (Genesis 1:28), were a blessing that could not be obeyed without the marriage bed. God is not squeamish about His own creation."),
@@ -227,7 +228,7 @@ const section5 = {
   title: "Talk Before the Night",
   blocks: [
     heading(2, "Section 5 — Talk Before the Night"),
-    imagePlaceholder("MM9-2", "Content: An engaged African couple sitting in conversation with an older married couple in a bright, comfortable living room, notebooks and cups of tea on the table, all four leaning in with warm, serious expressions. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-9/MM9-2.png", "An engaged African couple sit with an older married couple in a bright living room, the older woman speaking with open hands while the others listen. A notebook, a leather-bound book and cups of tea sit on the table. No readable text appears in the image."),
     paragraph("Many godly couples arrive at their wedding never having spoken one honest sentence about sex: too holy to discuss it, too human not to expect it. Then they wonder why the first year is hard. Do not attempt that education on the wedding night. Talk now, awkwardly, with the lights on and your clothes on, months before the day, and with a pastor or mature married couple to guide you."),
     table([
       "Talk about",
@@ -382,7 +383,7 @@ const section9 = {
   title: "Washed, Made New",
   blocks: [
     heading(2, "Section 9 — Washed, Made New"),
-    imagePlaceholder("MM9-3", "Content: A young African woman standing at an open window at dawn, eyes closed and face lifted toward the morning light, a Bible held against her chest, with a peaceful expression. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-9/MM9-3.png", "A young African woman stands at an open window as the sun rises over rooftops and palm trees, eyes closed and face lifted toward the light, holding a Bible against her chest. The cover reads \"HOLY BIBLE.\""),
     callout("scripture", "\"'Come now, let us settle the matter,' says the Lord. 'Though your sins are like scarlet, they shall be as white as snow.'\" — Isaiah 1:18"),
     paragraph("Some readers have reached this module carrying a past: a line crossed once, or crossed for years. A young woman once wrote her story for us. She lost her virginity at university, wanting to be like everyone else. Afterwards something in her settled a terrible conclusion: \"I had gone too far. There was no way back now. So what did it matter anymore?\" From there she fell again and again, year after year, until at her lowest she found the courage to ask a leader she trusted for help. Today, she writes, her holiness is her greatest treasure."),
     paragraph("Look at what held her all those years. It was not mainly the strength of her desire. It was the verdict she passed on herself after the first fall: I have gone too far. That lie, not the sin, was the engine of every fall that followed."),
@@ -714,7 +715,7 @@ const section12 = {
   title: "Module 9 Complete",
   blocks: [
     heading(2, "Module 9 Complete"),
-    imagePlaceholder("MM9-4", "Content: An older African couple sitting close together on a garden bench in the evening, his arm around her shoulders and her hand in his, both smiling softly, a lamp glowing in the window of their home behind them. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1600×900."),
+    image("/images/marriage/module-9/MM9-4.png", "An older African couple sit close together on a garden bench in the evening, his arm around her shoulders and her hand on his, smiling at each other, with a lamp glowing in the window of their home behind them. No readable text appears in the image."),
     videoPlaceholder("2-3 min closing from Denis and Arit: why they believe God's design for intimacy is good news, the conversation they wish every couple would have before the wedding, and a prayer of restoration for anyone carrying a past."),
     paragraph("You have seen that sex is God's idea and what it is for, why it is never casual, how to draw and keep boundaries before the wedding, what to talk about before the wedding night, what a healthy marriage bed looks like for both husband and wife, why \"do not deprive\" is never permission to force, how to fight the secret battles, and how restoration works. That is not the end of the subject. It is the beginning of an honest conversation that should last your whole marriage."),
     paragraph("Module 10 turns to what this gift can bring into the world: children, fertility and family planning, and what to do when children do not come."),
