@@ -236,10 +236,11 @@ const EXPECT = {
     pillarId: '00000000-0000-0000-0002-000000000013',
     duration: 115,
     sortOrder: 7,
-    blocks: 135,
+    blocks: 138,
     scorecardKey: 'marriage_module7_money',
-    // The only Munroe candidate was not on Munroe Global, so that slot is left out.
+    // The Munroe slot is dropped.
     videos: [
+      { id: '01uvpY9X5cc', section: 4, title: 'Debt | Paycheck to Paycheck | Mecklenburg Community Church', after: "Mecklenburg Community Church in Charlott", before: 'heading', tip: "Optional, about 33 minutes: watch it when you have time. The setting is American, and the message opens with the popular dream of retiring early. Listen past that for what it says about debt, then apply it to your own currency, family obligations and season." },
       { id: 'lLslQ64COOQ', section: 6, title: 'Avoid These 5 Money Conflicts in Your Marriage | Rachel Cruze', after: 'Dave Ramsey and his daughter Rachel Cruze', before: 'heading', tip: "As you watch, look for one habit you can adopt this month. Then translate it into your own context: your currency, your family obligations, your way of saving." },
     ],
     sections: ["Section 1 — Where Your Treasure Is", "Section 2 — One Covenant, One Purse", "Section 3 — Nothing Hidden", "Section 4 — Debt and What It Does", "Section 5 — The Family Purse", "Section 6 — Build the Budget Together", "Section 7 — When the Money Changes", "Section 8 — When Money Becomes a Weapon", "Section 9 — Arit's Turn: The One on the Plane", "How Do We Handle Money?", "Module 7 Assignment — Put It on the Table", "Module 7 Complete"],

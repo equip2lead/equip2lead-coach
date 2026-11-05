@@ -6,10 +6,10 @@
 //
 // Writes module7_marriage.json to the current directory.
 //
-// No edits from the authored source. Its privacy wording already says the partner cannot
-// see the reflections, ratings and assignment. oEmbed check on 2026-11-04: the money video is
-// on Rachel Cruze's own channel. The only Munroe candidate was on a channel called Money Guy
-// Clips with a title about wealth, so that slot, its intro and its tip are left out.
+// Matches the live row. Its privacy wording already says the partner cannot see the
+// reflections, ratings and assignment. oEmbed checks: the money video is on Rachel Cruze's own
+// channel (2026-11-04), and the debt video in Section 4 is on Mecklenburg Community Church's
+// (2026-11-05). The Munroe slot is dropped. The intro credits the church, not a named speaker.
 
 const fs = require('fs');
 
@@ -211,6 +211,9 @@ const section4 = {
         "Every debt assumes a future. Ask what it does if the future changes"
       ]
     ]),
+    paragraph("Mecklenburg Community Church in Charlotte, North Carolina, gave a whole message to debt in its series Paycheck to Paycheck: what debt does to a household, and how to break the cycle of living from one pay cheque to the next."),
+    videoEmbed("01uvpY9X5cc", "Debt | Paycheck to Paycheck | Mecklenburg Community Church"),
+    callout("tip", "Optional, about 33 minutes: watch it when you have time. The setting is American, and the message opens with the popular dream of retiring early. Listen past that for what it says about debt, then apply it to your own currency, family obligations and season."),
     heading(3, "The Ruinous Wedding"),
     callout("scripture", "\"Suppose one of you wants to build a tower. Won't you first sit down and estimate the cost to see if you have enough money to complete it?\" — Luke 14:28"),
     paragraph("There is one debt I beg you to refuse, and I say it as an African pastor who has watched it swallow too many young couples: the ruinous wedding. The halls, the outfits, the convoys, the crowds that must be fed, ceremony upon ceremony, too often paid for with borrowed money. A couple begins covenant life carrying a debt they took on to impress people who went home after the party."),
