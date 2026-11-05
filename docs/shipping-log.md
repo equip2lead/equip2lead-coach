@@ -3590,3 +3590,11 @@ uploaded to YouTube on 9 October 2018.
 The MM10-1 to MM10-4 images are on main. The Module 10 image SQL ran from Claude chat. The live row
 has 93 blocks, 4 images and no image placeholders, and its generator matches. The builder, JSON and
 SQL files were deleted.
+
+## 2026-11-05 — Marriage Module 11 prepared
+
+"From Courtship to Covenant": 111 blocks, the first module in the Growth & Legacy pillar, no edits
+to the authored text. Not live until the SQL runs. No week linking.
+
+`t7BSJvoKGKc`, "Making Prayer a Priority in Your Marriage - Ryan & Selena Frederick", is on Focus on
+the Family's channel (24:14). It first aired on 7 April 2022 and is not labelled as a part.

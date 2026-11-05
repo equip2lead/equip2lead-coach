@@ -318,6 +318,28 @@ const EXPECT = {
       'with a pastor or counsellor if you need one',
     ],
   },
+  11: {
+    slug: 'from-courtship-to-covenant',
+    title: 'From Courtship to Covenant',
+    subtitle: "Planning the Marriage, Not Only the Wedding: Shared Goals, Daily Habits, Chosen Traditions and Praying Together",
+    pillarSlug: 'growth-legacy',
+    pillarId: '00000000-0000-0000-0002-000000000015',
+    duration: 110,
+    sortOrder: 11,
+    blocks: 111,
+    videoPlaceholders: 2,
+    scorecardKey: 'marriage_module11_covenant',
+    videos: [
+      { id: 't7BSJvoKGKc', section: 6, title: 'Making Prayer a Priority in Your Marriage | Ryan & Selena Frederick | Focus on the Family', after: "Ryan and Selena Frederick, the couple be", before: "heading", tip: "As you listen, note one roadblock that sounds like your home and one practice you will try this week." },
+    ],
+    sections: ["Section 1 — Plan the Marriage, Not Only the Wedding", "Section 2 — Two Normals Under One Roof", "Section 3 — Me Becomes We", "Section 4 — A Marriage Is Made of Tuesdays", "Section 5 — Traditions: Giving Your Home a Personality", "Section 6 — A Cord of Three Strands", "Section 7 — Keep Learning Together", "Section 8 — A Covenant Is Not a Cage", "Are We Building a Covenant?", "Module 11 Assignment — Our Covenant Plan", "Module 11 Complete"],
+    privacy: 'Your partner cannot see this assignment. Write honestly.',
+    keep: [
+      'Your partner cannot see these ratings.',
+      'contact local emergency services',
+      'nothing in this track is an instruction to stay within reach of harm',
+    ],
+  },
 };
 
 const N = Number(process.argv[2]);
