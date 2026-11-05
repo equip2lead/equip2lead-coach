@@ -3575,3 +3575,12 @@ file were deleted. No week linking.
 This is the first module in the Intimacy & Sexuality pillar, so a reader whose weakest pillar is
 Intimacy can be sent here straight after the Starting Point. Dey decided to keep that logic.
 
+
+## 2026-11-05 — Marriage Module 10 prepared
+
+"Children & Fertility": 93 blocks, in the Intimacy & Sexuality pillar, no edits to the authored
+text. Not live until the SQL runs. No week linking.
+
+`_b5gpnDZvFo`, "Prioritizing Your Marriage in the Midst of Motherhood - Becky Thompson Part 1", is
+on Focus on the Family's channel (24:23). It is Part 1 of 2 of the 20 February 2018 broadcast,
+uploaded to YouTube on 9 October 2018.
