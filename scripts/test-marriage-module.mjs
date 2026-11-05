@@ -237,6 +237,7 @@ const EXPECT = {
     duration: 115,
     sortOrder: 7,
     blocks: 138,
+    images: 4,
     scorecardKey: 'marriage_module7_money',
     // The Munroe slot is dropped.
     videos: [

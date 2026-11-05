@@ -25,9 +25,10 @@ const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: {
 const assignmentPrompt = (fields) => ({ type: "assignment_prompt", data: fields });
 const quiz = (scope, title, questions) => ({ type: "quiz", data: { scope, title, questions } });
 
-// Art and video not produced yet stay visible as callouts. Images will go in
-// public/images/marriage/module-7/MM7-1..4.png.
-const imagePlaceholder = (ref, brief) => callout("note", `[IMAGE PLACEHOLDER — ${ref}] ${brief}`);
+// Images are Denis's, used as delivered, in public/images/marriage/module-7/.
+const image = (url, alt) => ({ type: "image", data: { url, alt } });
+
+// Video not produced yet stays visible as a callout.
 const videoPlaceholder = (brief) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${brief}`);
 
 // ─── Front matter ───
@@ -52,7 +53,7 @@ const section1 = {
   title: "Where Your Treasure Is",
   blocks: [
     heading(2, "Section 1 — Where Your Treasure Is"),
-    imagePlaceholder("MM7-1", "Content: An African husband and wife sitting at a kitchen table in the evening, an open notebook, a calculator and a small pile of receipts between them, both leaning in and talking calmly, a single warm lamp above the table. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-7/MM7-1.png", "An African husband and wife sit at a kitchen table in the evening under a warm hanging lamp, leaning in and talking calmly, with an open notebook, a calculator and a small pile of receipts between them. No readable text appears in the image."),
     callout("scripture", "\"For where your treasure is, there your heart will be also.\" — Matthew 6:21"),
     paragraph("Ask counsellors anywhere in the world what couples fight about most, and money is at or near the top of every list. But listen closely to those fights and you notice something. They are almost never about money. They are about trust, control, fear and expectations nobody said out loud. Money is simply the place where the heart becomes visible."),
     paragraph("That is why Jesus spoke so often about money and possessions. Not because God needs our money, but because what we do with it tells the truth about what we love. In a marriage, the same is true twice over: what two people do with their money tells the truth about whether they have really become one."),
@@ -238,7 +239,7 @@ const section5 = {
   title: "The Family Purse",
   blocks: [
     heading(2, "Section 5 — The Family Purse"),
-    imagePlaceholder("MM7-2", "Content: A young African husband and wife sitting side by side on a sofa, looking together at one phone screen showing a mobile money transfer, his arm resting on the sofa behind her, a calm and agreed moment rather than a tense one. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-7/MM7-2.png", "A young African husband and wife sit close together on a sofa, smiling as she holds up a phone and he points toward it, his arm resting on the sofa behind her. The phone faces away from the viewer, so its screen cannot be seen. No readable text appears in the image."),
     paragraph("Most marriage books were written for couples whose money is their own and whose relatives have no claim on it. That is not the marriage most of our couples are entering. A mother's medication. A younger brother's school fees. A cousin who will need help. A father in the village who expects his son abroad to send something every month. In our part of the world, these are not footnotes. They are the marriage."),
     callout("scripture", "\"Honour your father and your mother.\" — Exodus 20:12"),
     paragraph("Supporting parents and extended family is honourable, and Scripture commands it. Jesus rebuked religious people who used a spiritual excuse, \"it is Corban, devoted to God\", to avoid helping their own father and mother (Mark 7:11–12). A believer who abandons his parents has not become holy. He has become disobedient."),
@@ -533,7 +534,7 @@ const section9 = {
   title: "Arit's Turn: The One on the Plane",
   blocks: [
     heading(2, "Section 9 — Arit's Turn: The One on the Plane"),
-    imagePlaceholder("MM7-3", "Content: An African woman in her forties sitting by an aeroplane window at dawn, a small notebook open on her lap and a family photograph tucked into its cover, looking out at the clouds with a calm, thoughtful expression. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-7/MM7-3.png", "An African woman in her forties sits by an aeroplane window at dawn, her chin on her hand, smiling thoughtfully at the clouds. A notebook lies open on her lap with a family photograph on its cover. No readable text appears in the image."),
     videoPlaceholder("2-3 min from Arit: the prayer she prayed as a girl, the cost she did not see coming, and why she would not trade it for money."),
     paragraph("When I was in secondary school I prayed for a man who loved God more than he loved me. God answered that prayer exactly. What I did not read in it was what came attached."),
     paragraph("Serving God has meant sacrifice, financially and as a family. People assume my husband's work took him away from us. It is the other way round: I am the one who goes. I have gone for my doctorate, to keep my professional licence current, and at times for work. Behind all of it is the same arithmetic. Somebody has to raise the funds. Somebody has to keep the qualifications alive. Somebody has to think about the years after these ones. So there have been seasons when our family lived on two continents, and I was the one on the plane."),
@@ -841,7 +842,7 @@ const section12 = {
   title: "Module 7 Complete",
   blocks: [
     heading(2, "Module 7 Complete"),
-    imagePlaceholder("MM7-4", "Content: An African couple in their fifties standing together at the gate of a modest, well-kept family home at sunset, a small vegetable garden beside them, his hand on her shoulder, both content. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1600×900."),
+    image("/images/marriage/module-7/MM7-4.png", "An African couple in their fifties stand together at the gate of a modest, well-kept family home at sunset, his arm around her shoulder, both content, with a small vegetable garden beside them. No readable text appears in the image."),
     videoPlaceholder("2-3 min closing from Denis and Arit: the money conversation they wish they had had earlier, how they carry family obligations together, and a prayer for couples under financial pressure."),
     paragraph("You have looked at your money story, written your three numbers, named what must be disclosed, learned to weigh debt, agreed how to carry your families together, built a first budget, prepared for the season the money changes, and learned to recognise when money becomes a weapon. Money will never stop being a subject in your marriage. But it no longer has to be a secret, or a battlefield."),
     paragraph("Module 8 turns to the people behind so many of these obligations: your families, your in-laws, and how a new household honours both while leaving both."),
