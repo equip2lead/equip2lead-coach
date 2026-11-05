@@ -3591,10 +3591,18 @@ The MM10-1 to MM10-4 images are on main. The Module 10 image SQL ran from Claude
 has 93 blocks, 4 images and no image placeholders, and its generator matches. The builder, JSON and
 SQL files were deleted.
 
-## 2026-11-05 — Marriage Module 11 prepared
+## 2026-11-05 — Marriage Module 11 live
 
-"From Courtship to Covenant": 111 blocks, the first module in the Growth & Legacy pillar, no edits
-to the authored text. Not live until the SQL runs. No week linking.
+"From Courtship to Covenant": 111 blocks, the first module in the Growth & Legacy pillar, run from
+Claude chat. Five blocks changed before it went live: three cross-references now make sense to a
+reader who arrives early, the video intro says only what the episode supports, and the tip starts
+"About 24 minutes." The generator matches the live row.
+
+A reader whose weakest pillar is Growth & Legacy can be sent here straight after the Starting
+Point. Dey decided to keep that logic, and to keep "Next: Module 12" while Module 12 is written.
+
+Not linked to a week. Of the 2 Marriage plans, only 1 week has a growth focus, and it is in a
+reserved position (the first or last week), so none is eligible.
 
 `t7BSJvoKGKc`, "Making Prayer a Priority in Your Marriage - Ryan & Selena Frederick", is on Focus on
 the Family's channel (24:14). It first aired on 7 April 2022 and is not labelled as a part.

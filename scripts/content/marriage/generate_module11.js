@@ -54,7 +54,7 @@ const section1 = {
     paragraph("Watch an engaged couple in the months before their wedding and you will see two full-time project managers. The hall, the outfits, the caterers, the colours, the invitations, the programme, the photographer: months of meetings, budgets and rehearsals for a celebration that will be over in a day. Now ask how much deliberate planning has gone into the marriage that day begins. For many couples the honest answer is almost none."),
     pullQuote("They rehearse the procession and never rehearse a disagreement. They choose the cake and never build a budget."),
     callout("scripture", "\"Therefore everyone who hears these words of mine and puts them into practice is like a wise man who built his house on the rock. The rain came down, the streams rose, and the winds blew and beat against that house; yet it did not fall, because it had its foundation on the rock.\" — Matthew 7:24–25"),
-    paragraph("Notice what Jesus says about the two houses: the storm came to both. The wise builder was not spared the rain; he simply built for it. That is what this module is about. Earlier modules gave you the deep skills: communication and conflict (Module 5), money (Module 7), intimacy (Module 9). This module gives you the structure that holds them together: shared expectations, shared goals, daily habits, chosen traditions and a praying life."),
+    paragraph("Notice what Jesus says about the two houses: the storm came to both. The wise builder was not spared the rain; he simply built for it. That is what this module is about. Other modules in this track teach the deep skills: communication and conflict (Module 5), money (Module 7), intimacy (Module 9). This module gives you the structure that holds them together: shared expectations, shared goals, daily habits, chosen traditions and a praying life."),
     table([
       "Wedding planning",
       "Marriage planning"
@@ -408,9 +408,9 @@ const section6 = {
     heading(3, "What the Research Found"),
     paragraph("Praying for your partner is one of the few spiritual practices that has been studied carefully. The psychologist Frank Fincham and his colleagues have worked on it for many years. In 2010 the Journal of Personality and Social Psychology published their finding that people who prayed for their partner were less likely to be unfaithful over time, in thought or in action. In the same year Psychological Science published two experiments led by Nathaniel Lambert: people asked to pray for their partner's well-being became more willing to forgive them, and those who prayed daily for four weeks grew in selfless concern for others, which in turn made them more forgiving."),
     callout("info", "We do not pray because it works. We pray because we belong to God. But it is worth knowing that it is very hard to hold a grievance while asking God to bless the person you are holding it against. The two will not sit together for long."),
-    paragraph("Ryan and Selena Frederick, the couple behind Fierce Marriage, talk with Focus on the Family about why prayer in marriage is humbling, what gets in the way (busyness, pride and self-reliance), and simple ways to begin: praying for your spouse from head to toe, praying Scripture, and pushing through the awkwardness by holding hands or facing each other."),
+    paragraph("Ryan and Selena Frederick, the couple behind Fierce Marriage, talk with Focus on the Family about why prayer in marriage is humbling, what gets in the way (pride, crowded schedules and trying to manage on our own), and simple ways to begin: praying for your spouse from head to toe, praying Scripture, and pushing through the awkwardness, for example by holding hands."),
     videoEmbed("t7BSJvoKGKc", "Making Prayer a Priority in Your Marriage | Ryan & Selena Frederick | Focus on the Family"),
-    callout("tip", "As you listen, note one roadblock that sounds like your home and one practice you will try this week."),
+    callout("tip", "About 24 minutes. As you listen, note one roadblock that sounds like your home and one practice you will try this week."),
     heading(3, "To the One Whose Partner Will Not Pray"),
     paragraph("Do not nag, do not sigh, and do not compare them with the brother who prays beautifully at the prayer meeting. Nobody has ever been shamed into a life of prayer; a person pressured into it will perform it and resent it. Invite once, warmly, and say exactly what you are asking: four minutes, and you do not have to be good at it. Then keep your own life with God warm, and pray for them every day without announcing it."),
     callout("note", "Brother, hear the other half. She is not asking you to preach, and she is not grading your vocabulary. She is asking you to sit beside her for four minutes and speak to God about your own life in her hearing. If you do not know how to begin, begin with \"Lord, thank you for today\" and stop when you run out. That is a prayer. Do it again tomorrow, and in a year you will not recognise your own home."),
@@ -429,7 +429,7 @@ const section7 = {
   title: "Keep Learning Together",
   blocks: [
     heading(2, "Section 7 — Keep Learning Together"),
-    paragraph("Most couples look for help only after the problems have arrived. They learn to bail water while the boat is sinking. Wisdom learns to sail before leaving the harbour. Module 0 showed you what the research says about couples who prepare; this section is about the habit of continuing to learn after the wedding."),
+    paragraph("Most couples look for help only after the problems have arrived. They learn to bail water while the boat is sinking. Wisdom learns to sail before leaving the harbour. The Starting Point shows what the research says about couples who prepare; this section is about the habit of continuing to learn after the wedding."),
     table([
       "Keep learning",
       "How"
@@ -462,7 +462,7 @@ const section8 = {
   title: "A Covenant Is Not a Cage",
   blocks: [
     heading(2, "Section 8 — A Covenant Is Not a Cage"),
-    paragraph("In Module 5 we asked you to ban the word divorce from your house, so that every conflict becomes a problem to solve rather than an audition for leaving. That teaching is true, and it assumes something: two people of goodwill who hurt each other the way ordinary people do, carelessly and selfishly, and then repentantly. There is another kind of house, and it is not rare. In it one person is not failing the other. One person is harming the other, knows it, and will not stop."),
+    paragraph("Module 5 asks couples to ban the word divorce from their house, so that every conflict becomes a problem to solve rather than an audition for leaving. That teaching is true, and it assumes something: two people of goodwill who hurt each other the way ordinary people do, carelessly and selfishly, and then repentantly. There is another kind of house, and it is not rare. In it one person is not failing the other. One person is harming the other, knows it, and will not stop."),
     callout("warning", "If that is the house you are standing in, nothing in this track is an instruction to stay within reach of harm. Speak to a trusted pastor or counsellor on your own this week, and contact local emergency services if you are in danger."),
     table([
       "Where the teaching stops",

@@ -330,7 +330,7 @@ const EXPECT = {
     videoPlaceholders: 2,
     scorecardKey: 'marriage_module11_covenant',
     videos: [
-      { id: 't7BSJvoKGKc', section: 6, title: 'Making Prayer a Priority in Your Marriage | Ryan & Selena Frederick | Focus on the Family', after: "Ryan and Selena Frederick, the couple be", before: "heading", tip: "As you listen, note one roadblock that sounds like your home and one practice you will try this week." },
+      { id: 't7BSJvoKGKc', section: 6, title: 'Making Prayer a Priority in Your Marriage | Ryan & Selena Frederick | Focus on the Family', after: "Ryan and Selena Frederick, the couple be", before: "heading", tip: "About 24 minutes. As you listen, note one roadblock that sounds like your home and one practice you will try this week." },
     ],
     sections: ["Section 1 — Plan the Marriage, Not Only the Wedding", "Section 2 — Two Normals Under One Roof", "Section 3 — Me Becomes We", "Section 4 — A Marriage Is Made of Tuesdays", "Section 5 — Traditions: Giving Your Home a Personality", "Section 6 — A Cord of Three Strands", "Section 7 — Keep Learning Together", "Section 8 — A Covenant Is Not a Cage", "Are We Building a Covenant?", "Module 11 Assignment — Our Covenant Plan", "Module 11 Complete"],
     privacy: 'Your partner cannot see this assignment. Write honestly.',
