@@ -271,12 +271,34 @@ const EXPECT = {
       'Your partner cannot see these ratings.',
       'skip Prompts 2 and 3 and speak to a trusted pastor or counsellor',
     ],
+  },  9: {
+    slug: 'sex-and-body',
+    title: 'Sex & Body',
+    subtitle: "God's Design, Boundaries Before the Wedding, Intimacy Inside It, the Secret Battles, and Restoration",
+    pillarSlug: 'intimacy-sexuality',
+    pillarId: '00000000-0000-0000-0002-000000000014',
+    duration: 115,
+    sortOrder: 9,
+    blocks: 110,
+    videoPlaceholders: 2,
+    scorecardKey: 'marriage_module9_intimacy',
+    videos: [
+      { id: '5_TynBlqaIk', section: 2, title: 'Rethinking Godly Sexuality in Your Marriage | Dr. Juli Slattery | Focus on the Family', after: "Dr. Juli Slattery, a Christian psycholog", before: "divider", tip: "As you listen, notice which of the two distorted views she describes is closer to what you were taught. Then write one sentence about what God's design says instead." },
+    ],
+    sections: ["Section 1 — Sex Is God's Idea", "Section 2 — What the Gift Is For", "Section 3 — Why It Is Never Casual", "Section 4 — Drawing the Line Before the Wedding", "Section 5 — Talk Before the Night", "Section 6 — Inside the Marriage", "Section 7 — \"Do Not Deprive\" Is Not Permission to Force", "Section 8 — The Secret Battles", "Section 9 — Washed, Made New", "Where Am I With This Gift?", "Module 9 Assignment — The Conversation You Have Not Had", "Module 9 Complete"],
+    privacy: 'Your partner cannot see this assignment. Write honestly',
+    keep: [
+      'Your partner cannot see these ratings.',
+      'If any prompt touches abuse or force in your past or present, skip it and speak to a trusted pastor or counsellor instead.',
+      'it was not your fault',
+      'contact local emergency services if you are in danger',
+    ],
   },
 };
 
 const N = Number(process.argv[2]);
 const want = EXPECT[N];
-if (!want) { console.error('usage: test-marriage-module.mjs <1|2|3|4|5|6|7|8> [--out <file>]'); process.exit(2); }
+if (!want) { console.error('usage: test-marriage-module.mjs <1|2|3|4|5|6|7|8|9> [--out <file>]'); process.exit(2); }
 
 const repo = process.cwd();
 const dir = mkdtempSync(join(tmpdir(), `marriage-m${N}-`));

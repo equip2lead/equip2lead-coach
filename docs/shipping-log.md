@@ -3560,3 +3560,14 @@ Family's channel (26:58).
 The MM8-1 to MM8-4 images are on main. They had been saved in the
 Leadership folder `public/images/module-8/` and were moved to `public/images/marriage/module-8/`.
 
+The Module 8 image SQL ran from Claude chat. The live row has 105 blocks, 4 images and no image
+placeholders, and its generator matches. The SQL file was deleted.
+
+## 2026-11-05 — Marriage Module 9 prepared
+
+"Sex & Body": 110 blocks, in the Intimacy & Sexuality pillar, no edits to the authored text. Not
+live until the SQL runs. No week linking.
+
+`5_TynBlqaIk`, "Rethinking Godly Sexuality in Your Marriage", is on Focus on the Family's channel
+(27:47). Part 2, `_6uVB-iIlIQ` (27:40), also passed as a backup.
+
