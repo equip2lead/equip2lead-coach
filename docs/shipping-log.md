@@ -3537,11 +3537,10 @@ Not live until the SQL runs. No week linking.
 ## 2026-11-05 — Marriage Module 7 live, Mecklenburg video added
 
 Module 7 ran from Claude chat at 135 blocks. Claude chat then added a video to the live row in
-Section 4, making 138: , "Debt", on Mecklenburg Community Church's channel (33:11).
+Section 4, making 138: `01uvpY9X5cc`, "Debt", on Mecklenburg Community Church's channel (33:11).
 The intro credits the church and not a named speaker, because the title and description do not
-name one.  and  also passed as backups. The Munroe slot is dropped. The
+name one. `l4eM8E7cwLc` and `thAGiloFQCo` also passed as backups. The Munroe slot is dropped. The
 generator matches the live row. The Module 7 builder, JSON and INSERT file were deleted.
 
 The MM7-1 to MM7-4 images are on main. In MM7-2 the phone faces away, so no transfer is visible;
 it was used as delivered and the alt text says so.
-
