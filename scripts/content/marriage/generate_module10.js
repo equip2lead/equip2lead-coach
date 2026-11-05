@@ -24,9 +24,10 @@ const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: {
 const assignmentPrompt = (fields) => ({ type: "assignment_prompt", data: fields });
 const quiz = (scope, title, questions) => ({ type: "quiz", data: { scope, title, questions } });
 
-// Art and video not produced yet stay visible as callouts. Images will go in
-// public/images/marriage/module-10/MM10-1..4.png.
-const imagePlaceholder = (ref, brief) => callout("note", `[IMAGE PLACEHOLDER — ${ref}] ${brief}`);
+// Images are Denis's, used as delivered, in public/images/marriage/module-10/.
+const image = (url, alt) => ({ type: "image", data: { url, alt } });
+
+// Video not produced yet stays visible as a callout.
 const videoPlaceholder = (brief) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${brief}`);
 
 // ─── Front matter ───
@@ -51,7 +52,7 @@ const section1 = {
   title: "A Heritage From the Lord",
   blocks: [
     heading(2, "Section 1 — A Heritage From the Lord"),
-    imagePlaceholder("MM10-1", "Content: A young African father lifting his laughing toddler daughter into the air in a sunlit garden, while the mother kneels on the grass nearby smiling, warm late-afternoon light. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-10/MM10-1.png", "A young African father sits on the grass in a sunlit garden, lifting his laughing toddler daughter into the air, while the mother sits nearby on the grass smiling up at them. No readable text appears in the image."),
     callout("scripture", "\"Children are a heritage from the Lord, offspring a reward from him.\" — Psalm 127:3"),
     paragraph("Children are not an accessory to marriage. Scripture calls them a heritage and a reward, and the first blessing God ever spoke over human beings was \"be fruitful and increase in number\" (Genesis 1:28). Through children God lets a man and a woman share in the creation of eternal souls. And children are also sleepless nights, school fees and sacrifice upon sacrifice, wrapped in a joy nobody can explain to you beforehand."),
     heading(3, "Guests and the Household"),
@@ -226,7 +227,7 @@ const section6 = {
   title: "When Children Do Not Come",
   blocks: [
     heading(2, "Section 6 — When Children Do Not Come"),
-    imagePlaceholder("MM10-2", "Content: An African husband and wife kneeling together in prayer in a quiet church in the early morning, his arm around her shoulders and her head bowed against him, soft light falling through a window onto them. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-10/MM10-2.png", "An African husband and wife pray together in the pews of a quiet church, his arm around her shoulders and her head bowed against him, their hands clasped and their eyes closed. Soft light falls through a window behind them, and a closed book rests on the pew in front. No readable text appears in the image."),
     paragraph("Some couples marry and wait, and the months become years. If that is you, hear this first: a childless couple is a complete family before God while they wait. You are not a marriage on hold. You are a marriage."),
     paragraph("You are also far from alone. In 2023 the World Health Organization reported that about one in six adults worldwide, around 17.5 per cent, experience infertility at some point in their lives, in rich and poor countries alike. The WHO describes infertility as a disease of the male or the female reproductive system, and it names the stigma that so often comes with it."),
     pullQuote("In our culture the blame for childlessness falls on the wife almost automatically, and very often it is not hers to carry. Decide now that it will be ours, whatever the cause turns out to be."),
@@ -311,7 +312,7 @@ const section8 = {
   title: "Other Ways God Builds a Family",
   blocks: [
     heading(2, "Section 8 — Other Ways God Builds a Family"),
-    imagePlaceholder("MM10-3", "Content: An African couple in their forties sitting on a sofa reading a picture book with a young boy between them, the boy pointing at the page and all three smiling, a cosy living room in the evening. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-10/MM10-3.png", "An African couple sit on a sofa in a cosy living room in the evening, reading a picture book with a young boy between them. The boy points at the page and all three smile. Any words on the page are too blurred to read."),
     paragraph("God has always built families in more than one way. Moses was raised by Pharaoh's daughter. Esther was raised by her cousin Mordecai. And every believer is in God's family by adoption: \"he predestined us for adoption to sonship through Jesus Christ\" (Ephesians 1:5). Adoption is not God's second-best. It is how He brought you home."),
     paragraph("On our continent, children have long been raised by aunts, grandparents and older siblings, and many couples already raise a relative's child. Formal adoption, fostering, guardianship and spiritual parenting are all ways a marriage can pour its love into the next generation."),
     table([
@@ -650,7 +651,7 @@ const section12 = {
   title: "Module 10 Complete",
   blocks: [
     heading(2, "Module 10 Complete"),
-    imagePlaceholder("MM10-4", "Content: Three generations of an African family walking together along a red-earth village road at sunset, grandparents holding the hands of small grandchildren, the parents walking behind them arm in arm. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1600×900."),
+    image("/images/marriage/module-10/MM10-4.png", "Three generations of an African family walk along a red-earth village road at sunset. The grandparents hold the hands of a small boy and a small girl, and the parents walk behind them arm in arm. No readable text appears in the image."),
     videoPlaceholder("2-3 min closing from Denis and Arit: what their own children taught them about marriage, a word to couples who are waiting, and a prayer for every home that hopes for the next generation."),
     paragraph("You have seen that children are a heritage and that your spouse remains the household, settled the conversation before the cradle, learned to decide family planning together, prepared to protect your marriage when a baby comes, learned to raise children as one, and learned to carry infertility and loss together without blame. You have also seen the other ways God builds a family, and that sons and daughters are a heritage alike."),
     paragraph("Module 11 turns to the commitments, habits and traditions that carry a relationship from courtship into a covenant that lasts."),
