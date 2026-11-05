@@ -3584,3 +3584,6 @@ video tip starts "About 24 minutes." The generator matches the live row. No week
 `_b5gpnDZvFo`, "Prioritizing Your Marriage in the Midst of Motherhood - Becky Thompson Part 1", is
 on Focus on the Family's channel (24:23). It is Part 1 of 2 of the 20 February 2018 broadcast,
 uploaded to YouTube on 9 October 2018.
+
+The MM10-1 to MM10-4 images are on main and load from `app.equip2lead.coach`. This branch swaps them
+into the generator. Merge it only after the image SQL has run.

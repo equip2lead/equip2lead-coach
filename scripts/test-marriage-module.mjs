@@ -303,6 +303,7 @@ const EXPECT = {
     duration: 105,
     sortOrder: 10,
     blocks: 93,
+    images: 4,
     videoPlaceholders: 2,
     scorecardKey: 'marriage_module10_children',
     videos: [
