@@ -306,7 +306,7 @@ const EXPECT = {
     videoPlaceholders: 2,
     scorecardKey: 'marriage_module10_children',
     videos: [
-      { id: '_b5gpnDZvFo', section: 4, title: 'Prioritizing Your Marriage in the Midst of Motherhood (Part 1) | Becky Thompson | Focus on the Family', after: "Becky Thompson, a mother of three young ", before: "reflection_questions", tip: "Her setting is American, but the drift she describes happens in every home with young children. As you listen, choose one small habit you will practise this week." },
+      { id: '_b5gpnDZvFo', section: 4, title: 'Prioritizing Your Marriage in the Midst of Motherhood (Part 1) | Becky Thompson | Focus on the Family', after: "Becky Thompson, a mother of three young ", before: "reflection_questions", tip: "About 24 minutes. Her setting is American, but the drift she describes happens in every home with young children. As you listen, choose one small habit you will practise this week." },
     ],
     sections: ["Section 1 — A Heritage From the Lord", "Section 2 — The Conversation Before the Cradle", "Section 3 — Family Planning: Decide It Before It Decides You", "Section 4 — When the Baby Comes", "Section 5 — Raising Them as One", "Section 6 — When Children Do Not Come", "Section 7 — When a Pregnancy Is Lost", "Section 8 — Other Ways God Builds a Family", "Section 9 — Sons and Daughters Alike", "Ready for the Next Generation?", "Module 10 Assignment — The Family We Hope For", "Module 10 Complete"],
     privacy: 'Your partner cannot see this assignment. Write honestly.',

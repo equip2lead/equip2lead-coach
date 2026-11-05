@@ -174,7 +174,7 @@ const section4 = {
     ]),
     paragraph("Becky Thompson, a mother of three young children and author of Love Unending, talks with Focus on the Family about how the constant demands of parenting can leave husbands and wives disconnected, and the small daily choices that bring them back to each other: going first instead of waiting for your spouse to change, greeting each other warmly, and making room to listen."),
     videoEmbed("_b5gpnDZvFo", "Prioritizing Your Marriage in the Midst of Motherhood (Part 1) | Becky Thompson | Focus on the Family"),
-    callout("tip", "Her setting is American, but the drift she describes happens in every home with young children. As you listen, choose one small habit you will practise this week."),
+    callout("tip", "About 24 minutes. Her setting is American, but the drift she describes happens in every home with young children. As you listen, choose one small habit you will practise this week."),
     reflectionQuestions("Before You Move On — Your Partner Cannot See This", [
       "If we have children, what am I doing to protect our friendship, not only our parenting?",
       "Husbands: what do I carry at home in the season of a new baby? Wives: what do I need and have not said?",
