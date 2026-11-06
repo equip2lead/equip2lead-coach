@@ -23,9 +23,10 @@ const scorecard = (title, scorecard_key, items) => ({ type: "scorecard", data: {
 const assignmentPrompt = (fields) => ({ type: "assignment_prompt", data: fields });
 const quiz = (scope, title, questions) => ({ type: "quiz", data: { scope, title, questions } });
 
-// Art and video not produced yet stay visible as callouts. Images will go in
-// public/images/marriage/module-12/MM12-1..4.png.
-const imagePlaceholder = (ref, brief) => callout("note", `[IMAGE PLACEHOLDER — ${ref}] ${brief}`);
+// Images are Denis's, used as delivered, in public/images/marriage/module-12/.
+const image = (url, alt) => ({ type: "image", data: { url, alt } });
+
+// Video not produced yet stays visible as a callout.
 const videoPlaceholder = (brief) => callout("note", `[VIDEO PLACEHOLDER — pending link] ${brief}`);
 
 // ─── Front matter ───
@@ -49,7 +50,7 @@ const section1 = {
   title: "The Teaching That Shocked the Disciples",
   blocks: [
     heading(2, "Section 1 — The Teaching That Shocked the Disciples"),
-    imagePlaceholder("MM12-1", "Content: A young African man and woman sitting side by side on a wooden bench under a large tree at the edge of a field at sunset, an open Bible on her lap and a notebook on his knee, both looking thoughtfully toward the horizon. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-12/MM12-1.png", "A young African man and woman sit side by side under a large tree at sunset, looking thoughtfully toward the horizon over open fields and distant hills. He holds a pen to his chin with a notebook on his knee; an open Bible rests on her lap. No readable text appears in the image."),
     paragraph("Jesus once told the crowds who wanted to follow Him to sit down first and estimate the cost, like a man who wants to build a tower (Luke 14:28–30). Notice that He does not discourage the building. He commands the counting. Module 7 used that verse for your budget. This module uses it for the whole covenant."),
     paragraph("Before we count, listen to the most sobering conversation Jesus ever had about marriage. The Pharisees came to test Him: \"Is it lawful for a man to divorce his wife for any and every reason?\" (Matthew 19:3). They asked about exits. He answered about origins."),
     callout("scripture", "\"Haven't you read that at the beginning the Creator 'made them male and female,' and said, 'For this reason a man will leave his father and mother and be united to his wife, and the two will become one flesh'? So they are no longer two, but one flesh. Therefore what God has joined together, let no one separate.\" — Matthew 19:4–6"),
@@ -227,7 +228,7 @@ const section5 = {
   title: "The Final Tests",
   blocks: [
     heading(2, "Section 5 — The Final Tests"),
-    imagePlaceholder("MM12-2", "Content: A young African couple sitting across from an older pastor and his wife in a quiet church office, the couple holding hands, the pastor's wife leaning forward kindly, an open Bible and a printed checklist on the table between them. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-12/MM12-2.png", "A young African couple sit at a wooden table in a church office with an older pastor in a clerical collar and his wife, who leans toward them, smiling and speaking. An open Bible lies on the table beside a clipboard headed \"Marriage Preparation Checklist\", with a pen resting on it. A wooden cross and bookshelves are behind them."),
     paragraph("Walter Trobisch, the missionary counsellor who spent years among young people in Cameroon, proposed a set of simple tests for couples approaching marriage. Counsellors around the world have adapted them since. Here they are, rebuilt as eight honest questions. Take them one at a time: alone before God first, then together, then with your pastor or mentor couple."),
     table(["The test", "The honest question"], [
       [
@@ -297,7 +298,7 @@ const section7 = {
   title: "Ready to Build, or Ready to Wait",
   blocks: [
     heading(2, "Section 7 — Ready to Build, or Ready to Wait"),
-    imagePlaceholder("MM12-3", "Content: A young African couple standing hand in hand on a hillside at dawn, looking out over a valley where the foundations of a small house have been laid in red earth, morning mist and golden light across the land. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1200×675."),
+    image("/images/marriage/module-12/MM12-3.png", "A young African couple stand hand in hand on a hillside at dawn, seen from behind, looking out over a misty green valley. Beside them, the block foundations of a small house have been laid in red earth, with steel rods rising from the corners and a stack of blocks ready. No readable text appears in the image."),
     callout("scripture", "\"Put your outdoor work in order and get your fields ready; after that, build your house.\" — Proverbs 24:27"),
     paragraph("The ancient farmer understood what the modern couple forgets: preparation comes before construction. First the fields, the slow, unphotographed work of clearing, ploughing and planting, and only then the house. Our generation has reversed the proverb. We build the house first, the wedding, the photographs, the celebration, and hope the fields will plant themselves afterwards. Fields never do."),
     pullQuote("Prepare for the marriage, not the wedding. The wedding needs a planner. The marriage needs a builder."),
@@ -630,7 +631,7 @@ const section10 = {
   title: "Marriage Track Complete",
   blocks: [
     heading(2, "Marriage Track Complete"),
-    imagePlaceholder("MM12-4", "Content: A joyful African wedding procession leaving a church into bright afternoon sun, the bride and groom hand in hand at the centre, an older married couple walking just behind them with their hands on the couple's shoulders, family and friends cheering on both sides. Style: photorealistic, warm golden light, matching the Leadership track. Dimensions: 1600×900."),
+    image("/images/marriage/module-12/MM12-4.png", "An African bride and groom walk hand in hand out of a church into bright afternoon sun, smiling at each other. An older man and woman walk just behind them, each with a hand on the couple's shoulders, while family and friends in colourful dress clap and cheer on both sides. No readable text appears in the image."),
     videoPlaceholder("3-4 min closing from Denis and Arit: what they hope every reader carries away from this track, a word for the single, the engaged and the married, and a blessing over every covenant that will be built."),
     paragraph("You have finished the Marriage Track. You have learned where marriage came from and whose idea it was, faced what you carry, chosen wisely, learned to love and to fight well, worked through roles, money and family, talked honestly about the body and the children you may raise, built the habits and traditions of a covenant, and now counted its cost."),
     paragraph("Nobody can ever say of you what so many tired spouses have said of themselves: \"No one ever taught me.\" You have been taught. Now the work is yours, and the grace is God's."),

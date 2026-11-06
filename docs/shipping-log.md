@@ -3620,3 +3620,6 @@ d1eae9283fbbaab1d367a68d3bb3fd4a; md5(body_blocks::text) on the live row is
 
 No external video. The intro and closing stay as video placeholders, and MM12-1 to MM12-4 stay as
 image placeholders until the images are in `public/images/marriage/module-12/`.
+
+The MM12-1 to MM12-4 images are on main. This branch swaps them into the generator. Merge it only
+after the image SQL has run.
