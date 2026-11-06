@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { NextStepModeToggle } from './NextStepMode';
 import { SectionsIcon, ClockIcon, TargetIcon } from '@/components/shell/icons';
 import type { DashboardData } from '@/lib/dashboard/data';
+import { isTrackFinished } from '@/lib/dashboard/finished-tracks';
 
 const DISPLAY = "'Plus Jakarta Sans', sans-serif";
 const SERIF = "Georgia, 'Libre Baskerville', serif";
@@ -24,7 +25,11 @@ export function NextStep({ data }: { data: DashboardData }) {
           </h2>
           <div className="rounded-2xl border border-gray-200 bg-white p-8 max-md:p-6">
             <p className="text-[17px] leading-[1.6] text-gray-700" style={{ fontFamily: SERIF }}>
-              {data.trackSlug === 'leadership'
+              {isTrackFinished(data.trackSlug)
+                ? (lang === 'en'
+                    ? `You’ve completed the ${data.trackName} track. Revisit any module, or talk with your coach about what to work on next.`
+                    : `Vous avez terminé le parcours ${data.trackName}. Revoyez n’importe quel module, ou parlez à votre coach de la prochaine étape.`)
+                : data.trackSlug === 'leadership'
                 ? (lang === 'en'
                     ? 'You’ve finished everything currently available. Module 2 is coming soon.'
                     : 'Vous avez terminé tout ce qui est disponible. Le Module 2 arrive bientôt.')

@@ -3620,3 +3620,16 @@ d1eae9283fbbaab1d367a68d3bb3fd4a; md5(body_blocks::text) on the live row is
 
 No external video. The intro and closing stay as video placeholders, and MM12-1 to MM12-4 stay as
 image placeholders until the images are in `public/images/marriage/module-12/`.
+
+## 2026-11-06 — "Track complete" on the dashboard
+
+A reader who finished every module of the Marriage Track was told "Your next module is coming
+soon". Tracks whose curriculum is fully written are now listed in
+`lib/dashboard/finished-tracks.ts` (only `marriage` so far). For those, the "Your next step" card
+says "You've completed the Marriage Coaching track. Revisit any module, or talk with your coach
+about what to work on next." In French it says "Vous avez terminé le parcours Coaching Conjugal…".
+The track's own name is used. Tracks still being built keep "coming soon". Add a slug to the list
+in the same change that publishes a track's final module. Wording approved by Dey.
+
+Follow-up: on the Leadership track, the same card still says "Module 2 is coming soon", which is
+out of date. Left as it is for now, by decision.
