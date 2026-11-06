@@ -3610,3 +3610,12 @@ SQL files were deleted.
 
 `t7BSJvoKGKc`, "Making Prayer a Priority in Your Marriage - Ryan & Selena Frederick", is on Focus on
 the Family's channel (24:14). It first aired on 7 April 2022 and is not labelled as a part.
+
+## 2026-11-06 — Marriage Module 12 prepared
+
+"Counting the Cost": 108 blocks, the second module in the Growth & Legacy pillar and the last
+module of the Marriage Track, no edits to the authored text, checksum
+d1eae9283fbbaab1d367a68d3bb3fd4a. Not live until the SQL runs. No week linking.
+
+No external video. The intro and closing stay as video placeholders, and MM12-1 to MM12-4 stay as
+image placeholders until the images are in `public/images/marriage/module-12/`.
