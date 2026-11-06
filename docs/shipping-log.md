@@ -3618,8 +3618,12 @@ module of the Marriage Track, run from Claude chat with no wording changes. Text
 d1eae9283fbbaab1d367a68d3bb3fd4a; md5(body_blocks::text) on the live row is
 9637b638168eba071fb18715e08cd500. The generator matches the live row. No week linking.
 
-No external video. The intro and closing stay as video placeholders, and MM12-1 to MM12-4 stay as
-image placeholders until the images are in `public/images/marriage/module-12/`.
+No external video. The intro and closing stay as video placeholders.
+
+The MM12-1 to MM12-4 images are on main. The Module 12 image SQL ran from Claude chat. The live row
+has 108 blocks, 4 images and no image placeholders, md5(body_blocks::text)
+df846131c22cd91af85ce8a524121da9, and its generator matches. The builder, JSON and SQL files were
+deleted.
 
 ## 2026-11-06 — "Track complete" on the dashboard
 

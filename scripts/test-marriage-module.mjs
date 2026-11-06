@@ -350,6 +350,7 @@ const EXPECT = {
     duration: 110,
     sortOrder: 12,
     blocks: 108,
+    images: 4,
     videoPlaceholders: 2,
     scorecardKey: 'marriage_module12_cost',
     videos: [],
