@@ -3637,3 +3637,15 @@ in the same change that publishes a track's final module. Wording approved by De
 
 Follow-up: on the Leadership track, the same card still says "Module 2 is coming soon", which is
 out of date. Left as it is for now, by decision.
+
+## 2026-11-06 — Marriage track complete
+
+All 13 Marriage modules are live, from the Starting Point (Module 0) to Module 12, Counting the
+Cost: 1,639 blocks, 52 real images, no image placeholders and 23 verified videos. Every
+generator in `scripts/content/marriage/` matches its live row with zero differences
+(`check-generators.sh marriage:0` … `marriage:12`). No `marriage_module*` SQL files remain in
+Downloads, and every builder and JSON has been deleted.
+
+Still open: 34 video placeholders for the intro and closing videos from Denis and Arit, which stay
+visible as callouts until those videos are recorded. The Leadership "Module 2 is coming soon"
+follow-up above is also still open.
