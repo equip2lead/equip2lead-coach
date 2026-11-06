@@ -341,6 +341,26 @@ const EXPECT = {
       'nothing in this track is an instruction to stay within reach of harm',
     ],
   },
+  12: {
+    slug: 'counting-the-cost',
+    title: 'Counting the Cost',
+    subtitle: 'The Honest Price of Covenant, the Cost to Refuse, the Rivals That Starve a Marriage, and the Final Tests Before You Build',
+    pillarSlug: 'growth-legacy',
+    pillarId: '00000000-0000-0000-0002-000000000015',
+    duration: 110,
+    sortOrder: 12,
+    blocks: 108,
+    videoPlaceholders: 2,
+    scorecardKey: 'marriage_module12_cost',
+    videos: [],
+    sections: ["Section 1 — The Teaching That Shocked the Disciples", "Section 2 — The True Costs of Covenant", "Section 3 — The Cost to Refuse, and the Cost the Church Must Lower", "Section 4 — Behind Every Rival: Yourself", "Section 5 — The Final Tests", "Section 6 — Two I Could Not Help", "Section 7 — Ready to Build, or Ready to Wait", "Have I Counted the Cost?", "Module 12 Assignment — Counting the Cost", "Marriage Track Complete"],
+    privacy: 'Your partner cannot see this assignment.',
+    keep: [
+      'Your partner cannot see these ratings.',
+      'if there is fear, control or violence',
+      'Speak this week to a pastor or counsellor who can actually help, on your own.',
+    ],
+  },
 };
 
 const N = Number(process.argv[2]);
